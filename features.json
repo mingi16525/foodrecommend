@@ -1,0 +1,16 @@
+{
+  "features": [
+    {
+      "name": "feature-name",
+      "status": "TODO",
+      "description": "What this feature does",
+      "scope": ["src/path/to/files/", "tests/feature-name/"],
+      "definition_of_done": [
+        "Specific verifiable condition 1",
+        "Specific verifiable condition 2",
+        "npm run test:feature-name exits 0",
+        "npm test exits 0 (no regressions)"
+      ]
+    }
+  ]
+}
