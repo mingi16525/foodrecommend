@@ -1,19 +1,19 @@
 # Session Progress
 
-## Last Session Summary (Session 1 — 2026-07-31)
-- Đã hoàn thành viết tài liệu thiết kế sản phẩm (ProductDesignDocument.md).
-- Đã cập nhật AGENTS.md với kiến trúc dự án cơ bản.
-- Đã cập nhật features.json với các tính năng MVP.
-- Không có test (Dự án mới khởi tạo).
+## Last Session Summary (Session 2 — 2026-07-31)
+- Đã hoàn thành tạo file Kế hoạch Phát triển Dự án chi tiết (DevelopmentPlan.md).
+- Kế hoạch chia dự án thành 6 modules chính và 5 phase (sprint) cụ thể cho MVP.
+- Không có test (Chỉ có thay đổi về tài liệu).
 
 ## Current State
-- Feature: core-architecture-db-setup (status: IN_PROGRESS, ~10% complete)
+- Feature: core-architecture-db-setup (status: IN_PROGRESS, ~15% complete)
 - Branch: main
 - Tests: 0 passing / 0 total
 
 ## What Next Session Should Do First
-1. Tạo docker-compose.yml để thiết lập PostgreSQL, Redis, Qdrant/Elasticsearch.
-2. Thiết lập cấu trúc thư mục source code backend (ví dụ NestJS hoặc Go).
+1. Setup Github Actions/Gitlab CI cho repository theo Phase 1.
+2. Tạo docker-compose.yml để thiết lập PostgreSQL, Redis, Qdrant/Elasticsearch.
+3. Thiết lập cấu trúc thư mục source code backend.
 
 ## Known Issues / Blockers
 - Chưa có thư mục source code (src) và cấu trúc ứng dụng.
