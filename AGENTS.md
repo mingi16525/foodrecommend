@@ -1,10 +1,15 @@
 # AGENTS.md — Project Harness
 
 ## Project Overview
-[Điền 1-2 câu mô tả về sản phẩm bạn đang phát triển tại đây]
+Nền tảng AI Food Decision Platform giúp người dùng quyết định *ăn gì, ở đâu, đặt như thế nào* bằng cách gợi ý món/quán theo sở thích, học từ lịch sử, cá nhân hóa theo ngữ cảnh và điều hướng sang các nền tảng đặt món hiện có.
 
 ## Architecture
-[Liệt kê Stack công nghệ, các thư mục chính, và cách các component liên kết với nhau]
+- **Frontend**: Mobile App (Flutter / React Native)
+- **API Gateway**: Kong / Nginx
+- **Backend Services**: Microservices (Node.js/Go/Python) for User, Restaurant, Social, Group, Recommendation.
+- **Database**: PostgreSQL (Main DB), Redis (Cache & Feature Store), Elasticsearch/Qdrant (Vector DB).
+- **Messaging**: Kafka / RabbitMQ (Event-Driven for user actions).
+- **AI**: Online Inference (CPU) and Offline Model Training (GPU).
 
 ## Harness Files
 - `features.json` — source of truth for what to build and in what order

@@ -1,0 +1,16 @@
+You are a coding agent working on this project.
+Start by reading these files IN ORDER:
+
+AGENTS.md — your governance document and protocols
+
+features.json — find the current IN_PROGRESS feature (or first TODO)
+
+claude-progress.md — find "What Next Session Should Do First"
+Do not begin work until you have read all three files.
+After reading, state:
+"Current feature: [name]"
+"First action: [exact action from progress file]"
+"Files in scope: [list from features.json scope array]"
+Then begin work. Do not ask clarifying questions unless blocked.
+Follow scope rules and verification protocol in AGENTS.md exactly.
+End the session using the End-of-Session Protocol in AGENTS.md.

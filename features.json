@@ -1,16 +1,22 @@
 {
   "features": [
     {
-      "name": "feature-name",
-      "status": "TODO",
-      "description": "What this feature does",
-      "scope": ["src/path/to/files/", "tests/feature-name/"],
+      "name": "core-architecture-db-setup",
+      "status": "IN_PROGRESS",
+      "description": "Thiết lập cấu trúc dự án cơ bản và Database (PostgreSQL, Redis, Vector DB)",
+      "scope": ["docker-compose.yml", "schema.sql", "src/", "tests/"],
       "definition_of_done": [
-        "Specific verifiable condition 1",
-        "Specific verifiable condition 2",
-        "npm run test:feature-name exits 0",
-        "npm test exits 0 (no regressions)"
+        "Docker compose có thể chạy database",
+        "Schema cơ bản được thiết lập thành công",
+        "Kết nối được đến database từ application"
       ]
+    },
+    {
+      "name": "tab-3-swipe-ai-rec",
+      "status": "TODO",
+      "description": "Phát triển tính năng Swipe chọn món cá nhân",
+      "scope": ["src/recommendation/", "src/api/"],
+      "definition_of_done": []
     }
   ]
 }
