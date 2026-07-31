@@ -1,1 +1,9 @@
 /.vscode
+
+# AntiCrow ローカルデータ
+.anticrow/
+
+# Node modules
+
+#Agent Data
+.agent/
