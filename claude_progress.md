@@ -1,24 +1,26 @@
 # Session Progress
 
-## Last Session Summary (Session N — YYYY-MM-DD)
-- [Liệt kê những gì đã hoàn thành, tên file cụ thể và số lượng test pass]
-- [Các quyết định kiến trúc đã đưa ra]
+## Last Session Summary (Session 1 — 2026-07-31)
+- Đã hoàn thành viết tài liệu thiết kế sản phẩm (ProductDesignDocument.md).
+- Đã cập nhật AGENTS.md với kiến trúc dự án cơ bản.
+- Đã cập nhật features.json với các tính năng MVP.
+- Không có test (Dự án mới khởi tạo).
 
 ## Current State
-- Feature: [name] (status: IN_PROGRESS, ~X% complete)
-- Branch: [branch-name]
-- Tests: [N passing] / [M total]
+- Feature: core-architecture-db-setup (status: IN_PROGRESS, ~10% complete)
+- Branch: main
+- Tests: 0 passing / 0 total
 
 ## What Next Session Should Do First
-1. [Hành động đầu tiên chính xác cần làm — đường dẫn file, lệnh, hoặc cả hai]
-2. [Hành động thứ hai]
-3. [Phương án dự phòng nếu hành động đầu thất bại]
+1. Tạo docker-compose.yml để thiết lập PostgreSQL, Redis, Qdrant/Elasticsearch.
+2. Thiết lập cấu trúc thư mục source code backend (ví dụ NestJS hoặc Go).
 
 ## Known Issues / Blockers
-- [Bất kỳ vấn đề mở nào có thể ảnh hưởng đến phiên tiếp theo]
+- Chưa có thư mục source code (src) và cấu trúc ứng dụng.
 
 ## Observations (Not Fixed — Outside Current Scope)
-- [Các vấn đề được phát hiện nhưng cố ý không xử lý vì nằm ngoài phạm vi (Scope)]
+- Các tính năng khác ngoài DB setup hiện chưa cần quan tâm.
 
 ## Architectural Decisions This Session
-- [Quyết định + lý do + tham chiếu ADR nếu có]
+- Quyết định sử dụng PostgreSQL làm Main DB, Redis làm Cache/Feature Store, Qdrant làm Vector DB.
+- Microservices architecture cho Backend.
