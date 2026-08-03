@@ -193,6 +193,19 @@
         "Thêm service nginx vào docker-compose.yml",
         "Có thể truy cập API qua cổng của Nginx"
       ]
+    },
+    {
+      "name": "frontend-init",
+      "status": "DONE",
+      "description": "Khởi tạo dự án Web Frontend (React + Vite + TypeScript) cho Food Decision Platform",
+      "scope": [
+        "frontend/"
+      ],
+      "definition_of_done": [
+        "Khởi tạo thành công template React Vite",
+        "Cấu hình cơ bản (package.json)",
+        "Đảm bảo dev server có thể chạy độc lập"
+      ]
     }
   ]
 }

@@ -1,28 +1,28 @@
 # Session Progress
 
-## Last Session Summary (Session 21 — 2026-08-03)
-- Đã thêm feature mới `api-gateway-nginx` vào `features.json`.
-- Cấu hình API Gateway bằng Nginx (`nginx/nginx.conf`) để định tuyến các requests bắt đầu bằng `/api/` tới Backend services.
-- Container hóa Backend Application bằng cách tạo `Dockerfile` cơ bản cho Node.js app, tự động build mã nguồn TypeScript (`npm run build`).
-- Tích hợp Nginx và Backend app trực tiếp vào `docker-compose.yml`, giúp toàn bộ hệ thống khởi chạy chỉ bằng một lệnh `docker-compose up -d --build`.
-- Kiểm tra thành công API Gateway qua cổng 80 (`curl http://localhost/api/users/...`) và endpoint health check (`/health`), request đã được proxy chuẩn xác đến Node.js server ở bên trong.
+## Last Session Summary (Session 22 — 2026-08-03)
+- Đã thêm feature mới `frontend-init` vào `features.json`.
+- Chuyển hướng phát triển Frontend sang React + Vite + TypeScript thay vì Flutter do rào cản môi trường, phù hợp với kiến trúc Web App theo chuẩn hiện đại.
+- Khởi tạo thành công dự án Vite thông qua lệnh `npx -y create-vite@latest frontend --template react-ts`.
+- Cài đặt thành công các phụ thuộc ban đầu qua `npm install`.
+- Khởi chạy thành công Development Server của Frontend, host tại `http://localhost:5173/`.
 
 ## Current State
-- Feature: api-gateway-nginx (status: DONE, 100% complete)
+- Feature: frontend-init (status: DONE, 100% complete)
 - Branch: main
-- Tests: 24 passing / 24 total (Từ Github Actions CI)
+- Tests: 24 passing / 24 total (Backend)
 
 ## What Next Session Should Do First
-1. Hệ thống Backend (DB + Cache + VectorDB + App Server + API Gateway) đã hoàn chỉnh và chạy trơn tru trong containerized environment (Docker Compose). Giai đoạn backend platform được coi là đã hoàn tất.
-2. Bắt tay vào xây dựng giao diện người dùng (Frontend - Mobile/Web) với các framework hiện đại (Ví dụ: Flutter/React/Next.js) dựa theo mô tả có sẵn trong `UI.txt`. Môi trường cần thiết lập.
+1. Setup các thư viện cần thiết cho React Frontend như: `tailwindcss`, `react-router-dom`, `axios` (hoặc cấu hình `fetch` API base), Zustand/Redux để quản lý State theo như bản tóm tắt kiến trúc tại `UI.txt`.
+2. Tạo cấu trúc thư mục (components, pages, services, store) bên trong thư mục `frontend/src`.
+3. Bắt tay thiết kế Tab đầu tiên (Ví dụ Social Feed hoặc UI Base layout có Bottom Navigation).
 
 ## Known Issues / Blockers
-- Cần cài đặt `flutter` CLI hoặc môi trường React Native/React nếu tiến tới bắt đầu dự án Frontend. 
+- Cần tuân thủ đúng Design Aesthetic đã ghi trong `UI.txt` (Tránh các màu cơ bản nhàm chán, sử dụng dark mode mặc định, glassmorphism, micro-animations). 
 
 ## Observations (Not Fixed — Outside Current Scope)
 - Tính năng chia sẻ (Social Feed) hiện tại lấy toàn bộ bài mới nhất, cần phân trang (pagination) và lọc theo follower trong tương lai.
 - Tính năng nhóm chưa tích hợp websocket/realtime cho việc tạo bill/bỏ phiếu (Voting) chọn quán ăn chung.
 
 ## Architectural Decisions This Session
-- Chuyển từ việc chạy baremetal bằng `node dist/index.js` sang mô hình hoàn toàn dựa trên Docker Compose (Containerized Architecture).
-- Sử dụng Nginx làm reverse proxy (API Gateway) tiêu chuẩn, giúp tập trung hóa cấu hình CORS, Caching, SSL Termination sau này nếu cần và làm điểm trung gian định tuyến.
+- Lựa chọn React + Vite thay vì Flutter để loại bỏ sự phụ thuộc quá lớn vào mobile SDK trong môi trường phát triển hiện tại, cho phép team đi vào thực tế ngay lập tức với Web-first approach nhưng vẫn giữ nguyên định hướng thiết kế Premium trong `UI.txt`.
