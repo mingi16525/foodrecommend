@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { groupService } from '../group/service';
+import { splitBillService, BillItem } from '../group/splitBill';
 
 const router = Router();
 
@@ -32,6 +33,28 @@ router.post('/:id/members', async (req: Request, res: Response): Promise<void> =
   }
   await groupService.addMember(id, userId);
   res.json({ success: true });
+});
+
+router.post('/:id/split-equally', (req: Request, res: Response): void => {
+  const { totalAmount, userIds } = req.body;
+  if (!totalAmount || !userIds || !Array.isArray(userIds)) {
+    res.status(400).json({ error: 'totalAmount and userIds (array) are required' });
+    return;
+  }
+  
+  const results = splitBillService.splitEqually(totalAmount, userIds);
+  res.json({ data: results });
+});
+
+router.post('/:id/split-items', (req: Request, res: Response): void => {
+  const { items } = req.body;
+  if (!items || !Array.isArray(items)) {
+    res.status(400).json({ error: 'items (array) is required' });
+    return;
+  }
+  
+  const results = splitBillService.splitByItems(items as BillItem[]);
+  res.json({ data: results });
 });
 
 export const groupRouter = router;
