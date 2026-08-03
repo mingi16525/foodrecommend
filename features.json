@@ -373,6 +373,22 @@
         "Tab 4 hiển thị danh sách group từ Database thay vì mock",
         "Xử lý state isLoading và error"
       ]
+    },
+    {
+      "name": "frontend-integration-ai-swipe",
+      "status": "DONE",
+      "description": "Tích hợp Backend API vào AI Swipe (Tab 2)",
+      "scope": [
+        "src/api/recommendation.routes.ts",
+        "frontend/src/store/swipeStore.ts",
+        "frontend/src/pages/AiSwipe.tsx"
+      ],
+      "definition_of_done": [
+        "Kết nối swipeStore.ts với backend lấy danh sách món ăn gợi ý",
+        "Tab 2 hiển thị danh sách thẻ từ Database (Recommendation Engine) thay vì mock",
+        "Gọi API lưu lại action (like/skip) khi user quẹt thẻ",
+        "Xử lý state isLoading và error"
+      ]
     }
   ]
 }

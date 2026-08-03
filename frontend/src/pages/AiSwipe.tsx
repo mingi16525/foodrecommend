@@ -85,15 +85,20 @@ const SwipeCard: React.FC<{
 };
 
 const AiSwipe: React.FC = () => {
-  const { cards, swipeRight, swipeLeft, resetCards } = useSwipeStore();
+  const { cards, swipeRight, swipeLeft, resetCards, fetchRecommendations, isLoading, error } = useSwipeStore();
+  const MOCK_USER_ID = '11111111-1111-1111-1111-111111111111';
+
+  React.useEffect(() => {
+    fetchRecommendations(MOCK_USER_ID);
+  }, [fetchRecommendations]);
 
   const handleManualSwipe = (dir: 'left' | 'right') => {
     if (cards.length === 0) return;
     const currentCard = cards[cards.length - 1]; // Top card
     if (dir === 'right') {
-      swipeRight(currentCard);
+      swipeRight(currentCard, MOCK_USER_ID);
     } else {
-      swipeLeft(currentCard);
+      swipeLeft(currentCard, MOCK_USER_ID);
     }
   };
 
@@ -103,6 +108,9 @@ const AiSwipe: React.FC = () => {
         <h1 className="gradient-text-secondary">AI Discovery</h1>
         <p>Swipe right if it looks tasty!</p>
       </div>
+      
+      {isLoading && <div style={{ position: 'absolute', top: 120, left: 0, right: 0, textAlign: 'center', color: 'var(--text-secondary)' }}>Loading recommendations...</div>}
+      {error && <div style={{ position: 'absolute', top: 120, left: 0, right: 0, textAlign: 'center', color: '#ff5f6d' }}>{error}</div>}
 
       <div className="cards-stack">
         <AnimatePresence>
@@ -112,21 +120,23 @@ const AiSwipe: React.FC = () => {
                 key={card.id} 
                 card={card} 
                 active={index === cards.length - 1}
-                onSwipe={(c, dir) => dir === 'right' ? swipeRight(c) : swipeLeft(c)}
+                onSwipe={(c, dir) => dir === 'right' ? swipeRight(c, MOCK_USER_ID) : swipeLeft(c, MOCK_USER_ID)}
               />
             ))
           ) : (
-            <motion.div 
-              className="empty-state glass-panel"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-            >
-              <h2>You're all caught up!</h2>
-              <p>We're looking for more delicious matches.</p>
-              <button className="reset-btn" onClick={resetCards}>
-                Find more food
-              </button>
-            </motion.div>
+            !isLoading && (
+              <motion.div 
+                className="empty-state glass-panel"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+              >
+                <h2>You're all caught up!</h2>
+                <p>We're looking for more delicious matches.</p>
+                <button className="reset-btn" onClick={() => resetCards(MOCK_USER_ID)}>
+                  Find more food
+                </button>
+              </motion.div>
+            )
           )}
         </AnimatePresence>
       </div>

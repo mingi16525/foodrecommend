@@ -1,29 +1,30 @@
 # Session Progress
 
-## Last Session Summary (Session 32 — 2026-08-03)
-- Đã thêm tính năng `frontend-integration-group-split` vào `features.json`.
-- Cập nhật backend `group/service.ts` và `api/group.routes.ts` để bổ sung endpoint `GET /api/groups` phục vụ việc lấy danh sách tất cả các nhóm.
-- Cập nhật `groupStore.ts` ở Frontend để gọi API `/groups` thông qua `apiClient`.
-- Thay đổi `GroupSplit.tsx` để hiển thị trạng thái Loading, gọi hàm `fetchGroups()` khi load trang (on mount) và xử lý lỗi khi fetch dữ liệu.
-- Map dữ liệu group từ backend sang cấu trúc UI (tạm thời mock `members` và `activeBills` vì endpoint `GET /groups` chưa trả về đầy đủ các thông tin này).
+## Last Session Summary (Session 33 — 2026-08-03)
+- Đã thêm tính năng `frontend-integration-ai-swipe` vào `features.json`.
+- Cập nhật `swipeStore.ts` ở Frontend để gọi API `/recommendations` và `/recommendations/swipe` thông qua `apiClient`.
+- Thay đổi `AiSwipe.tsx` để hiển thị trạng thái Loading, gọi hàm `fetchRecommendations()` khi load trang (on mount) và xử lý lỗi khi fetch dữ liệu.
+- Tích hợp logic Swipe Left/Right gọi API lưu action về Backend.
+- Map dữ liệu trả về từ Recommendation Engine (mock Qdrant) sang UI Card Data với các hình ảnh/tag mock linh động vì dữ liệu engine trả về còn thiếu.
 
 ## Current State
-- Feature: frontend-integration-group-split (status: DONE, 100% complete)
+- Feature: frontend-integration-ai-swipe (status: DONE, 100% complete)
 - Branch: main
 - Tests: 24 passing / 24 total (Backend)
 - Frontend build (TypeScript/Vite): OK.
-- Group Split tab (Tab 4) đã hiển thị danh sách các nhóm được lấy từ database PostgreSQL.
+- Ai Swipe tab (Tab 2) đã được kết nối và hoạt động với Backend Recommendation Engine.
+- TẤT CẢ 5 TAB CỦA ỨNG DỤNG ĐÃ ĐƯỢC KẾT NỐI VỚI BACKEND POSTGRES/EXPRESS THÀNH CÔNG.
 
 ## What Next Session Should Do First
-1. Tiến hành tích hợp API cuối cùng cho `Tab 2 - AI Swipe`.
-2. Gợi ý: Làm API backend integration cho `Tab 2 - AI Swipe` để gọi tới logic Recommendation Engine và lấy ra danh sách các món ăn gợi ý thay vì dùng mock data tĩnh.
+1. Dự án đã hoàn thành giai đoạn kết nối MVP cơ bản giữa Frontend và Backend. Tiếp theo có thể thiết lập các tính năng nâng cao hơn (Realtime Chat/Voting, Map Location thực tế) hoặc tối ưu code.
+2. Kiểm tra/Tổng hợp lại toàn bộ tính năng và bàn giao MVP.
 
 ## Known Issues / Blockers
-- Hiện tại bảng `posts` không có thông tin tương tác, bảng `groups` không trả về `members`/`bills` ở API list, và trường `location` ở `restaurants` đang trống. Những dữ liệu này đang được mock linh hoạt tại tầng store để UI không bị trống hoặc lỗi.
+- Engine trả về dữ liệu quá ít (chỉ có ID, Name, Score) nên frontend phải random image/price/distance để UI không bị vỡ. Cần enrich metadata từ DB ở tầng Recommendation Engine API.
 
 ## Observations (Not Fixed — Outside Current Scope)
 - Tính năng nhóm chưa tích hợp websocket/realtime cho việc tạo bill/bỏ phiếu (Voting) chọn quán ăn chung.
 - Việc tách bill (Split Bill) mới chỉ thực hiện dưới dạng API tính toán chứ chưa lưu persist vào Database.
 
 ## Architectural Decisions This Session
-- Quyết định mock dữ liệu `members` và `activeBills` ngay tại `groupStore.ts` sau khi fetch danh sách groups thành công từ backend, do thiết kế của endpoint `/api/groups` hiện tại chưa hỗ trợ join quá nhiều bảng để giữ performance. Mở rộng API backend sau này khi làm feature chi tiết.
+- Chấp nhận việc mock hình ảnh, price, và distance ở `swipeStore.ts` để UI không bị thay đổi thiết kế trong khi chờ backend hoàn thiện tính năng enrich data của Recommendation Engine.
