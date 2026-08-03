@@ -290,6 +290,22 @@
         "Hiển thị danh sách nhóm và hóa đơn",
         "Tích hợp zustand store mock data cho danh sách nhóm/hóa đơn"
       ]
+    },
+    {
+      "name": "frontend-tab5-user-profile",
+      "status": "DONE",
+      "description": "Phát triển Tab 5 - User Profile (Cá nhân hóa & Lịch sử)",
+      "scope": [
+        "frontend/src/pages/UserProfile.tsx",
+        "frontend/src/pages/UserProfile.css",
+        "frontend/src/App.tsx",
+        "frontend/src/store/profileStore.ts"
+      ],
+      "definition_of_done": [
+        "Tạo giao diện User Profile với ảnh đại diện và thống kê cơ bản",
+        "Hiển thị danh sách sở thích và lịch sử nhà hàng đã đến",
+        "Tích hợp zustand store mock data cho profile"
+      ]
     }
   ]
 }
