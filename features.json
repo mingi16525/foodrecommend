@@ -40,19 +40,13 @@
       "name": "docs-overview-readme",
       "status": "DONE",
       "description": "Cập nhật README.md với hướng phát triển và tổng thể sản phẩm",
-      "scope": [
-        "README.md"
-      ]
+      "scope": ["README.md"]
     },
     {
       "name": "module-user-profile",
       "status": "DONE",
       "description": "Phát triển User Profile module (Data models, API controllers)",
-      "scope": [
-        "src/user/",
-        "src/api/user.routes.ts",
-        "tests/user.test.ts"
-      ],
+      "scope": ["src/user/", "src/api/user.routes.ts", "tests/user.test.ts"],
       "definition_of_done": [
         "Service user được implement",
         "API routes cho GET/POST user profile hoạt động",
@@ -78,11 +72,7 @@
       "name": "module-group",
       "status": "DONE",
       "description": "Phát triển Group module (Data models, API controllers)",
-      "scope": [
-        "src/group/",
-        "src/api/group.routes.ts",
-        "tests/group.test.ts"
-      ],
+      "scope": ["src/group/", "src/api/group.routes.ts", "tests/group.test.ts"],
       "definition_of_done": [
         "Service group được implement",
         "API routes cho nhóm hoạt động",
@@ -123,9 +113,7 @@
       "name": "update-readme-future-vision",
       "status": "DONE",
       "description": "Cập nhật README.md với tầm nhìn sản phẩm, module hiện tại và tương lai",
-      "scope": [
-        "README.md"
-      ],
+      "scope": ["README.md"],
       "definition_of_done": [
         "README.md được cập nhật đầy đủ các module: User, Recommendation, Restaurant, Group (Split Bill), Social",
         "README.md đề cập đến hướng phát triển tương lai"
@@ -135,10 +123,7 @@
       "name": "module-db-seeding",
       "status": "DONE",
       "description": "Tạo seed data cho PostgreSQL để phục vụ test API thực tế",
-      "scope": [
-        "seed.sql",
-        "package.json"
-      ],
+      "scope": ["seed.sql", "package.json"],
       "definition_of_done": [
         "File seed.sql được tạo với dữ liệu mẫu (users, restaurants, posts, v.v.)",
         "Thêm lệnh npm run seed vào package.json để dễ dàng chạy script"
@@ -148,9 +133,7 @@
       "name": "frontend-ui-prompt",
       "status": "DONE",
       "description": "Tạo file prompt UI.txt để định hướng thiết kế giao diện Frontend",
-      "scope": [
-        "UI.txt"
-      ],
+      "scope": ["UI.txt"],
       "definition_of_done": [
         "File UI.txt được tạo với đầy đủ yêu cầu cho 5 tabs chính",
         "Yêu cầu bao gồm chi tiết thẩm mỹ (màu sắc, glassmorphism, animations)"
@@ -160,9 +143,7 @@
       "name": "docker-db-container",
       "status": "DONE",
       "description": "Cấu hình và chạy thử container Database + script seed",
-      "scope": [
-        "docker-compose.yml"
-      ],
+      "scope": ["docker-compose.yml"],
       "definition_of_done": [
         "docker-compose up chạy database thành công",
         "Có thể import seed.sql vào container để test API"
@@ -172,10 +153,7 @@
       "name": "module-db-real-integration",
       "status": "DONE",
       "description": "Tích hợp DB thực tế, loại bỏ fallback mock data trong try-catch, mock pg-pool cho jest",
-      "scope": [
-        "src/",
-        "tests/"
-      ],
+      "scope": ["src/", "tests/"],
       "definition_of_done": [
         "Xóa fallback mock trong các khối catch của Services",
         "Tạo jest mock cho pg Pool",
@@ -186,9 +164,7 @@
       "name": "verify-real-db-integration",
       "status": "DONE",
       "description": "Kiểm chứng ứng dụng hoạt động thực tế với PostgreSQL (dữ liệu seed) và server Node.js",
-      "scope": [
-        "docker-compose.yml"
-      ],
+      "scope": ["docker-compose.yml"],
       "definition_of_done": [
         "Chạy docker-compose up -d thành công",
         "Khởi động được server Node.js trên localhost:3000",
@@ -199,13 +175,23 @@
       "name": "ci-cd-github-actions",
       "status": "DONE",
       "description": "Cấu hình CI/CD Pipelines cơ bản với Github Actions cho Node.js backend",
+      "scope": [".github/workflows/main.yml", "package.json"],
+      "definition_of_done": [
+        "Tạo file workflow main.yml chạy npm test và npm run lint"
+      ]
+    },
+    {
+      "name": "api-gateway-nginx",
+      "status": "DONE",
+      "description": "Cấu hình API Gateway bằng Nginx sử dụng Docker Compose để route requests tới Backend services",
       "scope": [
-        ".github/workflows/main.yml",
-        "package.json"
+        "docker-compose.yml",
+        "nginx/nginx.conf"
       ],
       "definition_of_done": [
-        "Tạo file workflow main.yml chạy npm test và npm run lint",
-        "Pipeline tự động chạy khi có push hoặc pull_request vào main"
+        "Tạo file cấu hình nginx.conf",
+        "Thêm service nginx vào docker-compose.yml",
+        "Có thể truy cập API qua cổng của Nginx"
       ]
     }
   ]
