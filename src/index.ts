@@ -1,1 +1,16 @@
-// Placeholder for source code
+import express from 'express';
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+  res.send('FoodRecommend API is running');
+});
+
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
+}
+
+export default app;

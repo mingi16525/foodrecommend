@@ -1,1 +1,5 @@
-// Placeholder for tests
+describe('Initial Setup Test', () => {
+  it('should pass', () => {
+    expect(1 + 1).toBe(2);
+  });
+});

@@ -2,9 +2,9 @@
   "features": [
     {
       "name": "core-architecture-db-setup",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "description": "Thiết lập cấu trúc dự án cơ bản và Database (PostgreSQL, Redis, Vector DB)",
-      "scope": ["docker-compose.yml", "schema.sql", "src/", "tests/"],
+      "scope": ["docker-compose.yml", "schema.sql", "src/", "tests/", "package.json", "tsconfig.json", ".github/", "eslint.config.mjs", "jest.config.js"],
       "definition_of_done": [
         "Docker compose có thể chạy database",
         "Schema cơ bản được thiết lập thành công",
