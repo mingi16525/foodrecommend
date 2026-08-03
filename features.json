@@ -22,7 +22,13 @@
       "status": "DONE",
       "description": "Cập nhật README.md với hướng phát triển và tổng thể sản phẩm",
       "scope": ["README.md"],
-      "definition_of_done": ["README.md được cập nhật đầy đủ"]
+    },
+    {
+      "name": "module-user-profile",
+      "status": "DONE",
+      "description": "Phát triển User Profile module (Data models, API controllers)",
+      "scope": ["src/user/", "src/api/user.routes.ts", "tests/user.test.ts"],
+      "definition_of_done": ["Service user được implement", "API routes cho GET/POST user profile hoạt động", "Unit tests pass"]
     }
   ]
 }
