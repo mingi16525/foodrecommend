@@ -339,6 +339,23 @@
         "Tab 1 hiển thị dữ liệu bài đăng từ Database thay vì mock",
         "Xử lý state isLoading và error"
       ]
+    },
+    {
+      "name": "frontend-integration-explore-map",
+      "status": "DONE",
+      "description": "Tích hợp Backend API vào Explore Map (Tab 3)",
+      "scope": [
+        "src/api/restaurant.routes.ts",
+        "src/restaurant/service.ts",
+        "frontend/src/store/mapStore.ts",
+        "frontend/src/pages/ExploreMap.tsx"
+      ],
+      "definition_of_done": [
+        "Thêm API endpoint lấy danh sách toàn bộ nhà hàng ở Backend",
+        "Kết nối mapStore.ts với backend lấy danh sách nhà hàng",
+        "Tab 3 hiển thị marker nhà hàng từ Database thay vì mock",
+        "Xử lý state isLoading và error"
+      ]
     }
   ]
 }

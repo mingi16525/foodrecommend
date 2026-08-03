@@ -53,6 +53,16 @@ export class RestaurantService {
       throw e;
     }
   }
+
+  async getAllRestaurants() {
+    try {
+      const result = await this.db.query('SELECT * FROM restaurants LIMIT 50');
+      return result.rows;
+    } catch (e) {
+      console.error('DB error in getAllRestaurants', e);
+      throw e;
+    }
+  }
 }
 
 export const restaurantService = new RestaurantService();

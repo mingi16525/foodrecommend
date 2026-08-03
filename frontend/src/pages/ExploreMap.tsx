@@ -34,8 +34,12 @@ const MapUpdater: React.FC<{ selectedLocation: MapLocation | null }> = ({ select
 };
 
 const ExploreMap: React.FC = () => {
-  const { locations, selectedLocation, setSelectedLocation } = useMapStore();
+  const { locations, selectedLocation, setSelectedLocation, fetchLocations, isLoading, error } = useMapStore();
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  React.useEffect(() => {
+    fetchLocations();
+  }, [fetchLocations]);
 
   return (
     <div className="map-page-container">
@@ -44,6 +48,9 @@ const ExploreMap: React.FC = () => {
         <Search size={20} color="var(--text-secondary)" />
         <input type="text" placeholder="Search for restaurants, cuisines..." className="search-input" />
       </div>
+
+      {isLoading && <div style={{ position: 'absolute', top: 80, left: 20, zIndex: 1000, color: 'white', background: 'rgba(0,0,0,0.5)', padding: '5px 10px', borderRadius: 8 }}>Loading map data...</div>}
+      {error && <div style={{ position: 'absolute', top: 80, left: 20, zIndex: 1000, color: '#ff5f6d', background: 'rgba(0,0,0,0.8)', padding: '5px 10px', borderRadius: 8 }}>{error}</div>}
 
       {/* Map View */}
       <div className="map-wrapper">

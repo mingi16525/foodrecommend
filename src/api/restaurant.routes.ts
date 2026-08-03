@@ -23,4 +23,9 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
   res.json({ data: restaurant });
 });
 
+router.get('/', async (req: Request, res: Response): Promise<void> => {
+  const restaurants = await restaurantService.getAllRestaurants();
+  res.json({ data: restaurants });
+});
+
 export const restaurantRouter = router;
