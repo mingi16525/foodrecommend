@@ -118,6 +118,18 @@
         "API routes cho split bill hoạt động",
         "Unit tests pass"
       ]
+    },
+    {
+      "name": "update-readme-future-vision",
+      "status": "DONE",
+      "description": "Cập nhật README.md với tầm nhìn sản phẩm, module hiện tại và tương lai",
+      "scope": [
+        "README.md"
+      ],
+      "definition_of_done": [
+        "README.md được cập nhật đầy đủ các module: User, Recommendation, Restaurant, Group (Split Bill), Social",
+        "README.md đề cập đến hướng phát triển tương lai"
+      ]
     }
   ]
 }

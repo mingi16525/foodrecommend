@@ -9,27 +9,31 @@ Hiện tại, dự án đang ở giai đoạn xây dựng **Core Architecture & 
 - **Swipe-to-Recommend Engine**: Hệ thống AI gợi ý món ăn dựa trên thao tác quẹt (Swipe). Đã tích hợp API endpoints để thu thập hành vi người dùng, lưu vào **PostgreSQL** và tiến hành query embedding từ **Qdrant (Vector DB)**.
 - **CI/CD & DevOps Pipeline**: Thiết lập chuẩn hóa với TypeScript, ESLint, Jest, GitHub Actions, cùng Docker Compose để chạy database cục bộ.
 
-## 🧩 Các thành phần trong tương lai (Future Components)
+## 🧩 Các thành phần (Modules) & Tiến độ
 
-### 1. 👤 User & Profile Module
-- Quản lý hồ sơ người dùng, sở thích, dị ứng, chế độ ăn (Dietary restrictions).
-- Hệ thống Authentication/Authorization.
+### 1. 👤 User & Profile Module (Đã dựng MVP)
+- **Hiện tại:** Quản lý hồ sơ cơ bản và sở thích người dùng.
+- **Tương lai:** Tích hợp xác thực (Auth - JWT/OAuth2), quản lý chế độ ăn (Dietary restrictions) chi tiết.
 
-### 2. 🍔 Restaurant & Menu Module
-- Quản lý danh sách nhà hàng, định vị địa lý (Geohashing, PostGIS).
-- Liên kết (Deep links) trực tiếp đến các nền tảng đặt đồ ăn (Grab, ShopeeFood, Baemin).
+### 2. 🍔 Restaurant & Menu Module (Đã dựng MVP)
+- **Hiện tại:** Quản lý danh sách nhà hàng cơ bản.
+- **Tương lai:** Tích hợp định vị địa lý (Geohashing/PostGIS), liên kết sâu (Deep links) tới GrabFood, ShopeeFood.
 
-### 3. 🧠 AI Recommendation & Context Engine
-- Triển khai mô hình Machine Learning thực tế để sinh vector embeddings cho món ăn và người dùng.
-- Gợi ý món theo ngữ cảnh (thời tiết, thời gian trong ngày, tâm trạng).
+### 3. 🧠 AI Recommendation & Context Engine (Đã dựng nền tảng Swipe)
+- **Hiện tại:** Mockup logic xử lý `Swipe Event` (Right/Left) chuẩn bị cho Vector DB.
+- **Tương lai:** Triển khai model sinh vector embedding, gợi ý theo ngữ cảnh (thời gian, thời tiết, tâm trạng).
 
-### 4. 👥 Group & Trip Order Module
-- Tạo nhóm đi ăn chung.
-- Bỏ phiếu (Voting) chọn quán hoặc ghép đơn (Group order).
+### 4. 👥 Group, Trip Order & Split Bill Module (Đã dựng MVP)
+- **Hiện tại:** Quản lý nhóm (thêm thành viên), logic tách hóa đơn (chia đều, chia theo món) xử lý in-memory hiệu năng cao.
+- **Tương lai:** Tích hợp WebSocket/Realtime để bỏ phiếu (Voting) chọn quán ăn chung theo nhóm.
 
-### 5. 📸 Social & Review Module
-- Cấu trúc "Food Feed" (tương tự TikTok/Instagram Reels) với video ngắn review đồ ăn.
-- Hệ thống xác thực Reviewer (Người dùng uy tín).
+### 5. 📸 Social & Review Module (Đã dựng MVP)
+- **Hiện tại:** Quản lý bài đăng dạng Feed cơ bản (liên kết tác giả).
+- **Tương lai:** Phân trang (Pagination) lượng dữ liệu lớn, lọc theo follower, Feed dạng video ngắn (Reels).
+
+## 🌍 Tương lai tổng thể & CI/CD
+- **Hệ thống Front-end:** Dự kiến sử dụng **Flutter** để build Mobile App đa nền tảng (iOS/Android), cung cấp trải nghiệm vuốt (Tinder-like) mượt mà.
+- **Data Pipeline:** Triển khai CI/CD pipeline tự động deploy lên Cloud (AWS/GCP), tích hợp pipeline train model AI (Offline training trên GPU) và cập nhật Vector Database định kỳ.
 
 ## 🛠 Tech Stack
 - **Backend**: Node.js, Express, TypeScript
