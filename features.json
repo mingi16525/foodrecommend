@@ -16,7 +16,13 @@
       "status": "DONE",
       "description": "Phát triển tính năng Swipe chọn món cá nhân",
       "scope": ["src/recommendation/", "src/api/", "src/index.ts", "tests/", "src/user/", "src/restaurant/", "src/social/", "src/group/"],
-      "definition_of_done": []
+    },
+    {
+      "name": "docs-overview-readme",
+      "status": "DONE",
+      "description": "Cập nhật README.md với hướng phát triển và tổng thể sản phẩm",
+      "scope": ["README.md"],
+      "definition_of_done": ["README.md được cập nhật đầy đủ"]
     }
   ]
 }
