@@ -1,30 +1,30 @@
 # Session Progress
 
-## Last Session Summary (Session 24 — 2026-08-03)
-- Đã thêm feature mới `frontend-tab1-social-feed` vào `features.json`.
-- Triển khai thành công giao diện "Social Feed" (Tab 1) tương tự TikTok/Reels sử dụng CSS Scroll Snapping (cuộn thẻ mượt mà 100vh).
-- Tạo `feedStore.ts` bằng `zustand` quản lý danh sách FeedPost, trạng thái Like (thả tim) và Save (lưu bài) của các post sử dụng Mock Data tạm thời.
-- Thiết kế lớp Overlay gradients để làm nổi bật thông tin (Tên Reviewer, Caption, Tên quán ăn) trên nền media.
-- Tích hợp hiệu ứng trái tim bay (Heart micro-animation) ngay giữa màn hình khi người dùng thực hiện hành động double-tap.
+## Last Session Summary (Session 25 — 2026-08-03)
+- Đã thêm feature mới `frontend-tab2-ai-swipe` vào `features.json`.
+- Cài đặt thành công thư viện `framer-motion` để xử lý các animation vật lý (drag, spring) phức tạp cho ứng dụng web.
+- Triển khai thành công giao diện "AI Swipe" (Tab 2) ở route `/swipe` với hiệu ứng quẹt thẻ Tinder-style mượt mà.
+- Tạo `swipeStore.ts` bằng `zustand` quản lý danh sách thẻ, trạng thái vuốt (Thích/Bỏ qua) và trạng thái "hết thẻ" (Empty State).
+- Tích hợp lớp Overlay hiển thị nhãn "LIKE" (Xanh) và "NOPE" (Đỏ) với độ mờ (opacity) thay đổi tuyến tính dựa trên quãng đường vuốt thông qua `useTransform` của framer-motion.
+- Tích hợp các nút điều khiển thủ công (Manual control buttons) bên dưới để hỗ trợ người dùng bấm thay vì vuốt.
 
 ## Current State
-- Feature: frontend-tab1-social-feed (status: DONE, 100% complete)
+- Feature: frontend-tab2-ai-swipe (status: DONE, 100% complete)
 - Branch: main
 - Tests: 24 passing / 24 total (Backend)
 - Frontend build (TypeScript/Vite): OK.
 
 ## What Next Session Should Do First
-1. Tiến hành thiết kế trang cụ thể tiếp theo: "Tab 2: AI SWIPE" (Quẹt thẻ Tinder-style) ở route `/swipe`.
-2. Tạo component Swipe Card hỗ trợ vuốt trái/phải thông qua CSS Transitions hoặc framer-motion.
-3. Liên kết với store mock data để thực hiện logic vuốt (lưu vào danh sách thích/không thích).
+1. Tiến hành thiết kế trang "Tab 3: EXPLORE MAP" (Khám phá bản đồ) hoặc "Tab 4: GROUP & SPLIT BILL".
+2. Tích hợp UI cho Map (sử dụng thư viện hiển thị bản đồ ảo hoặc placeholder tĩnh trước) với giao diện danh sách quán ăn theo phong cách bottom-sheet.
+3. Liên kết với store mock data để thực hiện logic hiển thị danh sách quán ăn gần đây.
 
 ## Known Issues / Blockers
-- Logic swipe (vuốt thẻ) rất nhạy cảm về cảm ứng trên web mobile, cân nhắc việc sử dụng thư viện chuyên biệt như `react-tinder-card` để tiết kiệm thời gian và tăng độ mượt, hoặc tự code bằng `onTouchStart/Move/End`.
+- Component Map (Tab 3) sẽ yêu cầu key của Google Maps API nếu sử dụng bản đồ thật. Để tiến triển nhanh, nên sử dụng thư viện leaflet/react-leaflet miễn phí hoặc placeholder UI map trước.
 
 ## Observations (Not Fixed — Outside Current Scope)
 - Tính năng chia sẻ (Social Feed) hiện tại lấy toàn bộ bài mới nhất, cần phân trang (pagination) và lọc theo follower trong tương lai.
 - Tính năng nhóm chưa tích hợp websocket/realtime cho việc tạo bill/bỏ phiếu (Voting) chọn quán ăn chung.
 
 ## Architectural Decisions This Session
-- Lựa chọn thuần CSS Scroll Snapping (`scroll-snap-type: y mandatory`) để mô phỏng cơ chế cuộn của TikTok thay vì dùng thư viện js bên thứ 3 nhằm đạt được hiệu suất (performance) tối đa và nguyên bản với trình duyệt.
-- Sử dụng Hook tùy chỉnh `useRef` và `setTimeout` để xác định sự kiện Double-Tap thuần React mà không cần gói hỗ trợ Gestures cồng kềnh.
+- Lựa chọn `framer-motion` làm thư viện hoạt ảnh cốt lõi cho React vì khả năng tính toán vật lý kéo/thả siêu việt, dễ dàng thực hiện hiệu ứng Tinder-swipe mà không cần viết các event listeners thủ công (onTouchStart/Move/End) phức tạp dễ gây lỗi hiệu năng.

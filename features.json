@@ -237,6 +237,25 @@
         "Tích hợp zustand cung cấp dữ liệu tĩnh (Mock state) cho feed",
         "Hiệu ứng tim bay lên khi double-tap"
       ]
+    },
+    {
+      "name": "frontend-tab2-ai-swipe",
+      "status": "DONE",
+      "description": "Phát triển Tab 2 - AI Swipe (Quẹt thẻ Tinder-style)",
+      "scope": [
+        "frontend/package.json",
+        "frontend/src/pages/AiSwipe.tsx",
+        "frontend/src/pages/AiSwipe.css",
+        "frontend/src/App.tsx",
+        "frontend/src/store/swipeStore.ts"
+      ],
+      "definition_of_done": [
+        "Cài đặt framer-motion cho animations",
+        "Tạo component Swipe Card vuốt trái (bỏ qua), vuốt phải (thích)",
+        "Giao diện hiển thị Ảnh to, Tag AI, Giá tiền",
+        "Tích hợp zustand store mock data cho danh sách thẻ",
+        "Cập nhật UI khi vuốt hết thẻ"
+      ]
     }
   ]
 }

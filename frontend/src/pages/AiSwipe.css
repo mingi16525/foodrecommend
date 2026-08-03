@@ -1,0 +1,240 @@
+.swipe-container {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-color);
+  overflow: hidden;
+  position: relative;
+}
+
+.swipe-header {
+  padding: 40px 20px 20px;
+  text-align: center;
+  z-index: 10;
+}
+
+.swipe-header h1 {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.swipe-header p {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.cards-stack {
+  position: relative;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 0 20px;
+  margin-top: -20px;
+}
+
+.swipe-card {
+  position: absolute;
+  width: calc(100% - 40px);
+  max-width: 380px;
+  height: 60vh;
+  min-height: 450px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  background-color: #1e1e1e;
+  will-change: transform;
+}
+
+.active-card {
+  z-index: 5;
+}
+
+.bg-card {
+  z-index: 1;
+}
+
+.card-media {
+  width: 100%;
+  height: 70%;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.action-stamp {
+  position: absolute;
+  top: 40px;
+  padding: 8px 16px;
+  border: 4px solid;
+  border-radius: 8px;
+  font-size: 32px;
+  font-weight: 800;
+  text-transform: uppercase;
+  transform: rotate(-15deg);
+}
+
+.stamp-like {
+  right: 30px;
+  color: #4CAF50;
+  border-color: #4CAF50;
+  transform: rotate(15deg);
+}
+
+.stamp-nope {
+  left: 30px;
+  color: #F44336;
+  border-color: #F44336;
+}
+
+.card-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 35%;
+  padding: 20px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.card-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.card-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent-secondary-start);
+  background: rgba(255,195,113, 0.1);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.card-meta {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.card-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.tag {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.swipe-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  padding-bottom: calc(var(--nav-height) + 30px);
+  z-index: 10;
+}
+
+.control-btn {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+  background-color: var(--bg-color);
+  border: 1px solid var(--glass-border);
+}
+
+.control-btn:active {
+  transform: scale(0.9);
+}
+
+.control-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nope-btn {
+  color: #F44336;
+}
+
+.like-btn {
+  color: #4CAF50;
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+  border-radius: var(--radius-lg);
+}
+
+.empty-state h2 {
+  font-size: 22px;
+  margin-bottom: 10px;
+  color: var(--text-primary);
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.reset-btn {
+  background: linear-gradient(135deg, var(--accent-secondary-start), var(--accent-secondary-end));
+  border: none;
+  padding: 12px 24px;
+  border-radius: 24px;
+  color: #121212;
+  font-weight: 700;
+  cursor: pointer;
+}
