@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { useMapStore, MapLocation } from '../store/mapStore';
+import { useMapStore, type MapLocation } from '../store/mapStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, MapPin, Star, Navigation, X } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
@@ -113,7 +113,7 @@ const ExploreMap: React.FC = () => {
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               drag="y"
               dragConstraints={{ top: 0, bottom: 0 }}
-              onDragEnd={(e, info) => {
+              onDragEnd={(_, info) => {
                 if (info.offset.y > 100) setSheetOpen(false);
               }}
             >

@@ -1,0 +1,201 @@
+.group-page-container {
+  height: 100vh;
+  width: 100%;
+  background-color: var(--bg-color);
+  overflow-y: auto;
+  padding-bottom: calc(var(--nav-height) + 20px);
+}
+
+.group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px 20px 20px;
+}
+
+.group-header h1 {
+  font-size: 28px;
+  margin: 0;
+}
+
+.icon-btn-glass {
+  width: 44px;
+  height: 44px;
+  border-radius: 22px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Segmented Control */
+.segmented-control {
+  display: flex;
+  background: rgba(255,255,255,0.05);
+  margin: 0 20px 20px;
+  border-radius: 20px;
+  padding: 4px;
+}
+
+.segment {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 16px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.segment.active {
+  background: var(--glass-bg);
+  color: var(--text-primary);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  border: 1px solid var(--glass-border);
+}
+
+/* Content Area */
+.group-content {
+  padding: 0 20px;
+}
+
+.list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Group Card */
+.group-card {
+  padding: 20px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.group-card:active {
+  transform: scale(0.98);
+}
+
+.group-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.group-card-header h3 {
+  margin: 0;
+  font-size: 20px;
+  color: var(--text-primary);
+}
+
+.group-card-members {
+  display: flex;
+  align-items: center;
+}
+
+.member-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  border: 2px solid #1a1a1a;
+  margin-left: -10px;
+}
+
+.member-avatar:first-child {
+  margin-left: 0;
+}
+
+.add-member-btn {
+  background: rgba(255,255,255,0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-secondary);
+  border-color: #1a1a1a;
+}
+
+.pending-badge {
+  display: inline-block;
+  background: rgba(255, 99, 71, 0.2);
+  color: var(--accent-primary-start);
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 16px;
+}
+
+/* Bill Card */
+.bill-card {
+  padding: 20px;
+}
+
+.bill-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.bill-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+}
+
+.bill-group-name {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.bill-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+  margin: 16px 0;
+}
+
+.bill-amounts {
+  display: flex;
+  justify-content: space-between;
+}
+
+.amount-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.amount-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.amount-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.highlight-col {
+  align-items: flex-end;
+}
+
+.amount-value.highlight {
+  font-size: 20px;
+  background: linear-gradient(135deg, var(--accent-primary-start), var(--accent-primary-end));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mt-16 {
+  margin-top: 16px;
+}
+
+.small-btn {
+  padding: 12px;
+}

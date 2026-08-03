@@ -1,12 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useFeedStore, FeedPost } from '../store/feedStore';
+import { useFeedStore, type FeedPost } from '../store/feedStore';
 import { Heart, MessageCircle, Share2, Bookmark, MapPin } from 'lucide-react';
 import './SocialFeed.css';
 
 const FeedItem: React.FC<{ post: FeedPost }> = ({ post }) => {
   const { toggleLike, toggleSave } = useFeedStore();
   const [showHeartAnim, setShowHeartAnim] = useState(false);
-  const clickTimeout = useRef<NodeJS.Timeout | null>(null);
+  const clickTimeout = useRef<number | null>(null);
 
   const handleInteraction = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();

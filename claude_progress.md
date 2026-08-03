@@ -1,21 +1,22 @@
 # Session Progress
 
-## Last Session Summary (Session 26 — 2026-08-03)
-- Đã thêm feature mới `frontend-tab3-explore-map` vào `features.json`.
-- Cài đặt thành công thư viện `leaflet`, `react-leaflet` để hiển thị bản đồ ảo (OpenStreetMap) nhằm tiết kiệm chi phí/key của Google Maps trong giai đoạn MVP.
-- Triển khai thành công giao diện "Explore Map" (Tab 3) ở route `/explore` với bản đồ tương tác và custom markers.
-- Tạo một "Bottom Sheet" vuốt mượt mà sử dụng `framer-motion` (spring physics), có khả năng chuyển đổi giữa danh sách "Quán ăn gần đây (Trending Nearby)" và "Chi tiết Quán ăn" khi người dùng nhấn vào Marker trên bản đồ.
-- Tạo `mapStore.ts` bằng `zustand` quản lý danh sách địa điểm (mock data) và trạng thái địa điểm đang được chọn, tích hợp tính năng tự động FlyTo (zoom mượt) đến địa điểm được chọn.
+## Last Session Summary (Session 27 — 2026-08-03)
+- Đã thêm feature mới `frontend-tab4-group-split` vào `features.json`.
+- Triển khai thành công giao diện "Group & Split Bill" (Tab 4) ở route `/group` với phong cách thiết kế Glassmorphism tuyệt đẹp.
+- Xây dựng layout với Segmented Control mượt mà cho phép chuyển đổi giữa "Groups" (Danh sách nhóm) và "Bills" (Hóa đơn cần chia).
+- Sử dụng `framer-motion` cho các hiệu ứng chuyển đổi tab mượt mà.
+- Tạo `groupStore.ts` bằng `zustand` quản lý danh sách các FoodGroup và các hóa đơn tách tiền (SplitBill) với mock data phong phú.
+- Trình bày thông tin chia tiền rõ ràng bằng UI thẻ (Bill Card), với các highlight cho số tiền cá nhân cần trả (Your Share) và trạng thái thanh toán.
 
 ## Current State
-- Feature: frontend-tab3-explore-map (status: DONE, 100% complete)
+- Feature: frontend-tab4-group-split (status: DONE, 100% complete)
 - Branch: main
 - Tests: 24 passing / 24 total (Backend)
 - Frontend build (TypeScript/Vite): OK.
 
 ## What Next Session Should Do First
-1. Tiến hành thiết kế trang "Tab 4: GROUP & SPLIT BILL" (Nhóm & Chia tiền) hoặc "Tab 5: USER PROFILE" (Cá nhân hóa).
-2. Tích hợp UI cho Group (Tạo nhóm mới, Thêm thành viên, Danh sách Bill) với phong cách thiết kế Glassmorphism.
+1. Tiến hành thiết kế trang "Tab 5: USER PROFILE" (Cá nhân hóa).
+2. Tích hợp UI cho Profile (Avatar, Sở thích ăn uống, Lịch sử nhà hàng) với phong cách thiết kế Glassmorphism.
 
 ## Known Issues / Blockers
 - None at the moment. UI components đang được tái sử dụng rất tốt qua các biến CSS toàn cục.
@@ -25,5 +26,5 @@
 - Tính năng nhóm chưa tích hợp websocket/realtime cho việc tạo bill/bỏ phiếu (Voting) chọn quán ăn chung.
 
 ## Architectural Decisions This Session
-- Lựa chọn OpenStreetMap (OSM) kết hợp tile CARTO (Dark theme) để bản đồ phù hợp hoàn hảo với Dark Mode Premium Aesthetic của ứng dụng mà không cần tốn phí thiết lập API Google Maps.
-- Kết hợp Leaflet cho bản đồ và Framer-motion cho Bottom Sheet mang lại trải nghiệm Native App (Native-like) xuất sắc trên nền Web.
+- Giao diện chia tiền phức tạp được đơn giản hóa bằng mô hình Segmented Control thay vì dùng quá nhiều nested routes.
+- Component Card được thiết kế tái sử dụng cao, nhấn mạnh vào các con số (total bill, my share) bằng typography lớn và gradient.
