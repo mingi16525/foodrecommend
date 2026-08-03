@@ -206,6 +206,19 @@
         "Cấu hình cơ bản (package.json)",
         "Đảm bảo dev server có thể chạy độc lập"
       ]
+    },
+    {
+      "name": "frontend-setup-and-layout",
+      "status": "DONE",
+      "description": "Cài đặt thư viện frontend (Tailwind, Router, Zustand) và tạo layout cơ bản (Bottom Navigation) theo thiết kế UI.txt",
+      "scope": [
+        "frontend/"
+      ],
+      "definition_of_done": [
+        "Cài đặt thành công tailwindcss, react-router-dom, zustand",
+        "Tạo cấu trúc thư mục frontend/src cơ bản",
+        "Tạo UI Base Layout với Bottom Navigation đáp ứng thiết kế Premium/Glassmorphism"
+      ]
     }
   ]
 }
