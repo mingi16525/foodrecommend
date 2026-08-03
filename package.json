@@ -1,0 +1,44 @@
+{
+  "name": "foodrecommend",
+  "version": "1.0.0",
+  "description": "An AI food division Platform to help Users decide where, what to eat, how to order.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest",
+    "build": "tsc",
+    "lint": "eslint src tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mingi16525/foodrecommend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/mingi16525/foodrecommend/issues"
+  },
+  "homepage": "https://github.com/mingi16525/foodrecommend#readme",
+  "dependencies": {
+    "@qdrant/js-client-rest": "^1.18.0",
+    "express": "^5.2.1",
+    "pg": "^8.22.0",
+    "redis": "^6.2.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^26.1.2",
+    "@types/pg": "^8.20.3",
+    "eslint": "^10.8.0",
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.12",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.65.0"
+  }
+}
