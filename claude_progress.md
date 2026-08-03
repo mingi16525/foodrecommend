@@ -1,27 +1,28 @@
 # Session Progress
 
-## Last Session Summary (Session 4 — 2026-08-03)
-- Đã thêm `package.json`, `tsconfig.json`, `eslint.config.mjs`, `jest.config.js` và `.github/` vào scope.
-- Đã khởi tạo dự án NPM và cài đặt các dependencies (`express`, `pg`, `redis`, `@qdrant/js-client-rest`) cùng các devDependencies.
-- Đã cấu hình Typescript (`tsc`), Jest (`test`), và ESLint (`lint`).
-- Đã tạo Github Actions CI workflow tại `.github/workflows/ci.yml`.
-- Các bước kiểm tra (`npm test`, `npx tsc --noEmit`, `npm run lint`) hiện tại đã passing thành công (đạt Verification Protocol).
+## Last Session Summary (Session 5 — 2026-08-03)
+- Bắt đầu phát triển feature: `tab-3-swipe-ai-rec`.
+- Đã thiết lập cấu trúc API route cơ bản cho Recommendation engine tại `src/api/recommendation.routes.ts`.
+- Đã tạo class `RecommendationEngine` mô phỏng logic recommendation và xử lý event swipe tại `src/recommendation/engine.ts`.
+- Chạy `npm test` thành công (không có test mới được thêm do thư mục tests/ nằm ngoài scope của tính năng hiện tại).
+- Sửa các lỗi lint về unused variables và đảm bảo 100% verification protocol passing.
 
 ## Current State
-- Feature: core-architecture-db-setup (status: DONE, 100% complete)
+- Feature: tab-3-swipe-ai-rec (status: IN_PROGRESS, ~30% complete)
 - Branch: main
 - Tests: 1 passing / 1 total
 
 ## What Next Session Should Do First
-1. Bắt đầu xử lý feature tiếp theo: `tab-3-swipe-ai-rec`.
-2. Thiết lập cấu trúc các API route cơ bản cho Recommendation engine trong thư mục `src/recommendation/` và `src/api/`.
+1. Mount `recommendationRouter` vào `src/index.ts` (cần thêm `src/index.ts` vào scope trước khi thực hiện).
+2. Xây dựng logic kết nối RecommendationEngine với PostgreSQL / Vector DB.
+3. Viết Unit Tests cho `RecommendationEngine` (cần thêm `tests/` vào scope của feature này).
 
 ## Known Issues / Blockers
-- None.
+- Scope hiện tại `["src/recommendation/", "src/api/"]` không cho phép sửa file `src/index.ts`, do đó API route chưa được mount vào app chính.
+- Tương tự, không thể viết test mới vì thư mục `tests/` không nằm trong scope.
 
 ## Observations (Not Fixed — Outside Current Scope)
-- Cấu trúc cơ sở dữ liệu có thể cần thay đổi khi thực sự triển khai AI model hoặc PostGIS.
+- Tính năng AI rec hiện tại chỉ trả về dữ liệu mẫu (mock data), cần kết nối DB thực tế.
 
 ## Architectural Decisions This Session
-- Downgrade typescript xuống phiên bản 5.6.3 để tương thích với `ts-jest`.
-- Sử dụng eslint.config.mjs (flat config) theo khuyến nghị mới của eslint v9.
+- Routes và Engine được tách biệt: API Route chỉ nhận request HTTP, còn Engine xử lý logic AI và business logic, giúp code testable.

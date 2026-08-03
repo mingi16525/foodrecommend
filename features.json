@@ -13,7 +13,7 @@
     },
     {
       "name": "tab-3-swipe-ai-rec",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "description": "Phát triển tính năng Swipe chọn món cá nhân",
       "scope": ["src/recommendation/", "src/api/"],
       "definition_of_done": []
