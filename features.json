@@ -155,6 +155,18 @@
         "File UI.txt được tạo với đầy đủ yêu cầu cho 5 tabs chính",
         "Yêu cầu bao gồm chi tiết thẩm mỹ (màu sắc, glassmorphism, animations)"
       ]
+    },
+    {
+      "name": "docker-db-container",
+      "status": "DONE",
+      "description": "Cấu hình và chạy thử container Database + script seed",
+      "scope": [
+        "docker-compose.yml"
+      ],
+      "definition_of_done": [
+        "docker-compose up chạy database thành công",
+        "Có thể import seed.sql vào container để test API"
+      ]
     }
   ]
 }

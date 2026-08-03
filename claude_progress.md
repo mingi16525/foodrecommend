@@ -1,26 +1,26 @@
 # Session Progress
 
-## Last Session Summary (Session 16 — 2026-08-03)
-- Đã thêm feature mới `frontend-ui-prompt` vào `features.json`.
-- Tạo file `UI.txt` cung cấp bản tóm tắt cực kỳ chi tiết về kiến trúc giao diện, phong cách thẩm mỹ (Aesthetics) theo xu hướng hiện đại (Glassmorphism, Dark mode, Vibrant gradients).
-- Định hướng chi tiết giao diện và hoạt ảnh (micro-animations) cho 5 tab cốt lõi: Social Feed, AI Swipe, Restaurants Map, Group/Split Bill, User Profile.
+## Last Session Summary (Session 17 — 2026-08-03)
+- Đã thêm feature mới `docker-db-container` vào `features.json`.
+- Cập nhật `docker-compose.yml` để mount tự động cả `schema.sql` (01-schema.sql) và `seed.sql` (02-seed.sql) vào thư mục init của container PostgreSQL, giúp database sẵn sàng với dữ liệu mẫu ngay khi khởi động.
+- Cập nhật các script thao tác db trong `package.json` (`db:init`, `seed`) sử dụng đúng environment variables cấu hình (POSTGRES_USER, POSTGRES_PASSWORD) đồng bộ với Docker Compose.
 - Các bước kiểm tra dự án (tests, linter, tsc) đều pass 100%.
 
 ## Current State
-- Feature: frontend-ui-prompt (status: DONE, 100% complete)
+- Feature: docker-db-container (status: DONE, 100% complete)
 - Branch: main
 - Tests: 24 passing / 24 total
 
 ## What Next Session Should Do First
-1. Chọn feature tiếp theo trong `features.json` hoặc khởi tạo Frontend Repository với Flutter dựa trên prompt file `UI.txt`.
-2. Có thể cấu hình Docker và thực thi chạy thử container Database + script seed để kiểm tra API bằng Postman/Insomnia trước khi tích hợp Frontend.
+1. Chọn feature tiếp theo trong `features.json` hoặc bắt đầu tích hợp API Backend thực tế (kết nối pool db thay vì chạy try-catch test fail fallback).
+2. Chạy thử nghiệm `docker-compose up -d` và test API trực tiếp bằng tool gọi REST.
 
 ## Known Issues / Blockers
-- Môi trường CI/test hiện tại vẫn phụ thuộc vào catch-block để trả về mock data vì chưa chạy psql command thực tế trong quá trình `npm test`.
+- Môi trường CI/test hiện tại vẫn phụ thuộc vào catch-block để trả về mock data vì chưa chạy psql command thực tế trong quá trình `npm test`. (Cần cấu hình `jest` setup script nạp DB hoặc mock pg-pool chuẩn).
 
 ## Observations (Not Fixed — Outside Current Scope)
 - Tính năng chia sẻ (Social Feed) hiện tại lấy toàn bộ bài mới nhất, cần phân trang (pagination) và lọc theo follower trong tương lai.
 - Tính năng nhóm chưa tích hợp websocket/realtime cho việc tạo bill/bỏ phiếu (Voting) chọn quán ăn chung.
 
 ## Architectural Decisions This Session
-- File `UI.txt` đóng vai trò là "chất xúc tác" để trao đổi với Designer (hoặc AI tạo mã UI), bám chặt vào triết lý thẩm mỹ cao cấp (WOW factor) theo đúng yêu cầu dự án.
+- Cấu hình init script của Postgres tự động mount thứ tự `01-schema.sql` rồi đến `02-seed.sql` để đảm bảo luồng khởi tạo DB container là 1 step duy nhất (zero-config cho developer mới).
