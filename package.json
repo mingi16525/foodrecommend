@@ -9,7 +9,9 @@
   "scripts": {
     "test": "jest",
     "build": "tsc",
-    "lint": "eslint src tests"
+    "lint": "eslint src tests",
+    "db:init": "psql -h localhost -U postgres -d food_recommend_db -f schema.sql",
+    "seed": "psql -h localhost -U postgres -d food_recommend_db -f seed.sql"
   },
   "repository": {
     "type": "git",

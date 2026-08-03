@@ -34,7 +34,7 @@
         "src/restaurant/",
         "src/social/",
         "src/group/"
-      ],
+      ]
     },
     {
       "name": "docs-overview-readme",
@@ -129,6 +129,19 @@
       "definition_of_done": [
         "README.md được cập nhật đầy đủ các module: User, Recommendation, Restaurant, Group (Split Bill), Social",
         "README.md đề cập đến hướng phát triển tương lai"
+      ]
+    },
+    {
+      "name": "module-db-seeding",
+      "status": "DONE",
+      "description": "Tạo seed data cho PostgreSQL để phục vụ test API thực tế",
+      "scope": [
+        "seed.sql",
+        "package.json"
+      ],
+      "definition_of_done": [
+        "File seed.sql được tạo với dữ liệu mẫu (users, restaurants, posts, v.v.)",
+        "Thêm lệnh npm run seed vào package.json để dễ dàng chạy script"
       ]
     }
   ]
