@@ -389,6 +389,23 @@
         "Gọi API lưu lại action (like/skip) khi user quẹt thẻ",
         "Xử lý state isLoading và error"
       ]
+    },
+    {
+      "name": "android-app-creation",
+      "status": "DONE",
+      "description": "Tạo ứng dụng android bằng Capacitor để test sản phẩm",
+      "scope": [
+        "frontend/package.json",
+        "frontend/src/api/client.ts",
+        "frontend/capacitor.config.ts",
+        "frontend/android/"
+      ],
+      "definition_of_done": [
+        "Cài đặt Capacitor core và CLI",
+        "Cấu hình client.ts để dùng 10.0.2.2 khi chạy trên giả lập Android",
+        "Build frontend web app",
+        "Tạo Capacitor Android platform và đồng bộ code"
+      ]
     }
   ]
 }

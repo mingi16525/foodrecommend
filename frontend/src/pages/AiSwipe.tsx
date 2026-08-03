@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
-import { useSwipeStore, SwipeCardData } from '../store/swipeStore';
+import { useSwipeStore, type SwipeCardData } from '../store/swipeStore';
 import { X, Heart, Star, MapPin } from 'lucide-react';
 import './AiSwipe.css';
 
@@ -19,7 +19,7 @@ const SwipeCard: React.FC<{
   const likeOpacity = useTransform(x, [0, 100], [0, 1]);
   const nopeOpacity = useTransform(x, [0, -100], [0, 1]);
 
-  const handleDragEnd = (event: any, info: any) => {
+  const handleDragEnd = (_event: any, info: any) => {
     if (info.offset.x > 100) {
       setExitX('100vw');
       onSwipe(card, 'right');
