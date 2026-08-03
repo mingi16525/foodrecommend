@@ -194,6 +194,19 @@
         "Khởi động được server Node.js trên localhost:3000",
         "Dùng curl gọi vào API lấy dữ liệu thực trả về đúng JSON đã seed"
       ]
+    },
+    {
+      "name": "ci-cd-github-actions",
+      "status": "DONE",
+      "description": "Cấu hình CI/CD Pipelines cơ bản với Github Actions cho Node.js backend",
+      "scope": [
+        ".github/workflows/main.yml",
+        "package.json"
+      ],
+      "definition_of_done": [
+        "Tạo file workflow main.yml chạy npm test và npm run lint",
+        "Pipeline tự động chạy khi có push hoặc pull_request vào main"
+      ]
     }
   ]
 }
