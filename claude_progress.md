@@ -1,26 +1,30 @@
 # Session Progress
 
-## Last Session Summary (Session 2 — 2026-07-31)
-- Đã hoàn thành tạo file Kế hoạch Phát triển Dự án chi tiết (DevelopmentPlan.md).
-- Kế hoạch chia dự án thành 6 modules chính và 5 phase (sprint) cụ thể cho MVP.
-- Không có test (Chỉ có thay đổi về tài liệu).
+## Last Session Summary (Session 3 — 2026-08-03)
+- Đã tạo `docker-compose.yml` để thiết lập PostgreSQL, Redis, Qdrant.
+- Đã tạo `schema.sql` cho cấu trúc cơ sở dữ liệu cơ bản.
+- Đã thiết lập cấu trúc thư mục source code backend `src/` và `tests/`.
+- Đã skip việc setup Github Actions/Gitlab CI vì nằm ngoài scope của features.json.
 
 ## Current State
-- Feature: core-architecture-db-setup (status: IN_PROGRESS, ~15% complete)
+- Feature: core-architecture-db-setup (status: IN_PROGRESS, ~50% complete)
 - Branch: main
-- Tests: 0 passing / 0 total
+- Tests: Failed (Execution policy error trên Windows khi chạy npm test; package.json chưa được thêm vào scope nên chưa được tạo)
 
 ## What Next Session Should Do First
-1. Setup Github Actions/Gitlab CI cho repository theo Phase 1.
-2. Tạo docker-compose.yml để thiết lập PostgreSQL, Redis, Qdrant/Elasticsearch.
-3. Thiết lập cấu trúc thư mục source code backend.
+1. Thêm package.json, tsconfig.json vào scope trong features.json và thiết lập chúng.
+2. Thêm Github Actions/Gitlab CI vào scope nếu muốn thiết lập CI/CD.
+3. Sửa lỗi PSSecurityException để có thể chạy được npm test.
+4. Cài đặt các thư viện cần thiết (express, pg, redis, v.v.)
 
 ## Known Issues / Blockers
-- Chưa có thư mục source code (src) và cấu trúc ứng dụng.
+- Thiếu package.json để chạy npm test.
+- Lỗi execution policy (UnauthorizedAccess) khi chạy npm test trên powershell.
+- Các file CI/CD và cấu hình TypeScript bị hạn chế bởi scope rule.
 
 ## Observations (Not Fixed — Outside Current Scope)
-- Các tính năng khác ngoài DB setup hiện chưa cần quan tâm.
+- Github Actions/Gitlab CI chưa được thiết lập do ngoài scope.
+- Chưa có package.json và các thư viện cần thiết.
 
 ## Architectural Decisions This Session
-- Quyết định sử dụng PostgreSQL làm Main DB, Redis làm Cache/Feature Store, Qdrant làm Vector DB.
-- Microservices architecture cho Backend.
+- Sử dụng postgres:15-alpine và tạm thời dùng JSONB cho trường location, embedding trong schema.sql để khởi tạo nhanh cho MVP.
