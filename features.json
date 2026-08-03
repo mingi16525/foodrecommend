@@ -256,6 +256,24 @@
         "Tích hợp zustand store mock data cho danh sách thẻ",
         "Cập nhật UI khi vuốt hết thẻ"
       ]
+    },
+    {
+      "name": "frontend-tab3-explore-map",
+      "status": "DONE",
+      "description": "Phát triển Tab 3 - Explore Map với bản đồ tĩnh/Leaflet và Bottom Sheet",
+      "scope": [
+        "frontend/package.json",
+        "frontend/src/pages/ExploreMap.tsx",
+        "frontend/src/pages/ExploreMap.css",
+        "frontend/src/App.tsx",
+        "frontend/src/store/mapStore.ts"
+      ],
+      "definition_of_done": [
+        "Cài đặt leaflet và react-leaflet",
+        "Hiển thị bản đồ với các marker (Mock data)",
+        "Tạo Bottom Sheet hiển thị danh sách quán ăn gần đây",
+        "Kết nối zustand store mapStore.ts"
+      ]
     }
   ]
 }
