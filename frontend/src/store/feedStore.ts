@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import apiClient from '../api/client';
 
 export interface FeedPost {
   id: string;
@@ -17,58 +18,47 @@ export interface FeedPost {
 
 interface FeedState {
   posts: FeedPost[];
+  isLoading: boolean;
+  error: string | null;
+  fetchFeed: () => Promise<void>;
   toggleLike: (id: string) => void;
   toggleSave: (id: string) => void;
 }
 
-// Mock Data
-const MOCK_POSTS: FeedPost[] = [
-  {
-    id: '1',
-    videoUrl: null,
-    imageUrl: 'https://images.unsplash.com/photo-1544025162-8356fd10519f?auto=format&fit=crop&w=600&q=80',
-    reviewerName: '@alice_nguyen',
-    avatarUrl: 'https://i.pravatar.cc/150?u=alice',
-    caption: 'Best spicy noodles in town! The broth is so rich and flavorful. 🔥🍜',
-    restaurantName: 'Spicy Noodle Haven',
-    likes: 1245,
-    comments: 89,
-    shares: 12,
-    isLikedByMe: false,
-    isSaved: false
-  },
-  {
-    id: '2',
-    videoUrl: null,
-    imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80',
-    reviewerName: '@burger_king_fan',
-    avatarUrl: 'https://i.pravatar.cc/150?u=burger',
-    caption: 'Double cheese smash burger, simply out of this world! 🍔✨',
-    restaurantName: 'Smash Brothers',
-    likes: 856,
-    comments: 42,
-    shares: 5,
-    isLikedByMe: true,
-    isSaved: true
-  },
-  {
-    id: '3',
-    videoUrl: null,
-    imageUrl: 'https://images.unsplash.com/photo-1495474472201-3ce3ed4224b2?auto=format&fit=crop&w=600&q=80',
-    reviewerName: '@coffee_lover',
-    avatarUrl: 'https://i.pravatar.cc/150?u=coffee',
-    caption: 'Perfect flat white to start the morning right. ☕',
-    restaurantName: 'Morning Brews',
-    likes: 2341,
-    comments: 112,
-    shares: 34,
-    isLikedByMe: false,
-    isSaved: false
-  }
-];
-
 export const useFeedStore = create<FeedState>((set) => ({
-  posts: MOCK_POSTS,
+  posts: [],
+  isLoading: false,
+  error: null,
+  
+  fetchFeed: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await apiClient.get('/social/feed');
+      const backendPosts = response.data.data;
+      
+      const mappedPosts: FeedPost[] = backendPosts.map((p: any) => ({
+        id: p.id,
+        videoUrl: p.video_url || null,
+        // Mocking some missing fields for UI purpose if not provided by backend
+        imageUrl: p.video_url ? null : 'https://images.unsplash.com/photo-1544025162-8356fd10519f?auto=format&fit=crop&w=600&q=80',
+        reviewerName: `@${(p.author_name || 'user').replace(/\\s+/g, '').toLowerCase()}`,
+        avatarUrl: `https://i.pravatar.cc/150?u=${p.user_id}`,
+        caption: p.content || 'No caption',
+        restaurantName: 'Trending Restaurant', // Not in posts table right now
+        likes: Math.floor(Math.random() * 1000),
+        comments: Math.floor(Math.random() * 100),
+        shares: Math.floor(Math.random() * 50),
+        isLikedByMe: false,
+        isSaved: false
+      }));
+      
+      set({ posts: mappedPosts, isLoading: false });
+    } catch (err: any) {
+      console.error('Failed to fetch feed:', err);
+      set({ error: err.message || 'Failed to fetch', isLoading: false });
+    }
+  },
+  
   toggleLike: (id) =>
     set((state) => ({
       posts: state.posts.map((post) => {
@@ -83,6 +73,7 @@ export const useFeedStore = create<FeedState>((set) => ({
         return post;
       })
     })),
+    
   toggleSave: (id) =>
     set((state) => ({
       posts: state.posts.map((post) =>

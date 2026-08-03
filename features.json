@@ -325,6 +325,20 @@
         "Kết nối profileStore.ts với backend lấy thông tin user thực",
         "Tab 5 hiển thị dữ liệu từ Database thay vì mock"
       ]
+    },
+    {
+      "name": "frontend-integration-social-feed",
+      "status": "DONE",
+      "description": "Tích hợp Backend API vào Social Feed (Tab 1)",
+      "scope": [
+        "frontend/src/store/feedStore.ts",
+        "frontend/src/pages/SocialFeed.tsx"
+      ],
+      "definition_of_done": [
+        "Kết nối feedStore.ts với backend lấy danh sách post từ /api/social/feed",
+        "Tab 1 hiển thị dữ liệu bài đăng từ Database thay vì mock",
+        "Xử lý state isLoading và error"
+      ]
     }
   ]
 }

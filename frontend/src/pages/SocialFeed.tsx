@@ -94,15 +94,31 @@ const FeedItem: React.FC<{ post: FeedPost }> = ({ post }) => {
 };
 
 const SocialFeed: React.FC = () => {
-  const posts = useFeedStore((state) => state.posts);
+  const { posts, fetchFeed, isLoading, error } = useFeedStore();
   
   // Hide global scrollbar logic when in feed
   useEffect(() => {
     document.body.style.overflow = 'hidden';
+    
+    // Fetch live feed data
+    fetchFeed();
+    
     return () => {
       document.body.style.overflow = 'auto';
     };
-  }, []);
+  }, [fetchFeed]);
+
+  if (isLoading) {
+    return <div className="feed-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white' }}>
+      Loading feed...
+    </div>;
+  }
+
+  if (error) {
+    return <div className="feed-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'red' }}>
+      Error: {error}
+    </div>;
+  }
 
   return (
     <div className="feed-container">
