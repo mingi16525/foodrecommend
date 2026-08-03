@@ -103,6 +103,21 @@
         "API routes cho social (follow, feed) hoạt động",
         "Unit tests pass"
       ]
+    },
+    {
+      "name": "module-split-bill",
+      "status": "DONE",
+      "description": "Phát triển tính năng tách hóa đơn (Split Bill) cho Group",
+      "scope": [
+        "src/group/splitBill.ts",
+        "src/api/group.routes.ts",
+        "tests/splitBill.test.ts"
+      ],
+      "definition_of_done": [
+        "Service split bill được implement",
+        "API routes cho split bill hoạt động",
+        "Unit tests pass"
+      ]
     }
   ]
 }
