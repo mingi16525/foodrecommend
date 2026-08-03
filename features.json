@@ -88,6 +88,21 @@
         "API routes cho nhóm hoạt động",
         "Unit tests pass"
       ]
+    },
+    {
+      "name": "module-social",
+      "status": "DONE",
+      "description": "Phát triển Social module (Data models, API controllers)",
+      "scope": [
+        "src/social/",
+        "src/api/social.routes.ts",
+        "tests/social.test.ts"
+      ],
+      "definition_of_done": [
+        "Service social được implement",
+        "API routes cho social (follow, feed) hoạt động",
+        "Unit tests pass"
+      ]
     }
   ]
 }
