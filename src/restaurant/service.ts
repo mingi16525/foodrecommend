@@ -36,9 +36,8 @@ export class RestaurantService {
         dishes: dishesResult.rows
       };
     } catch (e) {
-      console.warn('DB error in getRestaurantById', e);
-      // Fallback mock
-      return { id, name: 'Mock Restaurant', dishes: [{ id: 'd1', name: 'Mock Dish' }] };
+      console.error('DB error in getRestaurantById', e);
+      throw e;
     }
   }
 
@@ -50,8 +49,8 @@ export class RestaurantService {
       );
       return result.rows;
     } catch (e) {
-      console.warn('DB error in searchRestaurants', e);
-      return [{ id: 'r1', name: 'Mock Search Result' }];
+      console.error('DB error in searchRestaurants', e);
+      throw e;
     }
   }
 }

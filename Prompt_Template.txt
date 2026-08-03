@@ -14,4 +14,4 @@ After reading, state:
 Then begin work. Do not ask clarifying questions unless blocked.
 Follow scope rules and verification protocol in AGENTS.md exactly.
 End the session using the End-of-Session Protocol in AGENTS.md.
-agent-review.sh
+Run on wsl: ./agent-review.sh

@@ -167,6 +167,20 @@
         "docker-compose up chạy database thành công",
         "Có thể import seed.sql vào container để test API"
       ]
+    },
+    {
+      "name": "module-db-real-integration",
+      "status": "DONE",
+      "description": "Tích hợp DB thực tế, loại bỏ fallback mock data trong try-catch, mock pg-pool cho jest",
+      "scope": [
+        "src/",
+        "tests/"
+      ],
+      "definition_of_done": [
+        "Xóa fallback mock trong các khối catch của Services",
+        "Tạo jest mock cho pg Pool",
+        "Tất cả các test vẫn pass 100%"
+      ]
     }
   ]
 }

@@ -25,8 +25,8 @@ export class SocialService {
       );
       return result.rows[0];
     } catch (e) {
-      console.warn('DB error in createPost', e);
-      return { id: 'mock_post_id', user_id: userId, post_type: type, content, video_url: videoUrl };
+      console.error('DB error in createPost', e);
+      throw e;
     }
   }
 
@@ -37,10 +37,8 @@ export class SocialService {
       );
       return result.rows;
     } catch (e) {
-      console.warn('DB error in getFeed', e);
-      return [
-        { id: 'mock_post_id', user_id: 'user1', post_type: 'review', content: 'Mock post content', author_name: 'Mock Author' }
-      ];
+      console.error('DB error in getFeed', e);
+      throw e;
     }
   }
 }

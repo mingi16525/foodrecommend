@@ -47,11 +47,8 @@ export class RecommendationEngine {
         score: res.score
       }));
     } catch (e) {
-      console.warn('DB query failed for getRecommendations', e);
-      return [
-        { id: '1', name: 'Phở Bò', score: 0.98 },
-        { id: '2', name: 'Bún Chả', score: 0.95 }
-      ];
+      console.error('DB query failed for getRecommendations', e);
+      throw e;
     }
   }
 
@@ -76,7 +73,8 @@ export class RecommendationEngine {
         [userId, dishId, action]
       );
     } catch (e) {
-      console.warn('DB query failed for processSwipeEvent', e);
+      console.error('DB query failed for processSwipeEvent', e);
+      throw e;
     }
 
     // 2. Adjust user embedding in Qdrant (placeholder)

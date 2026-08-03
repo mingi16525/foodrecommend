@@ -28,9 +28,8 @@ export class UserService {
         preferences: prefResult.rows[0] || null
       };
     } catch (e) {
-      console.warn('DB error in getUserProfile', e);
-      // Fallback mock
-      return { id: userId, email: 'mock@example.com', full_name: 'Mock User', preferences: null };
+      console.error('DB error in getUserProfile', e);
+      throw e;
     }
   }
 
@@ -59,8 +58,8 @@ export class UserService {
       
       return res.rows[0];
     } catch (e) {
-      console.warn('DB error in updatePreferences', e);
-      return { user_id: userId, ...preferences };
+      console.error('DB error in updatePreferences', e);
+      throw e;
     }
   }
 }
