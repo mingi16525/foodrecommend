@@ -181,6 +181,19 @@
         "Tạo jest mock cho pg Pool",
         "Tất cả các test vẫn pass 100%"
       ]
+    },
+    {
+      "name": "verify-real-db-integration",
+      "status": "DONE",
+      "description": "Kiểm chứng ứng dụng hoạt động thực tế với PostgreSQL (dữ liệu seed) và server Node.js",
+      "scope": [
+        "docker-compose.yml"
+      ],
+      "definition_of_done": [
+        "Chạy docker-compose up -d thành công",
+        "Khởi động được server Node.js trên localhost:3000",
+        "Dùng curl gọi vào API lấy dữ liệu thực trả về đúng JSON đã seed"
+      ]
     }
   ]
 }

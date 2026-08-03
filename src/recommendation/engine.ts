@@ -12,7 +12,7 @@ export class RecommendationEngine {
       checkCompatibility: false
     });
     this.db = new Pool({
-      connectionString: process.env.DATABASE_URL || 'postgresql://food:foodpass123@localhost:5432/foodrecommend'
+      connectionString: process.env.DATABASE_URL || 'postgresql://fooduser:foodpassword@localhost:5432/foodrecommend'
     });
   }
 
