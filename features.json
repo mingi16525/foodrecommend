@@ -219,6 +219,24 @@
         "Tạo cấu trúc thư mục frontend/src cơ bản",
         "Tạo UI Base Layout với Bottom Navigation đáp ứng thiết kế Premium/Glassmorphism"
       ]
+    },
+    {
+      "name": "frontend-tab1-social-feed",
+      "status": "DONE",
+      "description": "Phát triển giao diện Tab 1 - Social Feed giống TikTok/Reels với cuộn mượt mà",
+      "scope": [
+        "frontend/src/pages/SocialFeed.tsx",
+        "frontend/src/pages/SocialFeed.css",
+        "frontend/src/App.tsx",
+        "frontend/src/store/"
+      ],
+      "definition_of_done": [
+        "Tạo trang Social Feed với CSS Scroll Snap trượt dọc mượt mà",
+        "Hiển thị lớp phủ thông tin reviewer, caption, tên quán",
+        "Cột bên phải chứa nút tương tác (Like, Comment, Share)",
+        "Tích hợp zustand cung cấp dữ liệu tĩnh (Mock state) cho feed",
+        "Hiệu ứng tim bay lên khi double-tap"
+      ]
     }
   ]
 }

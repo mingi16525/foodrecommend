@@ -1,30 +1,30 @@
 # Session Progress
 
-## Last Session Summary (Session 23 — 2026-08-03)
-- Đã thêm feature mới `frontend-setup-and-layout` vào `features.json`.
-- Thiết lập thành công các thư viện cốt lõi cho Frontend: `react-router-dom`, `zustand`, `lucide-react`, `axios`. (Đã loại bỏ TailwindCSS để tuân thủ kiến trúc Vanilla CSS ưu tiên sự kiểm soát thiết kế cao cấp).
-- Tạo cấu trúc thư mục tiêu chuẩn: `components`, `pages`, `services`, `store` trong `frontend/src`.
-- Khởi tạo file `index.css` với các Token thiết kế (CSS Variables) chuẩn mực cho Glassmorphism, Dark mode, và Ambient glow background như yêu cầu trong `UI.txt`.
-- Khởi tạo Base Layout thành công với thanh `BottomNavigation` chuẩn app di động mượt mà.
+## Last Session Summary (Session 24 — 2026-08-03)
+- Đã thêm feature mới `frontend-tab1-social-feed` vào `features.json`.
+- Triển khai thành công giao diện "Social Feed" (Tab 1) tương tự TikTok/Reels sử dụng CSS Scroll Snapping (cuộn thẻ mượt mà 100vh).
+- Tạo `feedStore.ts` bằng `zustand` quản lý danh sách FeedPost, trạng thái Like (thả tim) và Save (lưu bài) của các post sử dụng Mock Data tạm thời.
+- Thiết kế lớp Overlay gradients để làm nổi bật thông tin (Tên Reviewer, Caption, Tên quán ăn) trên nền media.
+- Tích hợp hiệu ứng trái tim bay (Heart micro-animation) ngay giữa màn hình khi người dùng thực hiện hành động double-tap.
 
 ## Current State
-- Feature: frontend-setup-and-layout (status: DONE, 100% complete)
+- Feature: frontend-tab1-social-feed (status: DONE, 100% complete)
 - Branch: main
 - Tests: 24 passing / 24 total (Backend)
 - Frontend build (TypeScript/Vite): OK.
 
 ## What Next Session Should Do First
-1. Tiến hành thiết kế trang cụ thể đầu tiên: "Tab 1: SOCIAL FEED" (Khám phá món ăn) hoặc "Tab 2: AI SWIPE" (Quẹt thẻ Tinder-style).
-2. Tích hợp `zustand` để lấy dữ liệu tĩnh tạm thời (Mock state) vào các màn hình, nhằm hoàn thiện cấu trúc giao diện và trải nghiệm (UI/UX).
-3. Đảm bảo tuân thủ chặt chẽ các yêu cầu về animations (mượt mà, quẹt thẻ) như đã chỉ định trong `UI.txt`.
+1. Tiến hành thiết kế trang cụ thể tiếp theo: "Tab 2: AI SWIPE" (Quẹt thẻ Tinder-style) ở route `/swipe`.
+2. Tạo component Swipe Card hỗ trợ vuốt trái/phải thông qua CSS Transitions hoặc framer-motion.
+3. Liên kết với store mock data để thực hiện logic vuốt (lưu vào danh sách thích/không thích).
 
 ## Known Issues / Blockers
-- Thiết kế Animations phức tạp như Tinder Swipe trong React có thể đòi hỏi thư viện bổ sung như `framer-motion` hoặc `react-tinder-card`. Xem xét kỹ khi bước vào Tab 2.
+- Logic swipe (vuốt thẻ) rất nhạy cảm về cảm ứng trên web mobile, cân nhắc việc sử dụng thư viện chuyên biệt như `react-tinder-card` để tiết kiệm thời gian và tăng độ mượt, hoặc tự code bằng `onTouchStart/Move/End`.
 
 ## Observations (Not Fixed — Outside Current Scope)
 - Tính năng chia sẻ (Social Feed) hiện tại lấy toàn bộ bài mới nhất, cần phân trang (pagination) và lọc theo follower trong tương lai.
 - Tính năng nhóm chưa tích hợp websocket/realtime cho việc tạo bill/bỏ phiếu (Voting) chọn quán ăn chung.
 
 ## Architectural Decisions This Session
-- Quyết định sử dụng Vanilla CSS kết hợp CSS Variables toàn cục (`index.css`) thay cho TailwindCSS để đảm bảo khả năng tinh chỉnh tối đa (Pixel-perfect) cho triết lý thiết kế Premium Glassmorphism.
-- Thiết lập kiến trúc Layout cơ bản gồm `App-container` (kích thước chuẩn Mobile) bọc các thẻ con và thanh điều hướng cố định dưới đáy.
+- Lựa chọn thuần CSS Scroll Snapping (`scroll-snap-type: y mandatory`) để mô phỏng cơ chế cuộn của TikTok thay vì dùng thư viện js bên thứ 3 nhằm đạt được hiệu suất (performance) tối đa và nguyên bản với trình duyệt.
+- Sử dụng Hook tùy chỉnh `useRef` và `setTimeout` để xác định sự kiện Double-Tap thuần React mà không cần gói hỗ trợ Gestures cồng kềnh.

@@ -1,0 +1,173 @@
+.feed-container {
+  height: 100vh;
+  width: 100%;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  background-color: var(--bg-color);
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.feed-container::-webkit-scrollbar {
+  display: none;
+}
+
+.feed-item {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.feed-media {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+.feed-overlay-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(to top, rgba(18, 18, 18, 0.9) 0%, rgba(18, 18, 18, 0.5) 40%, transparent 100%);
+  z-index: 1;
+}
+
+.feed-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  padding-bottom: calc(var(--nav-height) + 20px);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  z-index: 2;
+  pointer-events: none; /* Let clicks pass through except on children */
+}
+
+.feed-info {
+  flex: 1;
+  padding-right: 20px;
+  pointer-events: auto;
+}
+
+.reviewer-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--accent-primary-start);
+  margin-right: 12px;
+}
+
+.reviewer-name {
+  font-weight: 600;
+  font-size: 16px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+
+.feed-caption {
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.restaurant-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  background: var(--glass-bg);
+}
+
+.restaurant-tag span {
+  margin-left: 6px;
+}
+
+.feed-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  pointer-events: auto;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.action-btn:active {
+  transform: scale(0.9);
+}
+
+.icon-wrapper {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.action-text {
+  font-size: 12px;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+
+/* Heart animation */
+.heart-animation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  animation: pulse-heart 0.8s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes pulse-heart {
+  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+  30% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  60% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -150%) scale(1); opacity: 0; }
+}
