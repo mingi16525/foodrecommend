@@ -143,6 +143,18 @@
         "File seed.sql được tạo với dữ liệu mẫu (users, restaurants, posts, v.v.)",
         "Thêm lệnh npm run seed vào package.json để dễ dàng chạy script"
       ]
+    },
+    {
+      "name": "frontend-ui-prompt",
+      "status": "DONE",
+      "description": "Tạo file prompt UI.txt để định hướng thiết kế giao diện Frontend",
+      "scope": [
+        "UI.txt"
+      ],
+      "definition_of_done": [
+        "File UI.txt được tạo với đầy đủ yêu cầu cho 5 tabs chính",
+        "Yêu cầu bao gồm chi tiết thẩm mỹ (màu sắc, glassmorphism, animations)"
+      ]
     }
   ]
 }

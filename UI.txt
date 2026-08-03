@@ -1,0 +1,63 @@
+=========================================
+🔥 FOOD RECOMMEND AI - UI/UX PROMPT 🔥
+=========================================
+
+1. 🎯 TỔNG QUAN (OVERVIEW)
+- Ứng dụng: Food Decision Platform (Quyết định ăn gì, ở đâu, nhóm như thế nào).
+- Phong cách thiết kế: Hiện đại (Modern), Sang trọng (Premium), Mượt mà (Smooth).
+- Aesthetic Rules: 
+  + Không dùng các màu cơ bản (plain red, blue). Hãy sử dụng dải màu HSL tùy chỉnh (Vibrant gradients, sleek dark mode).
+  + Áp dụng Glassmorphism (lớp kính mờ) cho các thẻ (cards) và bottom navigation bar.
+  + Typography: Google Fonts (Inter, Outfit hoặc Roboto) để tạo cảm giác gọn gàng, tinh tế.
+  + Micro-animations: Hiệu ứng hover, nhấn (tap) phản hồi rung nhẹ, hiệu ứng chuyển trang mượt mà (hero animations).
+
+2. 📱 CẤU TRÚC 5 TABS CHÍNH (BOTTOM NAVIGATION BAR)
+Thiết kế Bottom Nav dạng nổi (floating) hoặc Glassmorphism, bo góc tròn trịa.
+
+📍 TAB 1: SOCIAL FEED (Khám phá - Tương tự TikTok/Reels)
+- Giao diện: Toàn màn hình (Full-screen) trượt dọc để xem video/hình ảnh review món ăn.
+- Lớp phủ (Overlay): 
+  + Góc dưới bên trái: Tên reviewer, Caption món ăn, Tên quán ăn (có thể click để xem chi tiết quán).
+  + Cột bên phải: Nút Like, Comment, Share, và nút "Lưu món này".
+- Animations: Trượt mượt (Snap to page), trái tim bay lên khi double-tap.
+
+📍 TAB 2: AI SWIPE (Gợi ý món ăn - Tương tự Tinder)
+- Giao diện: Giao diện thẻ (Card-based) lớn nằm chính giữa màn hình.
+- Nội dung thẻ: Hình ảnh món ăn cực kỳ bắt mắt, tên món, giá cả, khoảng cách tới quán.
+- Tương tác: 
+  + Quẹt phải (Swipe Right): Thích món ăn (Gửi API like).
+  + Quẹt trái (Swipe Left): Bỏ qua.
+  + Quẹt lên (Swipe Up): Đặt ngay (Mở liên kết ShopeeFood/Grab).
+- Animations: Thẻ xoay nhẹ theo hướng quẹt ngón tay, xuất hiện nhãn "YUMMY!" (màu xanh lá gradient) hoặc "NOPE" (màu cam đỏ gradient).
+
+📍 TAB 3: RESTAURANTS & MAP (Bản đồ & Danh sách quán)
+- Phía trên: Thanh tìm kiếm (Search bar) bo góc kết hợp filter (Gần đây, Đang mở cửa, Đánh giá cao).
+- Giữa màn hình: Bản đồ tích hợp đánh dấu các quán ăn lân cận.
+- Phía dưới: Danh sách quán ăn dạng thẻ trượt ngang (Horizontal scroll). Mỗi thẻ hiển thị ảnh cover, tên quán, đánh giá sao, và tag ẩm thực.
+
+📍 TAB 4: GROUP & SPLIT BILL (Ăn nhóm & Chia tiền)
+- Màn hình chính: Danh sách các nhóm (Hội ăn đêm, Hội công ty).
+- Chi tiết nhóm:
+  + Danh sách thành viên (Avatar xếp chồng lên nhau - Stacked avatars).
+  + Nút "Tạo chuyến đi ăn mới".
+  + Tính năng Voting: Thẻ bình chọn quán ăn (Hiển thị bar chart mini theo số lượng vote).
+  + Split Bill: Bảng tính tiền UI trực quan. Giao diện chia đều hoặc kéo thả món ăn cho từng người. Hiển thị số tiền mỗi người nợ rõ ràng (Ví dụ: "Bạn nợ $15").
+
+📍 TAB 5: USER PROFILE (Cá nhân)
+- Phần đầu: Avatar người dùng với hiệu ứng viền gradient.
+- Settings: Thẻ tùy chỉnh Sở thích (Favorite flavors), Dị ứng (Allergies), Chế độ ăn. Sử dụng các nút Toggle (Switch) dạng iOS mềm mại.
+- Lịch sử: Các món đã thích, lịch sử hóa đơn.
+
+3. 🎨 COLOR PALETTE & DESIGN SYSTEM
+- Primary Theme: Dark Mode mặc định. 
+- Background: Đen sâu (#121212) kết hợp với các đốm sáng mờ (ambient glow) màu Tím Neon hoặc Cam Ánh Hồng ở các góc màn hình.
+- Surface Cards: #1E1E1E với độ mờ (opacity) 80% và hiệu ứng backdrop-filter (blur).
+- Accent Colors: 
+  + Action Primary (Nút Đặt/Like): Gradient từ Cam sáng (#FF5F6D) sang Vàng hoàng hôn (#FFC371).
+  + Action Secondary (Nhóm/Tiền bạc): Gradient Xanh lơ (#00C9FF) sang Xanh ngọc (#92FE9D).
+
+4. 🚀 YÊU CẦU CHO ĐỘI NGŨ FRONTEND
+- Mọi API (ví dụ `/api/social/feed`, `/api/recommendations`, `/api/groups/:id/split-equally`) đã sẵn sàng ở backend (Express/PostgreSQL).
+- Cần sử dụng State Management (Redux/Provider/Riverpod) để kết nối API.
+- Đảm bảo Loading State (Shimmer effects) khi gọi API chứ không dùng vòng tròn quay (Spinner) nhàm chán.
+=========================================
