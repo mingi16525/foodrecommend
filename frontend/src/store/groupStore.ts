@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import apiClient from '../api/client';
 
 export interface GroupMember {
   id: string;
@@ -26,64 +27,52 @@ export interface FoodGroup {
 interface GroupState {
   groups: FoodGroup[];
   activeTab: 'GROUPS' | 'BILLS';
+  isLoading: boolean;
+  error: string | null;
   setActiveTab: (tab: 'GROUPS' | 'BILLS') => void;
+  fetchGroups: () => Promise<void>;
 }
 
-const MOCK_GROUPS: FoodGroup[] = [
-  {
-    id: 'g1',
-    name: 'Weekend Foodies',
-    members: [
-      { id: 'u1', name: 'You', avatar: 'https://i.pravatar.cc/150?u=u1' },
-      { id: 'u2', name: 'Alex', avatar: 'https://i.pravatar.cc/150?u=u2' },
-      { id: 'u3', name: 'Sarah', avatar: 'https://i.pravatar.cc/150?u=u3' }
-    ],
-    activeBills: [
-      {
-        id: 'b1',
-        restaurantName: 'Pizza 4P\'s',
-        totalAmount: 1200000,
-        date: '2026-08-01',
-        status: 'PENDING',
-        myShare: 400000,
-        paid: false
-      }
-    ]
-  },
-  {
-    id: 'g2',
-    name: 'Office Lunch',
-    members: [
-      { id: 'u1', name: 'You', avatar: 'https://i.pravatar.cc/150?u=u1' },
-      { id: 'u4', name: 'Mike', avatar: 'https://i.pravatar.cc/150?u=u4' },
-      { id: 'u5', name: 'Jenny', avatar: 'https://i.pravatar.cc/150?u=u5' },
-      { id: 'u6', name: 'Tom', avatar: 'https://i.pravatar.cc/150?u=u6' }
-    ],
-    activeBills: [
-      {
-        id: 'b2',
-        restaurantName: 'Pho 24',
-        totalAmount: 320000,
-        date: '2026-08-02',
-        status: 'SETTLED',
-        myShare: 80000,
-        paid: true
-      },
-      {
-        id: 'b3',
-        restaurantName: 'The Workshop Coffee',
-        totalAmount: 450000,
-        date: '2026-08-03',
-        status: 'PENDING',
-        myShare: 112500,
-        paid: false
-      }
-    ]
-  }
-];
-
 export const useGroupStore = create<GroupState>((set) => ({
-  groups: MOCK_GROUPS,
+  groups: [],
   activeTab: 'GROUPS',
-  setActiveTab: (tab) => set({ activeTab: tab })
+  isLoading: false,
+  error: null,
+  
+  setActiveTab: (tab) => set({ activeTab: tab }),
+  
+  fetchGroups: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await apiClient.get('/groups');
+      const backendGroups = response.data.data;
+      
+      const mappedGroups: FoodGroup[] = backendGroups.map((g: any, index: number) => ({
+        id: g.id,
+        name: g.name,
+        // Mocking members since GET /groups doesn't return full members list
+        members: [
+          { id: g.creator_id, name: 'Creator', avatar: `https://i.pravatar.cc/150?u=${g.creator_id}` },
+          { id: `u${index}-1`, name: 'Member 1', avatar: `https://i.pravatar.cc/150?u=u${index}-1` }
+        ],
+        // Mocking bills
+        activeBills: [
+          {
+            id: `b${index}-1`,
+            restaurantName: 'Pizza 4P\'s',
+            totalAmount: 1200000,
+            date: '2026-08-01',
+            status: 'PENDING',
+            myShare: 400000,
+            paid: false
+          }
+        ]
+      }));
+      
+      set({ groups: mappedGroups, isLoading: false });
+    } catch (err: any) {
+      console.error('Failed to fetch groups:', err);
+      set({ error: err.message || 'Failed to fetch', isLoading: false });
+    }
+  }
 }));

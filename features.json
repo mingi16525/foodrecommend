@@ -356,6 +356,23 @@
         "Tab 3 hiển thị marker nhà hàng từ Database thay vì mock",
         "Xử lý state isLoading và error"
       ]
+    },
+    {
+      "name": "frontend-integration-group-split",
+      "status": "DONE",
+      "description": "Tích hợp Backend API vào Group Split (Tab 4)",
+      "scope": [
+        "src/api/group.routes.ts",
+        "src/group/service.ts",
+        "frontend/src/store/groupStore.ts",
+        "frontend/src/pages/GroupSplit.tsx"
+      ],
+      "definition_of_done": [
+        "Thêm API endpoint lấy danh sách toàn bộ groups ở Backend",
+        "Kết nối groupStore.ts với backend lấy danh sách group",
+        "Tab 4 hiển thị danh sách group từ Database thay vì mock",
+        "Xử lý state isLoading và error"
+      ]
     }
   ]
 }

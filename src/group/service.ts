@@ -70,6 +70,16 @@ export class GroupService {
       throw e;
     }
   }
+
+  async getAllGroups() {
+    try {
+      const result = await this.db.query('SELECT * FROM groups LIMIT 50');
+      return result.rows;
+    } catch (e) {
+      console.error('DB error in getAllGroups', e);
+      throw e;
+    }
+  }
 }
 
 export const groupService = new GroupService();

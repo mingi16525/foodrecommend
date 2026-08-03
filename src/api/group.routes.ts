@@ -14,6 +14,11 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
   res.json({ data: newGroup });
 });
 
+router.get('/', async (req: Request, res: Response): Promise<void> => {
+  const groups = await groupService.getAllGroups();
+  res.json({ data: groups });
+});
+
 router.get('/:id', async (req: Request, res: Response): Promise<void> => {
   const id = req.params.id as string;
   const group = await groupService.getGroupDetails(id);

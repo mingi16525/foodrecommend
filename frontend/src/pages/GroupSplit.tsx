@@ -5,7 +5,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import './GroupSplit.css';
 
 const GroupSplit: React.FC = () => {
-  const { groups, activeTab, setActiveTab } = useGroupStore();
+  const { groups, activeTab, setActiveTab, fetchGroups, isLoading, error } = useGroupStore();
+
+  React.useEffect(() => {
+    fetchGroups();
+  }, [fetchGroups]);
 
   // Extract all bills for the "BILLS" tab
   const allBills = groups.flatMap(g => g.activeBills.map(b => ({ ...b, groupName: g.name })));
@@ -21,6 +25,9 @@ const GroupSplit: React.FC = () => {
         <h1 className="gradient-text-primary">Social & Split</h1>
         <button className="icon-btn-glass"><Plus size={24} color="var(--text-primary)" /></button>
       </div>
+
+      {isLoading && <div style={{ padding: '0 20px', color: 'var(--text-secondary)' }}>Loading groups...</div>}
+      {error && <div style={{ padding: '0 20px', color: '#ff5f6d' }}>{error}</div>}
 
       {/* Segmented Control */}
       <div className="segmented-control">

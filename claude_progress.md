@@ -1,29 +1,29 @@
 # Session Progress
 
-## Last Session Summary (Session 31 — 2026-08-03)
-- Đã thêm tính năng `frontend-integration-explore-map` vào `features.json`.
-- Cập nhật backend `restaurant/service.ts` và `api/restaurant.routes.ts` để bổ sung endpoint `GET /api/restaurants` phục vụ việc lấy danh sách tất cả nhà hàng.
-- Cập nhật `mapStore.ts` ở Frontend để gọi API `/restaurants` thông qua `apiClient`.
-- Thay đổi `ExploreMap.tsx` để hiển thị trạng thái Loading, gọi hàm `fetchLocations()` khi load trang (on mount) và xử lý lỗi khi fetch dữ liệu.
-- Map dữ liệu nhà hàng từ backend sang cấu trúc UI (tạm thời mock tọa độ ngẫu nhiên gần trung tâm TPHCM nếu dữ liệu `location` không có sẵn trong DB).
+## Last Session Summary (Session 32 — 2026-08-03)
+- Đã thêm tính năng `frontend-integration-group-split` vào `features.json`.
+- Cập nhật backend `group/service.ts` và `api/group.routes.ts` để bổ sung endpoint `GET /api/groups` phục vụ việc lấy danh sách tất cả các nhóm.
+- Cập nhật `groupStore.ts` ở Frontend để gọi API `/groups` thông qua `apiClient`.
+- Thay đổi `GroupSplit.tsx` để hiển thị trạng thái Loading, gọi hàm `fetchGroups()` khi load trang (on mount) và xử lý lỗi khi fetch dữ liệu.
+- Map dữ liệu group từ backend sang cấu trúc UI (tạm thời mock `members` và `activeBills` vì endpoint `GET /groups` chưa trả về đầy đủ các thông tin này).
 
 ## Current State
-- Feature: frontend-integration-explore-map (status: DONE, 100% complete)
+- Feature: frontend-integration-group-split (status: DONE, 100% complete)
 - Branch: main
 - Tests: 24 passing / 24 total (Backend)
 - Frontend build (TypeScript/Vite): OK.
-- Explore Map tab (Tab 3) đã hiển thị các marker nhà hàng từ database PostgreSQL.
+- Group Split tab (Tab 4) đã hiển thị danh sách các nhóm được lấy từ database PostgreSQL.
 
 ## What Next Session Should Do First
-1. Tiếp tục tích hợp API thực tế cho `Tab 2 - AI Swipe` hoặc `Tab 4 - Group Split`.
-2. Gợi ý: Làm API backend integration cho `Tab 4 - Group Split` để load danh sách các nhóm và hóa đơn từ DB.
+1. Tiến hành tích hợp API cuối cùng cho `Tab 2 - AI Swipe`.
+2. Gợi ý: Làm API backend integration cho `Tab 2 - AI Swipe` để gọi tới logic Recommendation Engine và lấy ra danh sách các món ăn gợi ý thay vì dùng mock data tĩnh.
 
 ## Known Issues / Blockers
-- Hiện tại trường `location` (tọa độ JSON) ở DB đang null với dữ liệu seed, nên mapStore đang random tạo tọa độ để có thể hiển thị trên Leaflet. Cần cung cấp dữ liệu seed tọa độ chuẩn sau này.
+- Hiện tại bảng `posts` không có thông tin tương tác, bảng `groups` không trả về `members`/`bills` ở API list, và trường `location` ở `restaurants` đang trống. Những dữ liệu này đang được mock linh hoạt tại tầng store để UI không bị trống hoặc lỗi.
 
 ## Observations (Not Fixed — Outside Current Scope)
 - Tính năng nhóm chưa tích hợp websocket/realtime cho việc tạo bill/bỏ phiếu (Voting) chọn quán ăn chung.
-- Tính năng AI Swipe chưa lấy danh sách recommended dishes từ Python/Go Engine mà đang hardcode mock data.
+- Việc tách bill (Split Bill) mới chỉ thực hiện dưới dạng API tính toán chứ chưa lưu persist vào Database.
 
 ## Architectural Decisions This Session
-- Chấp nhận việc tạo Random Lat/Lng trên UI dựa vào một center tĩnh (10.7769, 106.7009) nếu API trả về location trống, giúp tránh lỗi React Leaflet khi marker không có tọa độ.
+- Quyết định mock dữ liệu `members` và `activeBills` ngay tại `groupStore.ts` sau khi fetch danh sách groups thành công từ backend, do thiết kế của endpoint `/api/groups` hiện tại chưa hỗ trợ join quá nhiều bảng để giữ performance. Mở rộng API backend sau này khi làm feature chi tiết.
