@@ -4,7 +4,17 @@
       "name": "core-architecture-db-setup",
       "status": "DONE",
       "description": "Thiết lập cấu trúc dự án cơ bản và Database (PostgreSQL, Redis, Vector DB)",
-      "scope": ["docker-compose.yml", "schema.sql", "src/", "tests/", "package.json", "tsconfig.json", ".github/", "eslint.config.mjs", "jest.config.js"],
+      "scope": [
+        "docker-compose.yml",
+        "schema.sql",
+        "src/",
+        "tests/",
+        "package.json",
+        "tsconfig.json",
+        ".github/",
+        "eslint.config.mjs",
+        "jest.config.js"
+      ],
       "definition_of_done": [
         "Docker compose có thể chạy database",
         "Schema cơ bản được thiết lập thành công",
@@ -15,20 +25,54 @@
       "name": "tab-3-swipe-ai-rec",
       "status": "DONE",
       "description": "Phát triển tính năng Swipe chọn món cá nhân",
-      "scope": ["src/recommendation/", "src/api/", "src/index.ts", "tests/", "src/user/", "src/restaurant/", "src/social/", "src/group/"],
+      "scope": [
+        "src/recommendation/",
+        "src/api/",
+        "src/index.ts",
+        "tests/",
+        "src/user/",
+        "src/restaurant/",
+        "src/social/",
+        "src/group/"
+      ],
     },
     {
       "name": "docs-overview-readme",
       "status": "DONE",
       "description": "Cập nhật README.md với hướng phát triển và tổng thể sản phẩm",
-      "scope": ["README.md"],
+      "scope": [
+        "README.md"
+      ]
     },
     {
       "name": "module-user-profile",
       "status": "DONE",
       "description": "Phát triển User Profile module (Data models, API controllers)",
-      "scope": ["src/user/", "src/api/user.routes.ts", "tests/user.test.ts"],
-      "definition_of_done": ["Service user được implement", "API routes cho GET/POST user profile hoạt động", "Unit tests pass"]
+      "scope": [
+        "src/user/",
+        "src/api/user.routes.ts",
+        "tests/user.test.ts"
+      ],
+      "definition_of_done": [
+        "Service user được implement",
+        "API routes cho GET/POST user profile hoạt động",
+        "Unit tests pass"
+      ]
+    },
+    {
+      "name": "module-restaurant-listing",
+      "status": "DONE",
+      "description": "Phát triển Restaurant Listing module (Data models, API controllers)",
+      "scope": [
+        "src/restaurant/",
+        "src/api/restaurant.routes.ts",
+        "tests/restaurant.test.ts"
+      ],
+      "definition_of_done": [
+        "Service restaurant được implement",
+        "API routes cho GET restaurants hoạt động",
+        "Unit tests pass"
+      ]
     }
   ]
 }
