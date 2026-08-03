@@ -1,7 +1,26 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
+import { restaurantService } from '../restaurant/service';
 
-export const restaurantRouter = Router();
+const router = Router();
 
-restaurantRouter.get('/', (req, res) => {
-  res.json({ message: 'Restaurant API placeholder' });
+router.get('/search', async (req: Request, res: Response): Promise<void> => {
+  const query = req.query.q as string;
+  if (!query) {
+    res.status(400).json({ error: 'Search query "q" is required' });
+    return;
+  }
+  const results = await restaurantService.searchRestaurants(query);
+  res.json({ data: results });
 });
+
+router.get('/:id', async (req: Request, res: Response): Promise<void> => {
+  const id = req.params.id as string;
+  const restaurant = await restaurantService.getRestaurantById(id);
+  if (!restaurant) {
+    res.status(404).json({ error: 'Restaurant not found' });
+    return;
+  }
+  res.json({ data: restaurant });
+});
+
+export const restaurantRouter = router;
