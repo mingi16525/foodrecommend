@@ -1,10 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useProfileStore } from '../store/profileStore';
 import { Settings, Edit3, Star, Clock } from 'lucide-react';
 import './UserProfile.css';
 
 const UserProfile: React.FC = () => {
-  const { user, preferences, history } = useProfileStore();
+  const { user, preferences, history, fetchProfile, isLoading, error } = useProfileStore();
+
+  useEffect(() => {
+    // Using mock user ID from our seed data: Alice Nguyen
+    fetchProfile('11111111-1111-1111-1111-111111111111');
+  }, [fetchProfile]);
+
+  if (isLoading) {
+    return <div className="profile-page-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <p className="gradient-text-primary">Loading Profile...</p>
+    </div>;
+  }
+
+  if (error) {
+    return <div className="profile-page-container" style={{ padding: '20px' }}>
+      <p style={{ color: 'red' }}>Error: {error}</p>
+    </div>;
+  }
 
   return (
     <div className="profile-page-container">

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import apiClient from '../api/client';
 
 export interface UserHistoryItem {
   id: string;
@@ -20,19 +21,22 @@ interface ProfileState {
   };
   preferences: string[];
   history: UserHistoryItem[];
+  isLoading: boolean;
+  error: string | null;
+  fetchProfile: (userId: string) => Promise<void>;
 }
 
-const MOCK_PROFILE: ProfileState = {
+const DEFAULT_PROFILE = {
   user: {
-    name: 'Giang',
-    handle: '@giang.foodie',
+    name: 'Loading...',
+    handle: '@loading',
     avatar: 'https://i.pravatar.cc/300?u=giang',
-    bio: 'Exploring the best culinary experiences around town. Coffee addict ☕️',
-    followers: 1205,
-    following: 432,
-    reviews: 87
+    bio: '...',
+    followers: 0,
+    following: 0,
+    reviews: 0
   },
-  preferences: ['Vietnamese', 'Japanese', 'Specialty Coffee', 'Spicy', 'Seafood'],
+  preferences: [],
   history: [
     {
       id: 'h1',
@@ -58,4 +62,32 @@ const MOCK_PROFILE: ProfileState = {
   ]
 };
 
-export const useProfileStore = create<ProfileState>(() => MOCK_PROFILE);
+export const useProfileStore = create<ProfileState>((set) => ({
+  ...DEFAULT_PROFILE,
+  isLoading: false,
+  error: null,
+  
+  fetchProfile: async (userId: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await apiClient.get(`/users/${userId}`);
+      const data = response.data.data;
+      
+      const prefs = data.preferences?.favorite_flavors || [];
+      
+      set((state) => ({
+        user: {
+          ...state.user,
+          name: data.full_name || data.email,
+          handle: `@${(data.full_name || 'user').replace(/\s+/g, '').toLowerCase()}`,
+          bio: data.is_reviewer ? 'Food Critic & Reviewer' : 'Food lover exploring town',
+        },
+        preferences: prefs,
+        isLoading: false
+      }));
+    } catch (error: any) {
+      console.error("Failed to fetch profile:", error);
+      set({ error: error.message || 'Failed to fetch', isLoading: false });
+    }
+  }
+}));

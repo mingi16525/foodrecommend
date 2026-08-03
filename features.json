@@ -306,6 +306,25 @@
         "Hiển thị danh sách sở thích và lịch sử nhà hàng đã đến",
         "Tích hợp zustand store mock data cho profile"
       ]
+    },
+    {
+      "name": "frontend-integration-api-setup",
+      "status": "DONE",
+      "description": "Thiết lập API client (Axios) và tích hợp Backend vào User Profile (Tab 5)",
+      "scope": [
+        "frontend/package.json",
+        "frontend/src/api/client.ts",
+        "frontend/src/store/profileStore.ts",
+        "nginx/nginx.conf",
+        "frontend/src/pages/UserProfile.tsx"
+      ],
+      "definition_of_done": [
+        "Nginx hỗ trợ CORS header cho Frontend",
+        "Cài đặt axios ở frontend",
+        "Tạo api/client.ts dùng để gọi backend",
+        "Kết nối profileStore.ts với backend lấy thông tin user thực",
+        "Tab 5 hiển thị dữ liệu từ Database thay vì mock"
+      ]
     }
   ]
 }
