@@ -73,6 +73,21 @@
         "API routes cho GET restaurants hoạt động",
         "Unit tests pass"
       ]
+    },
+    {
+      "name": "module-group",
+      "status": "DONE",
+      "description": "Phát triển Group module (Data models, API controllers)",
+      "scope": [
+        "src/group/",
+        "src/api/group.routes.ts",
+        "tests/group.test.ts"
+      ],
+      "definition_of_done": [
+        "Service group được implement",
+        "API routes cho nhóm hoạt động",
+        "Unit tests pass"
+      ]
     }
   ]
 }
