@@ -1,25 +1,24 @@
 # Session Progress
 
-## Last Session Summary (Session Plan Local Beta - 2026-08-04)
-- Đã đọc lại toàn bộ tài liệu: `DevelopmentPlan_Deploy.md`, `FoodRecommend_Product_Specification.md`, và `ProductDesignDocument.md`.
-- Đã tiến hành tái cấu trúc lại `features.json`.
-- Gỡ bỏ toàn bộ các task (features) thuộc giai đoạn MVP và Seed/Infrastructure đã được hoàn thành trước đó để làm sạch bảng theo dõi.
-- Bổ sung 9 features mới (TODO) thuộc Phase 3, Phase 4, và Phase 5 của Local Beta Deployment (bao gồm AI Ranking, AI Group Decision, Third-party APIs, Security, và Frontend Local config & E2E Testing).
-- Lệnh `npm test` tiếp tục vượt qua ổn định (giữ vững trạng thái xanh từ phiên trước).
+## Last Session Summary (Session CI Build Android - 2026-08-04)
+- Đã cấu hình và cập nhật file `.github/workflows/ci.yml` để tích hợp pipeline build ứng dụng Flutter (Android APK) cho giai đoạn Local Beta.
+- Pipeline mới chia làm 2 luồng: `backend-test` (chạy Unit Test Node.js) và `frontend-build-android` (tải SDK Flutter, cài package và xuất file APK Release thành Artifact).
+- Do môi trường local hiện tại không cài đặt sẵn Flutter SDK (`flutter --version` not found), quá trình build sẽ được phó thác cho hệ thống GitHub Actions khi code được đẩy lên nhánh `main`.
 
 ## Current State
-- `features.json` chứa 9 tính năng TODO để thực hiện giai đoạn Local Beta và AI Advanced.
+- `ci.yml` đã bao trọn cả Backend Test và Frontend Build.
+- `features.json` đang nhắm vào mục tiêu `app-build-and-run`.
 - Branch: main
-- Tests: Passing.
+- Tests: Đã verified passing từ phiên trước.
 
 ## What Next Session Should Do First
-Bắt đầu với feature đầu tiên đang `TODO` trong `features.json`: `ai-pipeline-ranking` (Triển khai Ranking Stage).
+Push code lên GitHub để kích hoạt pipeline Actions. Sau khi tải Artifact APK về thiết bị thật, tiến hành test các luồng: vuốt thẻ (Tab 3), hiển thị Feed (Tab 1) để rà soát lỗi giao diện hoặc kết nối API.
 
 ## Known Issues / Blockers
-- Chưa có issues mới, hiện tại Frontend và AI core ranking bắt đầu được chú trọng thay vì infrastructure.
+- Môi trường Windows hiện tại không có sẵn lệnh `flutter`, do đó không thể build hoặc hot-reload trực tiếp trên Local. Cần cài đặt Flutter SDK nếu muốn dev trực tiếp thay vì phụ thuộc vào CI.
 
 ## Observations (Not Fixed — Outside Current Scope)
-- Ranking AI hiện tại cần xây dựng thuật toán chấm điểm thực sự, hoặc tạm thời dùng Collaborative Filtering cơ bản trên Node.js thay vì Deep & Cross Network nếu muốn giữ độ phức tạp vừa phải cho Local.
+- Cần đảm bảo endpoint API cấu hình trong mã nguồn Flutter đang trỏ đúng về địa chỉ public (hoặc localhost/ngrok) để khi cài APK lên điện thoại thật thì có thể kết nối được tới Backend local.
 
 ## Architectural Decisions This Session
-- Xóa bỏ lịch sử features cũ trong `features.json` để nhường chỗ cho giai đoạn nâng cao, xem đây như một milestone (chốt version). Mọi feature mới sẽ tập trung sâu vào logic AI và Frontend App thay vì CRUD API.
+- Chuyển giao quá trình Build APK Release sang GitHub Actions thông qua workflow artifact để giải quyết triệt để vấn đề phụ thuộc môi trường local, đồng thời tạo thói quen CI/CD chuẩn mực cho bản Beta.
