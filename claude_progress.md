@@ -1,24 +1,24 @@
 # Session Progress
 
-## Last Session Summary (Session CI Build Android - 2026-08-04)
-- Đã cấu hình và cập nhật file `.github/workflows/ci.yml` để tích hợp pipeline build ứng dụng Flutter (Android APK) cho giai đoạn Local Beta.
-- Pipeline mới chia làm 2 luồng: `backend-test` (chạy Unit Test Node.js) và `frontend-build-android` (tải SDK Flutter, cài package và xuất file APK Release thành Artifact).
-- Do môi trường local hiện tại không cài đặt sẵn Flutter SDK (`flutter --version` not found), quá trình build sẽ được phó thác cho hệ thống GitHub Actions khi code được đẩy lên nhánh `main`.
+## Last Session Summary (Session Fix CI Permission Denied - 2026-08-04)
+- User báo lỗi GitHub CI khi chạy `npm run lint` bị `eslint: Permission denied`.
+- Kiểm tra phát hiện thư mục `node_modules` vô tình bị track trên Git dẫn đến khi GitHub Actions checkout code, thư mục `.bin/eslint` bị mất cờ executable trên Ubuntu runner (do push từ Windows).
+- Khắc phục bằng cách chạy `git rm -r --cached node_modules` để loại bỏ khỏi tracking, giúp npm install trên CI chạy đúng hành vi cấp quyền.
 
 ## Current State
-- `ci.yml` đã bao trọn cả Backend Test và Frontend Build.
-- `features.json` đang nhắm vào mục tiêu `app-build-and-run`.
+- `node_modules` đã bị xóa khỏi git tracking và chỉ còn ở file `.gitignore`.
+- Đã chạy verify lại `npm test` thành công (34/34 passing).
+- `features.json` đang nhắm vào mục tiêu `app-build-and-run` và các luồng liên quan.
 - Branch: main
-- Tests: Đã verified passing từ phiên trước.
 
 ## What Next Session Should Do First
-Push code lên GitHub để kích hoạt pipeline Actions. Sau khi tải Artifact APK về thiết bị thật, tiến hành test các luồng: vuốt thẻ (Tab 3), hiển thị Feed (Tab 1) để rà soát lỗi giao diện hoặc kết nối API.
+Push các thay đổi lên GitHub để xác nhận pipeline GitHub Actions pass ở bước lint. Tiếp tục feature đầu tiên đang TODO trong features.json là `ai-pipeline-ranking`.
 
 ## Known Issues / Blockers
-- Môi trường Windows hiện tại không có sẵn lệnh `flutter`, do đó không thể build hoặc hot-reload trực tiếp trên Local. Cần cài đặt Flutter SDK nếu muốn dev trực tiếp thay vì phụ thuộc vào CI.
+- None at this stage for CI. Local Flutter run still depends on SDK installation.
 
 ## Observations (Not Fixed — Outside Current Scope)
-- Cần đảm bảo endpoint API cấu hình trong mã nguồn Flutter đang trỏ đúng về địa chỉ public (hoặc localhost/ngrok) để khi cài APK lên điện thoại thật thì có thể kết nối được tới Backend local.
+- Cần đảm bảo endpoint API cấu hình trong mã nguồn Flutter đang trỏ đúng. (Đã xử lý ở bước trước thông qua `api_config.dart`).
 
 ## Architectural Decisions This Session
-- Chuyển giao quá trình Build APK Release sang GitHub Actions thông qua workflow artifact để giải quyết triệt để vấn đề phụ thuộc môi trường local, đồng thời tạo thói quen CI/CD chuẩn mực cho bản Beta.
+- Nghiêm ngặt không track `node_modules` trong git repository để tránh lỗi file permission và làm rác repo. Mọi CI/CD runner phải tự cài package qua `npm ci` hoặc `npm install`.
