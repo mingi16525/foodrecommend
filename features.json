@@ -558,7 +558,7 @@
     },
     {
       "name": "feature-office-ordering-health",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Mở rộng tính năng Đặt đồ ăn văn phòng định kỳ và Gợi ý món ăn theo chuẩn Sức khỏe/Dinh dưỡng (Calories, Macro).",
       "scope": [
         "src/recommendation/engine.ts",

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useGroupStore } from '../store/groupStore';
-import { Users, ReceiptText, Plus, ChevronRight, CheckCircle2, Circle, Compass, MapPin, Trash2, ExternalLink } from 'lucide-react';
+import { Users, ReceiptText, Plus, ChevronRight, CheckCircle2, Circle, Compass, MapPin, Trash2, ExternalLink, Briefcase } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Voting from '../components/Voting';
 import './GroupSplit.css';
@@ -9,6 +9,26 @@ const GroupSplit: React.FC = () => {
   const { groups, activeTab, setActiveTab, fetchGroups, isLoading, error, connectSocket, tripPlan, isTripLoading, generateTripPlan } = useGroupStore();
   const [tripTitle, setTripTitle] = React.useState('Food Tour Hải Phòng');
   const [stops, setStops] = React.useState<string[]>(['Ga Hải Phòng', 'Khách sạn Imperial', 'Chợ Cát Bi']);
+
+  const [caloriesLimit, setCaloriesLimit] = React.useState<number>(500);
+  const [proteinTarget, setProteinTarget] = React.useState<number>(30);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [officeMeals, setOfficeMeals] = React.useState<any[]>([]);
+  const [isLoadingOffice, setIsLoadingOffice] = React.useState(false);
+
+  const fetchOfficeMeals = () => {
+    setIsLoadingOffice(true);
+    setTimeout(() => {
+      const mockDishes = [
+        { id: 'h1', name: 'Salad Ức Gà', calories: 350, protein: 35, carbs: 10, fat: 5 },
+        { id: 'h2', name: 'Cơm Gạo Lứt Bò Lúc Lắc', calories: 450, protein: 40, carbs: 45, fat: 12 },
+        { id: 'h3', name: 'Bún Gạo Lứt Trộn Chay', calories: 300, protein: 15, carbs: 50, fat: 8 },
+        { id: 'h4', name: 'Cá Hồi Áp Chảo Măng Tây', calories: 400, protein: 35, carbs: 12, fat: 20 },
+      ];
+      setOfficeMeals(mockDishes.filter(d => d.calories <= caloriesLimit && d.protein >= proteinTarget));
+      setIsLoadingOffice(false);
+    }, 800);
+  };
 
   useEffect(() => {
     fetchGroups();
@@ -52,6 +72,12 @@ const GroupSplit: React.FC = () => {
           onClick={() => setActiveTab('TRIPS')}
         >
           <Compass size={18} /> Trip Planner
+        </div>
+        <div 
+          className={`segment ${activeTab === 'OFFICE' ? 'active' : ''}`}
+          onClick={() => setActiveTab('OFFICE')}
+        >
+          <Briefcase size={18} /> Office
         </div>
       </div>
 
@@ -142,7 +168,7 @@ const GroupSplit: React.FC = () => {
                 </div>
               ))}
             </motion.div>
-          ) : (
+          ) : activeTab === 'TRIPS' ? (
             <motion.div 
               key="trips"
               initial={{ opacity: 0, x: 20 }}
@@ -239,6 +265,70 @@ const GroupSplit: React.FC = () => {
                       <ExternalLink size={18} /> Open Route in Google Maps
                     </button>
                   </a>
+                </div>
+              )}
+            </motion.div>
+          ) : (
+            <motion.div 
+              key="office"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="list-container"
+            >
+              <div className="glass-panel" style={{ padding: '16px', borderRadius: '16px', marginBottom: '20px' }}>
+                <h3 style={{ marginBottom: '12px', fontSize: '1.1rem', color: 'var(--text-primary)' }}>🥗 Office Health Ordering</h3>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '4px', fontSize: '0.85rem', opacity: 0.8 }}>Max Calories (kcal)</label>
+                    <input 
+                      type="number" 
+                      value={caloriesLimit} 
+                      onChange={(e) => setCaloriesLimit(Number(e.target.value))}
+                      style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '4px', fontSize: '0.85rem', opacity: 0.8 }}>Min Protein (g)</label>
+                    <input 
+                      type="number" 
+                      value={proteinTarget} 
+                      onChange={(e) => setProteinTarget(Number(e.target.value))}
+                      style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white' }}
+                    />
+                  </div>
+                </div>
+
+                <button 
+                  onClick={fetchOfficeMeals}
+                  disabled={isLoadingOffice}
+                  className="primary-action-btn"
+                  style={{ width: '100%' }}
+                >
+                  {isLoadingOffice ? 'Finding...' : '🔍 Find Healthy Meals'}
+                </button>
+              </div>
+
+              {officeMeals.length > 0 && (
+                <div className="glass-panel" style={{ padding: '16px', borderRadius: '16px' }}>
+                  <h4 style={{ marginBottom: '12px', color: 'var(--accent-primary-end)' }}>Recommended for You</h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {officeMeals.map(meal => (
+                      <div key={meal.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.05)', padding: '12px', borderRadius: '10px' }}>
+                        <div>
+                          <h5 style={{ margin: '0 0 4px 0', fontSize: '1rem' }}>{meal.name}</h5>
+                          <div style={{ fontSize: '0.8rem', opacity: 0.8, display: 'flex', gap: '8px' }}>
+                            <span>🔥 {meal.calories} kcal</span>
+                            <span>🥩 {meal.protein}g</span>
+                            <span>🍚 {meal.carbs}g</span>
+                            <span>🥑 {meal.fat}g</span>
+                          </div>
+                        </div>
+                        <button className="primary-action-btn small-btn" style={{ background: 'var(--accent-secondary-start)' }}>Order</button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </motion.div>

@@ -82,6 +82,24 @@ export class RecommendationEngine {
 
     return { success: true };
   }
+
+  async getOfficeHealthRecommendations(caloriesLimit: number, proteinTarget: number, timeSlot: string) {
+    console.log(`Filtering office meals for ${timeSlot} with max ${caloriesLimit}kcal and min ${proteinTarget}g protein`);
+    
+    // In reality: Query DB / Vector store for dishes matching the health targets.
+    // Mocking the result for the feature scope
+    const mockDishes = [
+      { id: 'h1', name: 'Salad Ức Gà', calories: 350, protein: 35, carbs: 10, fat: 5 },
+      { id: 'h2', name: 'Cơm Gạo Lứt Bò Lúc Lắc', calories: 450, protein: 40, carbs: 45, fat: 12 },
+      { id: 'h3', name: 'Bún Gạo Lứt Trộn Chay', calories: 300, protein: 15, carbs: 50, fat: 8 },
+      { id: 'h4', name: 'Cá Hồi Áp Chảo Măng Tây', calories: 400, protein: 35, carbs: 12, fat: 20 },
+    ];
+
+    // Filter dishes based on user's targets
+    return mockDishes.filter(dish => 
+      dish.calories <= caloriesLimit && dish.protein >= proteinTarget
+    );
+  }
 }
 
 export const recommendationEngine = new RecommendationEngine();
