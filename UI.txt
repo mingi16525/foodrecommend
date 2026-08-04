@@ -1,0 +1,39 @@
+UI MÔ TẢ CHO ỨNG DỤNG ANDROID (FOODRECOMMEND APP)
+
+TAB 1: TIKTOK-STYLE REVIEW & DISH FEED (Khám phá Social)
+- Header: Các tab phụ [Dành cho bạn | Đang theo dõi | Món hot gần đây].
+- Thân trang: Video/Hình ảnh lướt dọc (Vertical Scroll) dạng TikTok.
+- Overlay/Popup: Góc dưới hiển thị Popup "Món ăn thông minh" (Tên món, giá, khoảng cách). Nút hành động: "Thử ngay" chuyển sang Tab 3/Maps.
+- Tương tác: Thả tim, bình luận, lưu, chia sẻ, avatar tác giả (có nút Follow). Phân biệt UI người dùng thường và Verified Reviewer (có tích xanh).
+
+TAB 2: GROUP DECISION, GROUP ORDER & TRIP PLANNER (Cộng đồng & Nhóm)
+- Danh sách nhóm: Hiển thị các nhóm bạn bè/đồng nghiệp.
+- Phòng Chat: Tin nhắn, Widget "Tạo đơn chung", Widget "Trip Planner".
+- Giao diện Group Order (4 bước):
+  1. Tập hợp nhóm.
+  2. AI đề xuất Quán & Bình chọn quán.
+  3. Chọn Món cá nhân.
+  4. Chốt đơn & Điều hướng Delivery App.
+- Giao diện Trip Planner:
+  - Timeline chuyến đi (Điểm dừng 1 -> Điểm dừng 2 -> ...).
+  - Tích hợp Bản đồ và danh sách quán ăn theo tuyến đường.
+
+TAB 3: AI RECOMMENDATION (Swipe/Scroll - Chọn món nhanh)
+- Khung hiển thị: Thẻ (Card) món ăn lớn, tập trung vào hình ảnh.
+- Thông tin trên Card: Tên món, Quán ăn, Giá tiền, Tag AI (#Hợp_khẩu_vị, #Khoảng_cách).
+- Cử chỉ tương tác (Tinder-style):
+  - Vuốt phải: Thích (Like/Lưu).
+  - Vuốt trái: Bỏ qua (Skip).
+  - Vuốt lên: Xem chi tiết.
+- Nút hành động nhanh: Nút "Skip", Nút "Thích", Nút "Reload AI", Nút "Chỉ đường" (Maps), Nút "Đặt món" (Grab/ShopeeFood).
+
+TAB 4: PERSONAL FOOD SETUP (Thiết lập cá nhân)
+- Màn hình Onboarding/Cài đặt Khẩu vị: Slider chỉnh mức độ Cay, Mặn, Ngọt.
+- Tag/Chip Dị ứng: [Hải sản], [Đậu phộng], [Gluten]...
+- Chế độ ăn: [Keto], [Ăn chay], [Low-carb]...
+- Danh sách món kỵ/ghét: Người dùng thêm thủ công.
+
+TAB 5: ACCOUNT & PROFILE MANAGEMENT (Tài khoản)
+- Quản lý Profile cá nhân, Avatar, Liên kết MXH.
+- Bộ sưu tập: Món đã thích, Quán đã lưu, Bài viết đã đăng.
+- Cài đặt hệ thống, Yêu cầu xác thực Reviewer (Verified Reviewer).

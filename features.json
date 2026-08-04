@@ -143,6 +143,65 @@
         "File seed.sql được tạo với dữ liệu mẫu (users, restaurants, posts, v.v.)",
         "Thêm lệnh npm run seed vào package.json để dễ dàng chạy script"
       ]
+    },
+    {
+      "name": "frontend-foundation",
+      "status": "IN_PROGRESS",
+      "description": "Khởi tạo project Mobile (Flutter), Setup Routing, State Management, UI/Theme colors",
+      "scope": [
+        "frontend/",
+        "features.json",
+        "claude_progress.md"
+      ],
+      "definition_of_done": [
+        "Project Flutter được khởi tạo",
+        "Cấu trúc thư mục sẵn sàng"
+      ]
+    },
+    {
+      "name": "tab-4-and-5-ui",
+      "status": "TODO",
+      "description": "Dựng UI màn hình Onboarding (chọn món thích/ghét), Tab Tài khoản (Tab 5), Ghép API Profile",
+      "scope": [
+        "frontend/lib/screens/profile/",
+        "frontend/lib/screens/onboarding/"
+      ]
+    },
+    {
+      "name": "tab-3-swipe-ui",
+      "status": "TODO",
+      "description": "Thiết kế UI Card món ăn, cài đặt logic vuốt thẻ, ghép API Recommendation",
+      "scope": [
+        "frontend/lib/screens/recommendation/",
+        "frontend/lib/widgets/swipe_card.dart"
+      ]
+    },
+    {
+      "name": "tab-1-tiktok-feed-ui",
+      "status": "TODO",
+      "description": "Dựng UI Feed dọc toàn màn hình, Tích hợp Video Player, Popup món ăn",
+      "scope": [
+        "frontend/lib/screens/feed/",
+        "frontend/lib/widgets/video_player.dart"
+      ]
+    },
+    {
+      "name": "tab-2-group-trip-ui",
+      "status": "TODO",
+      "description": "Thiết kế màn hình tạo nhóm, Chat thread, Tạo đơn đồ ăn nhóm, Giao diện Trip Planner",
+      "scope": [
+        "frontend/lib/screens/group/",
+        "frontend/lib/screens/trip/"
+      ]
+    },
+    {
+      "name": "integration-maps-delivery",
+      "status": "TODO",
+      "description": "Tích hợp Google Maps SDK, xử lý Deep-link sang GrabFood/ShopeeFood",
+      "scope": [
+        "frontend/lib/services/maps_service.dart",
+        "frontend/lib/services/delivery_link_service.dart"
+      ]
     }
   ]
 }
