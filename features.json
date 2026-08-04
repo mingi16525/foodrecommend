@@ -180,7 +180,7 @@
     },
     {
       "name": "tab-1-tiktok-feed-ui",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "description": "Dựng UI Feed dọc toàn màn hình, Tích hợp Video Player, Popup món ăn",
       "scope": [
         "frontend/lib/screens/feed/",
@@ -191,11 +191,13 @@
     },
     {
       "name": "tab-2-group-trip-ui",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "description": "Thiết kế màn hình tạo nhóm, Chat thread, Tạo đơn đồ ăn nhóm, Giao diện Trip Planner",
       "scope": [
         "frontend/lib/screens/group/",
-        "frontend/lib/screens/trip/"
+        "frontend/lib/screens/trip/",
+        "features.json",
+        "claude_progress.md"
       ]
     },
     {

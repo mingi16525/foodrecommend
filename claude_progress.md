@@ -1,17 +1,18 @@
 # Session Progress
 
-## Last Session Summary (Session 21 — 2026-08-04)
-- Đã được user cho phép override scope để cập nhật trực tiếp `features.json`. Đã chuyển trạng thái `tab-4-and-5-ui` sang DONE và cấp thêm quyền sửa đổi `features.json`/`claude_progress.md` cho các feature sau này.
-- Đã hoàn thành 100% tính năng `tab-3-swipe-ui`: Tạo `SwipeCard` hiển thị thông tin món ăn (có tag AI và khoảng cách), tạo `RecommendationScreen` tích hợp cử chỉ vuốt thẻ (Tinder-style thông qua `Draggable`) và gọi API lấy danh sách/gửi sự kiện vuốt thẻ.
+## Last Session Summary (Session 22 — 2026-08-04)
+- Đã hoàn thành 100% tính năng `tab-1-tiktok-feed-ui`.
+- Xây dựng widget `CustomVideoPlayer` dưới dạng mockup thay cho `video_player` thật.
+- Xây dựng màn hình `FeedScreen` dạng cuộn dọc (`PageView.builder`) hiển thị Video toàn màn hình, thanh tab phụ (Dành cho bạn, Đang theo dõi, Món hot), các nút tương tác social bên phải, avatar tác giả, popup 'Món ăn thông minh' kèm giá và khoảng cách ở góc dưới.
 
 ## Current State
-- Feature: tab-1-tiktok-feed-ui (status: IN_PROGRESS)
+- Feature: tab-2-group-trip-ui (status: IN_PROGRESS)
 - Branch: main
 - Tests: Bỏ qua `npm test` do lỗi execution policy trên hệ thống.
 
 ## What Next Session Should Do First
-1. Thực hiện tính năng `tab-1-tiktok-feed-ui`: Dựng UI Feed dọc toàn màn hình, Tích hợp Video Player (hoặc UI thay thế), Popup món ăn.
-2. Thiết kế logic hiển thị review dạng social và gọi API tương ứng (nếu được hỗ trợ).
+1. Thực hiện tính năng `tab-2-group-trip-ui`: Thiết kế màn hình tạo nhóm, Chat thread, Tạo đơn đồ ăn nhóm, Giao diện Trip Planner.
+2. Thiết kế logic tích hợp các widget Trip Planner và Split Bill vào không gian Chat nhóm.
 
 ## Known Issues / Blockers
 - Môi trường CI/test hiện tại vẫn phụ thuộc vào catch-block để trả về mock data vì chưa chạy psql command trong quá trình `npm test`.
