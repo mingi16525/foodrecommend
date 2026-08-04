@@ -10,7 +10,7 @@ describe('Social API Routes', () => {
 
   it('POST /api/social/posts should create a post successfully', async () => {
     const res = await request(app).post('/api/social/posts').send({
-      userId: 'user1',
+      userId: '11111111-1111-1111-1111-111111111111',
       type: 'review',
       content: 'Great food!',
       videoUrl: 'http://example.com/video.mp4'

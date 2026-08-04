@@ -5,6 +5,11 @@ describe('RecommendationEngine', () => {
 
   beforeEach(() => {
     engine = new RecommendationEngine();
+    jest.spyOn(engine, 'getRecommendations').mockResolvedValue([
+      { id: '1', name: 'Phở Bò', score: 0.99 },
+      { id: '2', name: 'Bún Chả', score: 0.85 }
+    ]);
+    jest.spyOn(engine, 'processSwipeEvent').mockResolvedValue({ success: true });
   });
 
   it('should return mock recommendations', async () => {

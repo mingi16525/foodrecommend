@@ -1,6 +1,13 @@
 import request from 'supertest';
 import app from '../src/index';
 
+jest.mock('../src/user/service', () => ({
+  userService: {
+    getUserProfile: jest.fn().mockResolvedValue({ id: 'user123', email: 'mock@example.com', full_name: 'Mock User', preferences: null }),
+    updatePreferences: jest.fn().mockResolvedValue({ user_id: 'user123', favorite_flavors: ['spicy', 'sweet'] })
+  }
+}));
+
 describe('User API Routes', () => {
   it('GET /api/users/:id should return user profile', async () => {
     const res = await request(app).get('/api/users/user123');

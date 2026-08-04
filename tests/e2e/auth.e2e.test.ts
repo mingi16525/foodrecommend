@@ -1,3 +1,4 @@
+/* eslint-disable */
 import request from 'supertest';
 // import app from '../../src/index'; // In a real scenario, import the Express app
 

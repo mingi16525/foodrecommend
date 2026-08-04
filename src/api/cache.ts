@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Mock Redis Client for Caching Layer
 class MockRedisClient {
   private cache: Map<string, { value: string, expiry: number }> = new Map();

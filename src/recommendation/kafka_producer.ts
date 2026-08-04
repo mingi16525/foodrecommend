@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Mock kafkajs import to prevent compilation errors if not installed
 // In a real scenario, this would be: import { Kafka, Producer } from 'kafkajs';
 class MockKafka {

@@ -1,6 +1,13 @@
 import request from 'supertest';
 import app from '../src/index';
 
+jest.mock('../src/restaurant/service', () => ({
+  restaurantService: {
+    searchRestaurants: jest.fn().mockResolvedValue([{ id: 'r1', name: 'Mock Search Result' }]),
+    getRestaurantById: jest.fn().mockResolvedValue({ id: 'r123', name: 'Mock Restaurant', dishes: [{ id: 'd1', name: 'Mock Dish' }] })
+  }
+}));
+
 describe('Restaurant API Routes', () => {
   it('GET /api/restaurants/search should return 400 if query missing', async () => {
     const res = await request(app).get('/api/restaurants/search');

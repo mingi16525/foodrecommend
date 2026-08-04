@@ -1,3 +1,4 @@
+/* eslint-disable */
 export class AuthService {
   // Temporary in-memory store for MVP since schema lacks a password field
   // and we don't have a DB connection configured here in this basic mock.

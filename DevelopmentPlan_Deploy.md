@@ -1,55 +1,64 @@
-# Kế Hoạch Triển Khai & Kiểm Thử Thực Tế (Development Plan: Deploy & Beta Testing)
+# Kế Hoạch Triển Khai & Kiểm Thử Bản Beta Trên Máy Cá Nhân (Local Beta Deployment Plan)
 
-Tài liệu này vạch ra lộ trình để chuyển đổi dự án từ giai đoạn **MVP (Mock-Driven)** sang **Bản Build Thực Tế (Beta & Production Ready)**. Quá trình này tập trung vào việc dỡ bỏ mã giả lập (mock), kết nối hạ tầng thật, cấu hình CI/CD và chuẩn bị phân phối ứng dụng di động.
-
----
-
-## 1. Phase 1: Chuẩn Bị Hạ Tầng (Infrastructure Readiness)
-Mục tiêu: Đưa các công nghệ lõi lên môi trường staging hoặc managed cloud, loại bỏ sự phụ thuộc vào local in-memory.
-
-- [ ] **PostgreSQL**: Thuê Managed Database (ví dụ: AWS RDS, Supabase) hoặc tự host trên VPS. Chạy lại `schema.sql` và `seed.sql`.
-- [ ] **Redis**: Thiết lập Redis server thật (ví dụ: ElastiCache hoặc Redis Labs) để xử lý cache feed và session.
-- [ ] **Vector Database (Qdrant)**: Deploy Qdrant Cluster thật, cung cấp REST/gRPC endpoint cho backend và AI scripts.
-- [ ] **Message Queue (Kafka)**: Thiết lập cluster Kafka (hoặc Confluent Cloud) để xử lý lượng lớn log "vuốt thẻ" (Swipe Events).
+Tài liệu này vạch ra lộ trình để chuyển đổi dự án từ giai đoạn **MVP (Mock-Driven)** sang **Bản Build Beta Chạy Thực Tế Trên Máy Cá Nhân (Localhost)**. Quá trình này đảm bảo mọi thuật toán AI, luồng dữ liệu, và giao diện hoạt động chính xác theo đặc tả trong `ProductDesignDocument.md` và `FoodRecommend_Product_Specification.md` trước khi tốn chi phí lên Cloud.
 
 ---
 
-## 2. Phase 2: Dỡ Bỏ Mã Giả Lập & Tích Hợp API Thật (Unmocking & Integration)
-Mục tiêu: Đảm bảo luồng dữ liệu Backend chạy mượt mà trên môi trường thật.
+## 1. Phase 1: Chuẩn Bị Hạ Tầng Local (Local Infrastructure Readiness)
+Mục tiêu: Đảm bảo toàn bộ backend, database và message queue chạy trơn tru trên Docker của máy cá nhân.
 
-- [ ] **Core/Auth Module**: Thêm trường `password` (hashed với bcrypt) vào bảng `users`. Loại bỏ Mock Auth, áp dụng xác thực JWT 100% bằng dữ liệu database.
-- [ ] **AI/Recommendation Engine**: 
-  - Xóa class `MockQdrantClient`.
-  - Kết nối service Backend tới Qdrant để thực hiện **Vector Similarity Search** thay vì trả list tĩnh.
-  - Xóa mock in-memory Kafka Producer/Consumer.
-- [ ] **Bản Đồ & Giao Hàng**: Tích hợp Google Maps API Key vào `maps_service.dart`. Đảm bảo các logic tính khoảng cách (Geohashing) hoạt động trên vị trí thực tế của thiết bị.
+- [ ] **Khởi động Local Docker Compose**: Chạy toàn bộ PostgreSQL, Redis, Qdrant (Vector DB) và Kafka bằng Docker trên máy cá nhân (`docker-compose up -d`).
+- [ ] **Kiểm tra kết nối DB**: Xác nhận Backend Node.js kết nối thành công tới tất cả các services ở `localhost` (Bỏ qua cơ chế fallback Mock Data).
+- [ ] **Cấu hình môi trường**: Cập nhật file `.env` trỏ toàn bộ URL về `localhost` (ví dụ: `DB_HOST=localhost`, `QDRANT_URL=http://localhost:6333`).
 
 ---
 
-## 3. Phase 3: Hoàn Thiện Frontend & Build Ứng Dụng (Mobile App Distribution)
-Mục tiêu: Xây dựng file thực thi (APK/AAB/IPA) để tester có thể cài đặt trên điện thoại thật.
+## 2. Phase 2: Chuẩn Bị Dữ Liệu Thực Tế (Data Preparation)
+Mục tiêu: Xóa bỏ dữ liệu Seed sơ sài, nạp bộ dữ liệu Beta đủ lớn và sát với thực tế để thuật toán AI có thể học và phân tích.
 
-- [ ] **Flutter Config**: Cập nhật `.env` cho Frontend, trỏ API URL về domain staging (ví dụ: `api.foodrecommend.dev`).
-- [ ] **Cấp quyền thiết bị**: Đảm bảo khai báo đúng `AndroidManifest.xml` và `Info.plist` (Location, Camera, Internet).
-- [ ] **Android Build**: Khởi tạo Keystore, cấu hình signing, build bản `release` APK và AAB.
-- [ ] **iOS Build**: Tạo chứng chỉ (Certificates), Provisioning Profiles trên Apple Developer, build IPA.
-- [ ] **Phân phối nội bộ**: Đẩy bản build lên Firebase App Distribution hoặc TestFlight / Google Play Internal Testing.
-
----
-
-## 4. Phase 4: Kiểm Thử Toàn Diện (Real E2E Testing)
-Mục tiêu: Đảm bảo khi app chạy thực tế không có lỗi phát sinh do network hoặc device limitation.
-
-- [ ] **Tháo Fallback trong Test Suite**: Cập nhật file `.env.test` để trỏ vào database Test thật. Đảm bảo Jest/Supertest không rơi vào Catch block trả về Mock data.
-- [ ] **Kiểm thử phần cứng**: Test hiệu năng video player trên cuộn Feed (TikTok-style) bằng thiết bị Android/iOS cấu hình thấp.
-- [ ] **Kiểm thử GPS**: Test tính năng gợi ý theo vị trí (Tab 3) bằng cách spoof location hoặc đi thực tế để xem ứng dụng có recommend quán trong bán kính 5km hay không.
-- [ ] **Load Testing**: Chạy lại script k6 `k6-script.js` trên môi trường Staging với Database thật để đo ngưỡng chịu tải.
+- [ ] **Nạp Database PostgreSQL**: 
+  - Sinh ít nhất 50 Quán ăn (Restaurants) thực tế (kèm tọa độ địa lý, Geohash).
+  - Sinh ít nhất 500 Món ăn (Dishes) phân loại theo các tags: Cay, Không cay, Chay, Mặn, Hải sản.
+  - Tạo 20 User giả lập có các `user_preferences` (Khẩu vị, Dị ứng) phong phú khác nhau.
+- [ ] **Nạp Dữ liệu Vector (Qdrant)**:
+  - Chạy script Python để sinh Vector Embeddings cho 500 món ăn bằng model `all-MiniLM-L6-v2` (HuggingFace) dựa trên Tên món, Thành phần, Tags.
+  - Đẩy 500 vectors này vào collection `dishes` trên Qdrant local.
 
 ---
 
-## 5. Phase 5: Tự Động Hóa CI/CD (Continuous Deployment)
-- [ ] **Backend Pipeline**: GitHub Actions tự động chạy `npm test`. Nếu pass, build Docker Image -> Push lên Docker Hub/ECR -> Trigger server pull image mới.
-- [ ] **Frontend Pipeline**: Tích hợp Fastlane hoặc GitHub Actions for Flutter để tự động build và upload APK/IPA mỗi khi có tag release mới trên repo.
+## 3. Phase 3: Triển Khai Thuật Toán AI Thực Tế (AI Pipeline Implementation)
+Mục tiêu: Viết code thực thi logic AI (Candidate Gen -> Ranking -> Re-ranking) như trong ProductDesignDocument, thay thế cho API Mock hiện tại.
+
+- [ ] **Candidate Generation (Lọc thô)**: 
+  - Code API Node.js gọi Qdrant Vector Search để tìm Top 50 món ăn gần giống với User Embedding hoặc Context hiện tại.
+  - Kết hợp lọc Geohash (Ví dụ: Chỉ lấy quán trong bán kính 5km).
+  - Kết hợp lọc Dị ứng (Hard-rules filter): Cắt bỏ các món chứa dị ứng của User.
+- [ ] **Ranking Stage (Xếp hạng)**: 
+  - Thay vì trả nguyên Top 50, áp dụng thuật toán tính điểm kết hợp (Collaborative + Content-based) để chấm điểm (Score) từng món dựa trên lịch sử Swipe.
+- [ ] **Group Decision AI (Gợi ý Nhóm)**: 
+  - Triển khai logic tổng hợp (Pareto Aggregation) để gợi ý danh sách món ăn/quán ăn thỏa mãn cả nhóm dựa trên giao điểm sở thích.
+- [ ] **Trip Planner AI**: 
+  - Code luồng kết nối Google Maps API để tính lộ trình.
+  - Viết module gọi AI LLM (Gemini/OpenAI) để gợi ý các quán dọc tuyến đường.
 
 ---
-*Ghi chú: Lộ trình này ưu tiên tính ổn định, cần triển khai theo thứ tự từ Phase 1 xuống Phase 5. Không deploy Frontend (Phase 3) khi Backend (Phase 2) vẫn đang trả về dữ liệu Mock.*
+
+## 4. Phase 4: Tích Hợp API Bên Thứ Ba (Third-party APIs)
+- [ ] **Google Maps SDK**: Thêm API Key thực tế để hiển thị bản đồ và tính toán khoảng cách quán ăn.
+- [ ] **Giao hàng (Deep-linking)**: Thêm các URL Scheme mở app thật (ShopeeFood, Grab) truyền tham số tên quán.
+- [ ] **Bảo mật Auth**: Code JWT thực tế, kết nối Database kiểm tra Hash Password thay vì bỏ qua bước check.
+
+---
+
+## 5. Phase 5: Build và Chạy Thử App Trên Máy Cá Nhân (App Build & Test)
+Mục tiêu: Đưa Frontend kết nối với Backend Local để người dùng có thể lướt, vuốt thẻ, xem phản hồi AI ngay trên điện thoại hoặc Emulator.
+
+- [ ] **Mobile App Config**: Cập nhật endpoint của app Flutter trỏ về IP của máy cá nhân (ví dụ: `192.168.1.x:3000`).
+- [ ] **Chạy trên Máy Thật/Emulator**: Build ứng dụng (Debug Mode) trực tiếp qua cáp USB vào điện thoại (Android/iOS) hoặc chạy trên Android Studio Emulator.
+- [ ] **Manual E2E Testing**:
+  - Test vuốt thẻ ở Tab 3, theo dõi log console để xem AI có tính lại (recalculate) danh sách gợi ý đúng hay không.
+  - Test tạo nhóm ở Tab 2, nạp 2 user có sở thích trái ngược, xem AI gợi ý nhóm xử lý thế nào.
+  - Test Feed ở Tab 1.
+
+---
+*Ghi chú: Lộ trình này dành riêng cho việc test trên Local. Khi hệ thống Local Beta (Backend + AI + App) đã hoàn chỉnh và chính xác, dự án mới tiến tới việc đóng gói (Dockerize) đẩy lên Cloud và phân phối Beta TestFlight/APK cho người dùng ngoài.*
