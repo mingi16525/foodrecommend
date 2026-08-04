@@ -1,294 +1,77 @@
 {
   "features": [
     {
-      "name": "core-architecture-db-setup",
-      "status": "DONE",
-      "description": "Thiết lập cấu trúc dự án cơ bản và Database (PostgreSQL, Redis, Vector DB)",
+      "name": "ai-pipeline-ranking",
+      "status": "TODO",
+      "description": "Triển khai Ranking Stage: tính điểm kết hợp (Collaborative + Content-based) dựa trên lịch sử Swipe",
       "scope": [
-        "docker-compose.yml",
-        "schema.sql",
-        "src/",
-        "tests/",
-        "package.json",
-        "tsconfig.json",
-        ".github/",
-        "eslint.config.mjs",
-        "jest.config.js"
-      ],
-      "definition_of_done": [
-        "Docker compose có thể chạy database",
-        "Schema cơ bản được thiết lập thành công",
-        "Kết nối được đến database từ application"
+        "src/recommendation/engine.ts"
       ]
     },
     {
-      "name": "tab-3-swipe-ai-rec",
-      "status": "DONE",
-      "description": "Phát triển tính năng Swipe chọn món cá nhân",
+      "name": "ai-group-decision",
+      "status": "TODO",
+      "description": "Triển khai Group Decision AI (Pareto Aggregation) gợi ý quán ăn thỏa mãn nhóm",
       "scope": [
-        "src/recommendation/",
-        "src/api/",
-        "src/index.ts",
-        "tests/",
-        "src/user/",
-        "src/restaurant/",
-        "src/social/",
-        "src/group/"
+        "src/group/service.ts",
+        "src/recommendation/engine.ts"
       ]
     },
     {
-      "name": "docs-overview-readme",
-      "status": "DONE",
-      "description": "Cập nhật README.md với hướng phát triển và tổng thể sản phẩm",
+      "name": "ai-trip-planner",
+      "status": "TODO",
+      "description": "Triển khai Trip Planner AI kết nối Google Maps API và gọi LLM",
       "scope": [
-        "README.md"
+        "src/group/tripPlanner.ts"
       ]
     },
     {
-      "name": "module-user-profile",
-      "status": "DONE",
-      "description": "Phát triển User Profile module (Data models, API controllers)",
+      "name": "api-third-party-maps",
+      "status": "TODO",
+      "description": "Thêm API Key thực tế cho Google Maps SDK trên frontend",
       "scope": [
-        "src/user/",
-        "src/api/user.routes.ts",
-        "tests/user.test.ts"
-      ],
-      "definition_of_done": [
-        "Service user được implement",
-        "API routes cho GET/POST user profile hoạt động",
-        "Unit tests pass"
+        "frontend/lib/services/maps_service.dart"
       ]
     },
     {
-      "name": "module-restaurant-listing",
-      "status": "DONE",
-      "description": "Phát triển Restaurant Listing module (Data models, API controllers)",
+      "name": "api-third-party-delivery",
+      "status": "TODO",
+      "description": "Thêm Deep-linking / URL Scheme mở app GrabFood, ShopeeFood thực tế",
       "scope": [
-        "src/restaurant/",
-        "src/api/restaurant.routes.ts",
-        "tests/restaurant.test.ts"
-      ],
-      "definition_of_done": [
-        "Service restaurant được implement",
-        "API routes cho GET restaurants hoạt động",
-        "Unit tests pass"
+        "frontend/lib/services/delivery_link_service.dart"
       ]
     },
     {
-      "name": "module-group",
-      "status": "DONE",
-      "description": "Phát triển Group module (Data models, API controllers)",
+      "name": "api-security-auth",
+      "status": "TODO",
+      "description": "Code JWT thực tế, kết nối Database kiểm tra Hash Password",
       "scope": [
-        "src/group/",
-        "src/api/group.routes.ts",
-        "tests/group.test.ts"
-      ],
-      "definition_of_done": [
-        "Service group được implement",
-        "API routes cho nhóm hoạt động",
-        "Unit tests pass"
+        "src/auth/authService.ts",
+        "src/api/auth.routes.ts"
       ]
     },
     {
-      "name": "module-social",
-      "status": "DONE",
-      "description": "Phát triển Social module (Data models, API controllers)",
+      "name": "frontend-local-config",
+      "status": "TODO",
+      "description": "Cập nhật endpoint của app Flutter trỏ về IP của máy cá nhân",
       "scope": [
-        "src/social/",
-        "src/api/social.routes.ts",
-        "tests/social.test.ts"
-      ],
-      "definition_of_done": [
-        "Service social được implement",
-        "API routes cho social (follow, feed) hoạt động",
-        "Unit tests pass"
+        "frontend/lib/config/api_config.dart"
       ]
     },
     {
-      "name": "module-split-bill",
-      "status": "DONE",
-      "description": "Phát triển tính năng tách hóa đơn (Split Bill) cho Group",
+      "name": "app-build-and-run",
+      "status": "TODO",
+      "description": "Build ứng dụng (Debug Mode) trực tiếp qua cáp USB hoặc Emulator",
       "scope": [
-        "src/group/splitBill.ts",
-        "src/api/group.routes.ts",
-        "tests/splitBill.test.ts"
-      ],
-      "definition_of_done": [
-        "Service split bill được implement",
-        "API routes cho split bill hoạt động",
-        "Unit tests pass"
+        "frontend/"
       ]
     },
     {
-      "name": "update-readme-future-vision",
-      "status": "DONE",
-      "description": "Cập nhật README.md với tầm nhìn sản phẩm, module hiện tại và tương lai",
+      "name": "manual-e2e-testing",
+      "status": "TODO",
+      "description": "Test UX/UI trực tiếp: Vuốt thẻ Tab 3, Group Tab 2, Feed Tab 1",
       "scope": [
-        "README.md"
-      ],
-      "definition_of_done": [
-        "README.md được cập nhật đầy đủ các module: User, Recommendation, Restaurant, Group (Split Bill), Social",
-        "README.md đề cập đến hướng phát triển tương lai"
-      ]
-    },
-    {
-      "name": "module-db-seeding",
-      "status": "DONE",
-      "description": "Tạo seed data cho PostgreSQL để phục vụ test API thực tế",
-      "scope": [
-        "seed.sql",
-        "package.json"
-      ],
-      "definition_of_done": [
-        "File seed.sql được tạo với dữ liệu mẫu (users, restaurants, posts, v.v.)",
-        "Thêm lệnh npm run seed vào package.json để dễ dàng chạy script"
-      ]
-    },
-    {
-      "name": "frontend-foundation",
-      "status": "DONE",
-      "description": "Khởi tạo project Mobile (Flutter), Setup Routing, State Management, UI/Theme colors",
-      "scope": [
-        "frontend/",
-        "features.json",
-        "claude_progress.md"
-      ],
-      "definition_of_done": [
-        "Project Flutter được khởi tạo",
-        "Cấu trúc thư mục sẵn sàng"
-      ]
-    },
-    {
-      "name": "tab-4-and-5-ui",
-      "status": "DONE",
-      "description": "Dựng UI màn hình Onboarding (chọn món thích/ghét), Tab Tài khoản (Tab 5), Ghép API Profile",
-      "scope": [
-        "frontend/lib/screens/profile/",
-        "frontend/lib/screens/onboarding/"
-      ]
-    },
-    {
-      "name": "tab-3-swipe-ui",
-      "status": "DONE",
-      "description": "Thiết kế UI Card món ăn, cài đặt logic vuốt thẻ, ghép API Recommendation",
-      "scope": [
-        "frontend/lib/screens/recommendation/",
-        "frontend/lib/widgets/swipe_card.dart",
-        "features.json",
-        "claude_progress.md"
-      ]
-    },
-    {
-      "name": "tab-1-tiktok-feed-ui",
-      "status": "DONE",
-      "description": "Dựng UI Feed dọc toàn màn hình, Tích hợp Video Player, Popup món ăn",
-      "scope": [
-        "frontend/lib/screens/feed/",
-        "frontend/lib/widgets/video_player.dart",
-        "features.json",
-        "claude_progress.md"
-      ]
-    },
-    {
-      "name": "tab-2-group-trip-ui",
-      "status": "DONE",
-      "description": "Thiết kế màn hình tạo nhóm, Chat thread, Tạo đơn đồ ăn nhóm, Giao diện Trip Planner",
-      "scope": [
-        "frontend/lib/screens/group/",
-        "frontend/lib/screens/trip/",
-        "features.json",
-        "claude_progress.md",
-        "DevelopmentPlan.md"
-      ]
-    },
-    {
-      "name": "integration-maps-delivery",
-      "status": "DONE",
-      "description": "Tích hợp Google Maps SDK, xử lý Deep-link sang GrabFood/ShopeeFood",
-      "scope": [
-        "frontend/lib/services/maps_service.dart",
-        "frontend/lib/services/delivery_link_service.dart",
-        "features.json",
-        "claude_progress.md"
-      ]
-    },
-    {
-      "name": "platform-message-queue",
-      "status": "DONE",
-      "description": "Setup Kafka/RabbitMQ container cho môi trường local (Phase 1.2)",
-      "scope": [
-        "docker-compose.yml"
-      ]
-    },
-    {
-      "name": "platform-api-gateway",
-      "status": "DONE",
-      "description": "Khởi tạo base source code cho API Gateway Kong/Nginx (Phase 1.3)",
-      "scope": [
-        "gateway/"
-      ]
-    },
-    {
-      "name": "module-auth",
-      "status": "DONE",
-      "description": "Backend: Viết API Đăng ký tài khoản (Register), Đăng nhập (Login) sinh JWT token (Phase 2.1)",
-      "scope": [
-        "src/auth/",
-        "src/api/auth.routes.ts",
-        "tests/auth.test.ts"
-      ]
-    },
-    {
-      "name": "frontend-auth-ui",
-      "status": "DONE",
-      "description": "Frontend: Code UI Đăng ký / Đăng nhập, tích hợp API Auth và lưu token an toàn (Phase 2.1)",
-      "scope": [
-        "frontend/lib/screens/auth/",
-        "frontend/lib/services/auth_service.dart"
-      ]
-    },
-    {
-      "name": "data-pipeline-kafka",
-      "status": "DONE",
-      "description": "Cấu hình Kafka Producer phát event Swipe và Consumer lưu trữ event (Phase 3.1)",
-      "scope": [
-        "src/recommendation/kafka_producer.ts",
-        "src/recommendation/kafka_consumer.ts"
-      ]
-    },
-    {
-      "name": "ai-offline-training",
-      "status": "DONE",
-      "description": "Viết script Python tính toán Vector Embedding và đẩy vào Qdrant (Phase 3.2)",
-      "scope": [
-        "ai/scripts/generate_embeddings.py",
-        "ai/scripts/ingest_qdrant.py"
-      ]
-    },
-    {
-      "name": "qa-e2e-testing",
-      "status": "DONE",
-      "description": "Lên kịch bản test tự động E2E các luồng chính của hệ thống (Phase 5.1)",
-      "scope": [
-        "tests/e2e/"
-      ]
-    },
-    {
-      "name": "load-testing-optimization",
-      "status": "DONE",
-      "description": "Viết script k6/JMeter test tải, cấu hình Caching Redis, tối ưu DB (Phase 5.2)",
-      "scope": [
-        "tests/load/",
-        "src/api/",
-        "schema.sql"
-      ]
-    },
-    {
-      "name": "ui-ux-polish",
-      "status": "DONE",
-      "description": "Tối ưu bộ nhớ, tinh chỉnh animation, duyệt app tổng thể chuẩn bị Beta build (Phase 5.3)",
-      "scope": [
-        "frontend/lib/"
+        "frontend/"
       ]
     }
   ]
