@@ -146,7 +146,7 @@
     },
     {
       "name": "frontend-foundation",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "description": "Khởi tạo project Mobile (Flutter), Setup Routing, State Management, UI/Theme colors",
       "scope": [
         "frontend/",
@@ -160,7 +160,7 @@
     },
     {
       "name": "tab-4-and-5-ui",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "description": "Dựng UI màn hình Onboarding (chọn món thích/ghét), Tab Tài khoản (Tab 5), Ghép API Profile",
       "scope": [
         "frontend/lib/screens/profile/",

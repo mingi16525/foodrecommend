@@ -1,18 +1,17 @@
 # Session Progress
 
-## Last Session Summary (Session 17 — 2026-08-04)
-- Đánh dấu hoàn thành (`[x]`) cho các thành phần Backend đã hoàn tất (Phase 1, 2, 3.3, 4.1) trong `DevelopmentPlan.md` dựa trên `features.json`.
-- Sửa lỗi tên file (`claude-progress.md` thành `claude_progress.md`) trong script `agent-review.sh`.
-- Xác nhận các task liên quan đến UI/Frontend (Phase 1.5, 3.4, 4.2, v.v.) hiện vẫn đang chờ thực hiện.
+## Last Session Summary (Session 18 — 2026-08-04)
+- Đã hoàn thành feature `frontend-foundation`: Khởi tạo cấu trúc thư mục Flutter thủ công (do môi trường chưa có Flutter CLI), thiết lập `pubspec.yaml`, `main.dart`, cấu hình Theme cơ bản, Routing (`go_router`) và State Management (`Provider`).
+- Bỏ qua việc sửa đổi `.github/workflows/ci.yml` do vi phạm Scope Rules (file này không nằm trong scope của `frontend-foundation`).
 
 ## Current State
-- Feature: frontend-foundation (status: IN_PROGRESS)
+- Feature: tab-4-and-5-ui (status: IN_PROGRESS)
 - Branch: main
 - Tests: 24 passing / 24 total
 
 ## What Next Session Should Do First
-1. Thực hiện feature `frontend-foundation`: Khởi tạo project Flutter (hoặc tạo cấu trúc thủ công nếu không cài sẵn flutter), thiết lập Routing, State Management, và UI/Theme colors.
-2. Thiết lập CI pipeline tự động chạy `agent-review.sh` để kiểm tra tiến độ mỗi phiên.
+1. Thực hiện feature `tab-4-and-5-ui`: Dựng UI màn hình Onboarding (chọn món thích/ghét), Tab Tài khoản (Tab 5).
+2. Tích hợp gọi API Profile & Preferences từ Backend.
 
 ## Known Issues / Blockers
 - Môi trường CI/test hiện tại vẫn phụ thuộc vào catch-block để trả về mock data vì chưa chạy psql command trong quá trình `npm test`.
