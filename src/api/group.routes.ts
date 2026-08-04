@@ -64,15 +64,19 @@ router.post('/:id/split-items', (req: Request, res: Response): void => {
   res.json({ data: results });
 });
 
-router.post('/trip-planner', (req: Request, res: Response): void => {
+router.post('/trip-planner', async (req: Request, res: Response): Promise<void> => {
   const { tripTitle, stops } = req.body;
   if (!stops || !Array.isArray(stops) || stops.length === 0) {
     res.status(400).json({ error: 'stops (non-empty array) is required' });
     return;
   }
   
-  const tripPlan = tripPlannerService.planTrip(tripTitle, stops);
-  res.json({ data: tripPlan });
+  try {
+    const tripPlan = await tripPlannerService.planTrip(tripTitle, stops);
+    res.json({ data: tripPlan });
+  } catch {
+    res.status(500).json({ error: 'Failed to plan trip' });
+  }
 });
 
 export const groupRouter = router;

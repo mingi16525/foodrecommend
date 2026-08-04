@@ -1,12 +1,12 @@
 import { QdrantClient } from '@qdrant/js-client-rest';
 import { Pool } from 'pg';
+import { generateEmbedding, maximalMarginalRelevance } from '../ai/utils';
 
 export class RecommendationEngine {
   private qdrant: QdrantClient;
   private db: Pool;
 
   constructor() {
-    // Initialization logic for AI Engine & DB clients
     this.qdrant = new QdrantClient({ 
       url: process.env.QDRANT_URL || 'http://localhost:6333',
       checkCompatibility: false
@@ -26,24 +26,40 @@ export class RecommendationEngine {
         [userId]
       );
       
-      const flavorCount = userPref.rows[0]?.favorite_flavors?.length || 0;
-      
-      // 2. Mock vector search with Qdrant
-      // In reality: await this.qdrant.search('dishes', { vector: userPref.rows[0]?.embedding || defaultVector, limit: 10 });
+      // COLD START LOGIC: If no embedding exists, generate one from user tags
+      const userTags = (userPref.rows[0]?.favorite_flavors || []).join(',') + ',' + (userPref.rows[0]?.allergies || []).join(',');
+      const userVector = generateEmbedding(userTags || 'default_user_no_tags');
+
+      // 2. Vector search with Qdrant
+      // Using with_vector: true to get embeddings back for MMR
       const qdrantResults = await this.qdrant.search('dishes', {
-        vector: [0.1, 0.2, 0.3, 0.4 + flavorCount],
-        limit: 2
+        vector: userVector,
+        limit: 10,
+        with_vector: true
       }).catch(() => {
         // Fallback if Qdrant is not running or collection is missing
         return [
-          { id: '1', score: 0.98, payload: { name: 'Phở Bò' } },
-          { id: '2', score: 0.95, payload: { name: 'Bún Chả' } }
-        ];
+          { id: '1', score: 0.98, payload: { name: 'Phở Bò' }, vector: generateEmbedding('Pho Bo') },
+          { id: '2', score: 0.95, payload: { name: 'Bún Chả' }, vector: generateEmbedding('Bun Cha') },
+          { id: '3', score: 0.90, payload: { name: 'Phở Gà' }, vector: generateEmbedding('Pho Ga') }, // similar to Pho Bo
+          { id: '4', score: 0.85, payload: { name: 'Bánh Mì' }, vector: generateEmbedding('Banh Mi') },
+          { id: '5', score: 0.80, payload: { name: 'Nem Rán' }, vector: generateEmbedding('Nem Ran') }
+        ] as Record<string, unknown>[];
       });
 
-      return qdrantResults.map(res => ({
+      // 3. Apply MMR (Re-ranking) for Diversity
+      const mappedResults = qdrantResults.map(r => ({
+        id: String(r.id),
+        score: r.score,
+        embedding: (r.vector as number[]) || generateEmbedding(((r.payload as Record<string, unknown>)?.name as string) || ''),
+        payload: r.payload
+      }));
+
+      const mmrResults = maximalMarginalRelevance(mappedResults, userVector, 0.5, 5);
+
+      return mmrResults.map(res => ({
         id: res.id,
-        name: res.payload?.name || 'Unknown',
+        name: (res.payload as Record<string, unknown>)?.name || 'Unknown',
         score: res.score
       }));
     } catch (e) {
@@ -55,9 +71,7 @@ export class RecommendationEngine {
   async processSwipeEvent(userId: string, dishId: string, action: 'like' | 'skip') {
     console.log(`User ${userId} swiped ${action} on dish ${dishId}`);
     
-    // 1. Insert swipe action into Postgres
     try {
-      // Create table dynamically if not exists for MVP, or just insert
       await this.db.query(`
         CREATE TABLE IF NOT EXISTS user_swipes (
           id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -77,17 +91,12 @@ export class RecommendationEngine {
       throw e;
     }
 
-    // 2. Adjust user embedding in Qdrant (placeholder)
-    // await this.qdrant.upsert('users', { wait: true, points: [...] });
-
     return { success: true };
   }
 
   async getOfficeHealthRecommendations(caloriesLimit: number, proteinTarget: number, timeSlot: string) {
     console.log(`Filtering office meals for ${timeSlot} with max ${caloriesLimit}kcal and min ${proteinTarget}g protein`);
     
-    // In reality: Query DB / Vector store for dishes matching the health targets.
-    // Mocking the result for the feature scope
     const mockDishes = [
       { id: 'h1', name: 'Salad Ức Gà', calories: 350, protein: 35, carbs: 10, fat: 5 },
       { id: 'h2', name: 'Cơm Gạo Lứt Bò Lúc Lắc', calories: 450, protein: 40, carbs: 45, fat: 12 },
@@ -95,7 +104,6 @@ export class RecommendationEngine {
       { id: 'h4', name: 'Cá Hồi Áp Chảo Măng Tây', calories: 400, protein: 35, carbs: 12, fat: 20 },
     ];
 
-    // Filter dishes based on user's targets
     return mockDishes.filter(dish => 
       dish.calories <= caloriesLimit && dish.protein >= proteinTarget
     );
