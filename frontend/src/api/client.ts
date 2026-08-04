@@ -5,9 +5,9 @@ import { Capacitor } from '@capacitor/core';
 const getBaseURL = () => {
   if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
     // 10.0.2.2 is the special alias for the host loopback interface in Android Emulator
-    return 'http://10.0.2.2:8000/api';
+    return 'https://6xmlqd1k-80.asse.devtunnels.ms/api';
   }
-  return 'http://localhost:8000/api'; // Nginx Gateway URL (Web/iOS)
+  return 'https://6xmlqd1k-80.asse.devtunnels.ms/api'; // Nginx Gateway URL (Web/iOS)
 };
 
 const apiClient = axios.create({

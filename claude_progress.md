@@ -1,29 +1,30 @@
 # Session Progress
 
-## Last Session Summary (Session 34 — 2026-08-03)
-- Đã thêm tính năng `android-app-creation` vào `features.json`.
-- Cài đặt cấu hình Capacitor để hỗ trợ tạo ra bản build Android native từ source code React/Vite web.
-- Cập nhật `frontend/src/api/client.ts` để sử dụng host loopback alias của Android (`10.0.2.2`) khi ứng dụng được chạy trên Android Platform qua Capacitor. 
-- Đồng bộ mã nguồn (`npx cap sync android`) để sẵn sàng build thành `.apk` trong Android Studio.
+## Last Session Summary (Session 35 — 2026-08-04)
+- Cập nhật địa chỉ API Gateway DevTunnel `https://6xmlqd1k-80.asse.devtunnels.ms/api` trong `frontend/src/api/client.ts`.
+- Thêm thuộc tính `android:usesCleartextTraffic="true"` vào `AndroidManifest.xml` để đảm bảo hỗ trợ kết nối mạng không bị Android Security chặn.
+- Rebuild lại backend container bằng Docker Compose để giải quyết lỗi 404 Not Found trên `/api/restaurants`.
+- Rebuild frontend web bundle và thực hiện `npx cap sync android` thành công.
+- Chạy kiểm thử toàn bộ test suite backend (24/24 pass) và kiểm tra static analysis / linting sạch sẽ.
 
 ## Current State
 - Feature: android-app-creation (status: DONE, 100% complete)
 - Branch: main
 - Tests: 24 passing / 24 total (Backend)
 - Frontend build (TypeScript/Vite): OK.
-- Đã tồn tại project Android hoàn chỉnh ở thư mục `frontend/android` để người dùng có thể test/deploy.
+- Đã tồn tại project Android hoàn chỉnh ở thư mục `frontend/android` sẵn sàng test/deploy trên Android Studio hoặc thiết bị thực.
 
 ## What Next Session Should Do First
-1. Dự án đã hoàn thành MVP Frontend, Backend và Native App Build (Android). 
-2. Tiếp theo có thể thiết lập các tính năng nâng cao hơn (Realtime Chat/Voting, Map Location thực tế) hoặc tối ưu code.
+1. Dự án đã hoàn thành toàn bộ 18 module theo `features.json` (MVP Frontend, Backend, API Gateway, Docker Container, DB Seeding và Native Android App).
+2. Phát triển thêm tính năng nâng cao mới (Realtime Chat/Voting nhóm, Map Location thực tế với GPS) hoặc tiến hành tối ưu hóa performance.
 
 ## Known Issues / Blockers
-- Engine trả về dữ liệu quá ít (chỉ có ID, Name, Score) nên frontend phải random image/price/distance để UI không bị vỡ. Cần enrich metadata từ DB ở tầng Recommendation Engine API.
-- Để chạy app Android trên thiết bị thực qua LAN (thay vì Emulator), người dùng cần tự config IP LAN ở `client.ts` thay vì `10.0.2.2`.
+- Khi cập nhật cấu hình native (AndroidManifest.xml hoặc Capacitor build assets), người dùng cần mở Android Studio để Re-run / Re-build ứng dụng lên thiết bị thật hoặc máy ảo Android.
 
-## Observations (Not Fixed — Outside Current Scope)
-- Tính năng nhóm chưa tích hợp websocket/realtime cho việc tạo bill/bỏ phiếu (Voting) chọn quán ăn chung.
-- Việc tách bill (Split Bill) mới chỉ thực hiện dưới dạng API tính toán chứ chưa lưu persist vào Database.
+## Verification Results
+- `npm test`: 8 passed suites, 24 passed tests, 0 failed.
+- `npx tsc --noEmit`: 0 errors.
+- `npm run lint`: clean, 0 errors.
 
-## Architectural Decisions This Session
-- Chấp nhận việc mock hình ảnh, price, và distance ở `swipeStore.ts` để UI không bị thay đổi thiết kế trong khi chờ backend hoàn thiện tính năng enrich data của Recommendation Engine.
+## End-of-Session Verification
+- `wsl ./agent-review.sh`: Executed successfully.
