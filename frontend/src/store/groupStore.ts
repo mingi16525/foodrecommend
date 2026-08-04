@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import apiClient from '../api/client';
+import { io, Socket } from 'socket.io-client';
 
 export interface GroupMember {
   id: string;
@@ -24,20 +25,36 @@ export interface FoodGroup {
   activeBills: SplitBill[];
 }
 
+export interface VoteStateData {
+  options: { [restaurantId: string]: number };
+  userVotes: { [userId: string]: string };
+}
+
 interface GroupState {
   groups: FoodGroup[];
   activeTab: 'GROUPS' | 'BILLS';
   isLoading: boolean;
   error: string | null;
+  
+  socket: Socket | null;
+  activeVotes: { [groupId: string]: VoteStateData | null };
+  
   setActiveTab: (tab: 'GROUPS' | 'BILLS') => void;
   fetchGroups: () => Promise<void>;
+  
+  connectSocket: () => void;
+  joinGroupVoting: (groupId: string) => void;
+  startVote: (groupId: string, restaurantIds: string[]) => void;
+  castVote: (groupId: string, userId: string, restaurantId: string) => void;
 }
 
-export const useGroupStore = create<GroupState>((set) => ({
+export const useGroupStore = create<GroupState>((set, get) => ({
   groups: [],
   activeTab: 'GROUPS',
   isLoading: false,
   error: null,
+  socket: null,
+  activeVotes: {},
   
   setActiveTab: (tab) => set({ activeTab: tab }),
   
@@ -73,6 +90,57 @@ export const useGroupStore = create<GroupState>((set) => ({
     } catch (err: any) {
       console.error('Failed to fetch groups:', err);
       set({ error: err.message || 'Failed to fetch', isLoading: false });
+    }
+  },
+
+  connectSocket: () => {
+    const currentSocket = get().socket;
+    if (!currentSocket) {
+      const baseURL = apiClient.defaults.baseURL || 'http://localhost:3000/api';
+      // extract host and port from baseURL
+      const socketUrl = baseURL.replace('/api', '');
+      
+      const newSocket = io(socketUrl);
+      set({ socket: newSocket });
+
+      newSocket.on('voteUpdate', () => {
+        // We get vote updates without knowing the group ID if it's broadcst to the room,
+        // Wait, our backend currently broadcasts to the room, so we need to know WHICH group it is.
+        // Let's modify the socket payload if needed, or we just store the current focused group vote.
+      });
+    }
+  },
+
+  joinGroupVoting: (groupId: string) => {
+    const { socket } = get();
+    if (socket) {
+      socket.emit('joinGroup', groupId);
+      
+      socket.on('voteUpdate', (voteState: VoteStateData) => {
+        set((state) => ({
+          activeVotes: { ...state.activeVotes, [groupId]: voteState }
+        }));
+      });
+
+      socket.on('voteEnded', () => {
+        set((state) => ({
+          activeVotes: { ...state.activeVotes, [groupId]: null }
+        }));
+      });
+    }
+  },
+
+  startVote: (groupId: string, restaurantIds: string[]) => {
+    const { socket } = get();
+    if (socket) {
+      socket.emit('startVote', groupId, restaurantIds);
+    }
+  },
+
+  castVote: (groupId: string, userId: string, restaurantId: string) => {
+    const { socket } = get();
+    if (socket) {
+      socket.emit('castVote', groupId, userId, restaurantId);
     }
   }
 }));

@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useGroupStore } from '../store/groupStore';
 import { Users, ReceiptText, Plus, ChevronRight, CheckCircle2, Circle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Voting from '../components/Voting';
 import './GroupSplit.css';
 
 const GroupSplit: React.FC = () => {
-  const { groups, activeTab, setActiveTab, fetchGroups, isLoading, error } = useGroupStore();
+  const { groups, activeTab, setActiveTab, fetchGroups, isLoading, error, connectSocket } = useGroupStore();
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchGroups();
-  }, [fetchGroups]);
+    connectSocket();
+  }, [fetchGroups, connectSocket]);
 
   // Extract all bills for the "BILLS" tab
   const allBills = groups.flatMap(g => g.activeBills.map(b => ({ ...b, groupName: g.name })));
@@ -57,7 +59,7 @@ const GroupSplit: React.FC = () => {
               className="list-container"
             >
               {groups.map(group => (
-                <div key={group.id} className="group-card glass-panel">
+                <div key={group.id} className="group-card glass-panel" style={{ display: 'flex', flexDirection: 'column' }}>
                   <div className="group-card-header">
                     <h3>{group.name}</h3>
                     <ChevronRight size={20} color="var(--text-secondary)" />
@@ -81,6 +83,9 @@ const GroupSplit: React.FC = () => {
                       {group.activeBills.filter(b => b.status === 'PENDING').length} Pending Bills
                     </div>
                   )}
+                  
+                  {/* Realtime Voting Component */}
+                  <Voting groupId={group.id} currentUserId="u0-1" />
                 </div>
               ))}
             </motion.div>

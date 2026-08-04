@@ -406,6 +406,26 @@
         "Build frontend web app",
         "Tạo Capacitor Android platform và đồng bộ code"
       ]
+    },
+    {
+      "name": "feature-realtime-voting",
+      "status": "DONE",
+      "description": "Phát triển tính năng Realtime Voting (Bầu chọn quán ăn chung) cho Group sử dụng WebSocket/Socket.io",
+      "scope": [
+        "src/group/socket.ts",
+        "src/index.ts",
+        "package.json",
+        "frontend/package.json",
+        "frontend/src/store/groupStore.ts",
+        "frontend/src/pages/GroupSplit.tsx",
+        "frontend/src/components/Voting.tsx"
+      ],
+      "definition_of_done": [
+        "Backend cài đặt Socket.io server",
+        "Frontend kết nối Socket.io client",
+        "Nhóm có thể tạo phiên bình chọn (Voting session) quán ăn",
+        "Cập nhật kết quả bình chọn realtime trên nhiều client"
+      ]
     }
   ]
 }

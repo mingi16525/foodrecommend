@@ -1,0 +1,82 @@
+.voting-container {
+  padding: 16px;
+  border-radius: 16px;
+  margin-top: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.voting-header {
+  margin-bottom: 16px;
+}
+
+.voting-header h3 {
+  display: flex;
+  align-items: center;
+  font-size: 1.1rem;
+  margin: 0 0 4px 0;
+  color: var(--text-primary);
+}
+
+.voting-header p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.voting-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.vote-option {
+  position: relative;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+.vote-option.selected {
+  border-color: var(--accent-primary-start);
+  background: rgba(255, 126, 95, 0.1);
+}
+
+.vote-option-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.restaurant-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.vote-count {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.vote-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  background: transparent;
+  z-index: 1;
+}
+
+.vote-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-primary-start), var(--accent-primary-end));
+  border-radius: 0 2px 2px 0;
+}
