@@ -214,7 +214,7 @@
     },
     {
       "name": "platform-message-queue",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "description": "Setup Kafka/RabbitMQ container cho môi trường local (Phase 1.2)",
       "scope": [
         "docker-compose.yml"
@@ -222,7 +222,7 @@
     },
     {
       "name": "platform-api-gateway",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "description": "Khởi tạo base source code cho API Gateway Kong/Nginx (Phase 1.3)",
       "scope": [
         "gateway/"

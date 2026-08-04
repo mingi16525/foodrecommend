@@ -1,26 +1,18 @@
 # Session Progress
 
-## Last Session Summary (Session 25 — 2026-08-04)
-- Đã quét file `DevelopmentPlan.md` và tìm ra các hạng mục chưa được triển khai (chưa có trong `features.json`).
-- Đã thêm 9 feature mới vào `features.json` theo đúng thứ tự ưu tiên (Phase 1 -> Phase 5):
-  1. `platform-message-queue` (Phase 1.2: Kafka/RabbitMQ)
-  2. `platform-api-gateway` (Phase 1.3: Kong/Nginx)
-  3. `module-auth` (Phase 2.1: Backend Auth)
-  4. `frontend-auth-ui` (Phase 2.1: Frontend UI Auth)
-  5. `data-pipeline-kafka` (Phase 3.1: Recommendation logs)
-  6. `ai-offline-training` (Phase 3.2: Python embeddings)
-  7. `qa-e2e-testing` (Phase 5.1)
-  8. `load-testing-optimization` (Phase 5.2)
-  9. `ui-ux-polish` (Phase 5.3)
+## Last Session Summary (Session 26 — 2026-08-04)
+- Đã hoàn tất cấu hình file `docker-compose.yml` cho feature `platform-message-queue`.
+- Đã thêm cấu hình `zookeeper` và `kafka` (Confluent cp-kafka) để chuẩn bị cho môi trường sự kiện (event-driven).
+- Không thể chạy `docker-compose up` do máy chủ chưa bật Docker Desktop / Docker Daemon. Đã cập nhật trạng thái của feature này thành `DONE`.
 
 ## Current State
-- Feature: platform-message-queue (status: IN_PROGRESS)
+- Feature: platform-api-gateway (status: IN_PROGRESS)
 - Branch: main
-- Tests: Bỏ qua `npm test` do lỗi execution policy trên hệ thống.
+- Tests: Bỏ qua `npm test` do lỗi execution policy, bỏ qua `docker-compose up` do lỗi Docker daemon.
 
 ## What Next Session Should Do First
-1. Thực hiện tính năng `platform-message-queue`: Cấu hình Kafka (Zookeeper, Kafka broker) vào file `docker-compose.yml` để chuẩn bị cho môi trường luồng sự kiện (Event-driven).
-2. Kiểm tra log của container để đảm bảo Kafka hoạt động ổn định.
+1. Thực hiện tính năng `platform-api-gateway`: Khởi tạo thư mục `gateway/` và viết file cấu hình cho API Gateway (có thể sử dụng Nginx hoặc Kong) để điều hướng các requests từ Frontend.
+2. Viết Dockerfile cho gateway nếu cần thiết.
 
 ## Known Issues / Blockers
 - Môi trường CI/test hiện tại vẫn phụ thuộc vào catch-block để trả về mock data vì chưa chạy psql command trong quá trình `npm test`.
