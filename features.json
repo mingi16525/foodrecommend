@@ -543,7 +543,7 @@
     },
     {
       "name": "feature-conversational-ai-agent",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Phát triển AI Agent hội thoại thông minh (AI Chatbot) đóng vai trò trợ lý đặt món và tư vấn trực tiếp cho người dùng.",
       "scope": [
         "src/ai/chatbot.ts",

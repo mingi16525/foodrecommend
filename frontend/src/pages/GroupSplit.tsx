@@ -97,7 +97,7 @@ const GroupSplit: React.FC = () => {
                 </div>
               ))}
             </motion.div>
-          ) : (
+          ) : activeTab === 'BILLS' ? (
             <motion.div 
               key="bills"
               initial={{ opacity: 0, x: 20 }}
