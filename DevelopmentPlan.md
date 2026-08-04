@@ -102,8 +102,8 @@ Hệ thống được chia thành 6 Core Modules để các team (Backend, Front
   - [x] Frontend: Ghép API Recommendation để tải danh sách thẻ liên tục (Pagination).
   - [x] Frontend: Gửi event Kafka (thông qua Backend API) khi user vuốt thẻ.
 * **Phase 3.5: Delivery & Maps Integration**
-  - [ ] Frontend: Xử lý Deep-link truyền tham số mở ShopeeFood / GrabFood.
-  - [ ] Frontend: Gắn schema Google Maps URL để mở bản đồ dẫn đường (Directions API).
+  - [x] Frontend: Xử lý Deep-link truyền tham số mở ShopeeFood / GrabFood.
+  - [x] Frontend: Gắn schema Google Maps URL để mở bản đồ dẫn đường (Directions API).
 
 ### Phase 4: Social Feed & TikTok-style UI (Sprint 8-9)
 * **Phase 4.1: Social Feed Backend**

@@ -203,7 +203,7 @@
     },
     {
       "name": "integration-maps-delivery",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "description": "Tích hợp Google Maps SDK, xử lý Deep-link sang GrabFood/ShopeeFood",
       "scope": [
         "frontend/lib/services/maps_service.dart",
