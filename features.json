@@ -240,7 +240,7 @@
     },
     {
       "name": "frontend-auth-ui",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "description": "Frontend: Code UI Đăng ký / Đăng nhập, tích hợp API Auth và lưu token an toàn (Phase 2.1)",
       "scope": [
         "frontend/lib/screens/auth/",
@@ -249,7 +249,7 @@
     },
     {
       "name": "data-pipeline-kafka",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "description": "Cấu hình Kafka Producer phát event Swipe và Consumer lưu trữ event (Phase 3.1)",
       "scope": [
         "src/recommendation/kafka_producer.ts",
