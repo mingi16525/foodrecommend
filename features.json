@@ -222,7 +222,7 @@
     },
     {
       "name": "platform-api-gateway",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "description": "Khởi tạo base source code cho API Gateway Kong/Nginx (Phase 1.3)",
       "scope": [
         "gateway/"
@@ -230,7 +230,7 @@
     },
     {
       "name": "module-auth",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "description": "Backend: Viết API Đăng ký tài khoản (Register), Đăng nhập (Login) sinh JWT token (Phase 2.1)",
       "scope": [
         "src/auth/",

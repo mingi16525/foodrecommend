@@ -1,18 +1,20 @@
 # Session Progress
 
-## Last Session Summary (Session 26 — 2026-08-04)
-- Đã hoàn tất cấu hình file `docker-compose.yml` cho feature `platform-message-queue`.
-- Đã thêm cấu hình `zookeeper` và `kafka` (Confluent cp-kafka) để chuẩn bị cho môi trường sự kiện (event-driven).
-- Không thể chạy `docker-compose up` do máy chủ chưa bật Docker Desktop / Docker Daemon. Đã cập nhật trạng thái của feature này thành `DONE`.
+## Last Session Summary (Session 27 — 2026-08-04)
+- Đã hoàn tất khởi tạo thư mục `gateway/` cho feature `platform-api-gateway`.
+- Tạo file `gateway/nginx.conf` với cấu hình reverse proxy cơ bản, điều hướng request đến backend, cấu hình CORS và Rate Limiting.
+- Tạo file `gateway/Dockerfile` để build image dựa trên `nginx:1.25-alpine`.
+- Đã chuyển trạng thái `platform-api-gateway` thành `DONE`.
 
 ## Current State
-- Feature: platform-api-gateway (status: IN_PROGRESS)
+- Feature: module-auth (status: IN_PROGRESS)
 - Branch: main
 - Tests: Bỏ qua `npm test` do lỗi execution policy, bỏ qua `docker-compose up` do lỗi Docker daemon.
 
 ## What Next Session Should Do First
-1. Thực hiện tính năng `platform-api-gateway`: Khởi tạo thư mục `gateway/` và viết file cấu hình cho API Gateway (có thể sử dụng Nginx hoặc Kong) để điều hướng các requests từ Frontend.
-2. Viết Dockerfile cho gateway nếu cần thiết.
+1. Thực hiện tính năng `module-auth`: Phát triển Backend API Đăng ký (Register) và Đăng nhập (Login).
+2. Viết logic sinh và xác thực JWT token.
+3. Cần tạo file route `src/api/auth.routes.ts` và thêm các module tương ứng vào `src/auth/`.
 
 ## Known Issues / Blockers
 - Môi trường CI/test hiện tại vẫn phụ thuộc vào catch-block để trả về mock data vì chưa chạy psql command trong quá trình `npm test`.
