@@ -28,23 +28,28 @@ export const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2
 interface MapState {
   locations: MapLocation[];
   selectedLocation: MapLocation | null;
+  selectedSummary: { summary: string; pros: string[]; cons: string[]; must_try: string } | null;
   userLocation: { lat: number; lng: number } | null;
   isLoading: boolean;
+  isSummaryLoading: boolean;
   error: string | null;
   setSelectedLocation: (location: MapLocation | null) => void;
   setUserLocation: (location: { lat: number; lng: number } | null) => void;
   fetchLocations: () => Promise<void>;
+  fetchReviewSummary: (restaurantId: string) => Promise<void>;
   getUserLocation: () => void;
 }
 
 export const useMapStore = create<MapState>((set) => ({
   locations: [],
   selectedLocation: null,
+  selectedSummary: null,
   userLocation: null,
   isLoading: false,
+  isSummaryLoading: false,
   error: null,
   
-  setSelectedLocation: (location) => set({ selectedLocation: location }),
+  setSelectedLocation: (location) => set({ selectedLocation: location, selectedSummary: null }),
   setUserLocation: (location) => set({ userLocation: location }),
   
   getUserLocation: () => {
@@ -96,6 +101,17 @@ export const useMapStore = create<MapState>((set) => ({
     } catch (err: any) {
       console.error('Failed to fetch locations:', err);
       set({ error: err.message || 'Failed to fetch', isLoading: false });
+    }
+  },
+
+  fetchReviewSummary: async (restaurantId: string) => {
+    set({ isSummaryLoading: true });
+    try {
+      const response = await apiClient.get(`/restaurants/${restaurantId}/review-summary`);
+      set({ selectedSummary: response.data.data, isSummaryLoading: false });
+    } catch (err: any) {
+      console.error('Failed to fetch review summary:', err);
+      set({ isSummaryLoading: false });
     }
   }
 }));

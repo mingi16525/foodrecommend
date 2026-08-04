@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { useMapStore, calculateDistance } from '../store/mapStore';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MapPin, Star, Navigation, X } from 'lucide-react';
+import { Search, MapPin, Star, Navigation, X, Sparkles } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 import './ExploreMap.css';
 
@@ -44,7 +44,7 @@ const MapUpdater: React.FC<{ centerCoords: [number, number] | null }> = ({ cente
 };
 
 const ExploreMap: React.FC = () => {
-  const { locations, selectedLocation, setSelectedLocation, fetchLocations, isLoading, error, userLocation, getUserLocation } = useMapStore();
+  const { locations, selectedLocation, setSelectedLocation, fetchLocations, isLoading, error, userLocation, getUserLocation, selectedSummary, isSummaryLoading, fetchReviewSummary } = useMapStore();
   const [sheetOpen, setSheetOpen] = useState(false);
   const [centerTrigger, setCenterTrigger] = useState<[number, number] | null>(null);
 
@@ -60,12 +60,13 @@ const ExploreMap: React.FC = () => {
     }
   }, [userLocation, centerTrigger, selectedLocation]);
 
-  // Sync selected location with center trigger
+  // Sync selected location with center trigger and fetch summary
   React.useEffect(() => {
     if (selectedLocation) {
       setCenterTrigger([selectedLocation.lat, selectedLocation.lng]);
+      fetchReviewSummary(selectedLocation.id);
     }
-  }, [selectedLocation]);
+  }, [selectedLocation, fetchReviewSummary]);
 
   return (
     <div className="map-page-container">
@@ -177,6 +178,26 @@ const ExploreMap: React.FC = () => {
                     </div>
                   </div>
                   <p className="place-address"><MapPin size={16} /> {selectedLocation.address}</p>
+
+                  {/* AI Review Summary Box */}
+                  <div className="ai-summary-box glass-panel" style={{ margin: '12px 0', padding: '12px', borderRadius: '12px', background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#ff758c', fontWeight: 600, fontSize: '0.9rem', marginBottom: '6px' }}>
+                      <Sparkles size={16} /> AI Review Summary
+                    </div>
+                    {isSummaryLoading ? (
+                      <p style={{ fontSize: '0.85rem', opacity: 0.7 }}>Analyzing reviews...</p>
+                    ) : selectedSummary ? (
+                      <div>
+                        <p style={{ fontSize: '0.85rem', lineHeight: '1.4', marginBottom: '8px' }}>{selectedSummary.summary}</p>
+                        {selectedSummary.must_try && (
+                          <div style={{ fontSize: '0.8rem', background: 'rgba(255,195,113,0.15)', color: '#ffc371', padding: '4px 8px', borderRadius: '6px', display: 'inline-block' }}>
+                            🔥 <strong>Must try:</strong> {selectedSummary.must_try}
+                          </div>
+                        )}
+                      </div>
+                    ) : null}
+                  </div>
+
                   <button className="primary-action-btn">Book a Table</button>
                 </div>
               ) : (

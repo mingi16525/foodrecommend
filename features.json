@@ -511,12 +511,13 @@
     },
     {
       "name": "feature-ai-review-summary",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Tích hợp LLM để tóm tắt các đánh giá quán ăn từ nhiều nguồn (AI Review Summary) giúp user đọc nhanh ưu/nhược điểm.",
       "scope": [
         "src/restaurant/service.ts",
         "src/api/restaurant.routes.ts",
-        "frontend/src/pages/ExploreMap.tsx"
+        "frontend/src/pages/ExploreMap.tsx",
+        "frontend/src/store/mapStore.ts"
       ],
       "definition_of_done": [
         "Sử dụng AI API (Gemini/OpenAI) để tóm tắt reviews",

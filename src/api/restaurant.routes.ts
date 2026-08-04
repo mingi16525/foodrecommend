@@ -23,6 +23,17 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
   res.json({ data: restaurant });
 });
 
+router.get('/:id/review-summary', async (req: Request, res: Response): Promise<void> => {
+  const id = req.params.id as string;
+  try {
+    const summary = await restaurantService.getReviewSummary(id);
+    res.json({ data: summary });
+  } catch (error) {
+    console.error('Error fetching review summary:', error);
+    res.status(500).json({ error: 'Failed to fetch review summary' });
+  }
+});
+
 router.get('/', async (req: Request, res: Response): Promise<void> => {
   const restaurants = await restaurantService.getAllRestaurants();
   res.json({ data: restaurants });

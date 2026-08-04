@@ -22,4 +22,12 @@ describe('Restaurant API Routes', () => {
     // Fallback data returns id: r123
     expect(res.body.data.id).toBe('r123');
   });
+
+  it('GET /api/restaurants/:id/review-summary should return AI review summary', async () => {
+    const res = await request(app).get('/api/restaurants/r123/review-summary');
+    expect(res.status).toBe(200);
+    expect(res.body.data).toBeDefined();
+    expect(res.body.data.restaurant_id).toBe('r123');
+    expect(res.body.data.summary).toBeDefined();
+  });
 });

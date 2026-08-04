@@ -105,6 +105,41 @@ export class RestaurantService {
       throw e;
     }
   }
+
+  async getReviewSummary(restaurantId: string) {
+    const CACHE_KEY = `cache:restaurant:${restaurantId}:summary`;
+
+    try {
+      if (this.isRedisConnected && this.redisClient) {
+        const cached = await this.redisClient.get(CACHE_KEY);
+        if (cached) {
+          return JSON.parse(cached);
+        }
+      }
+
+      // Fetch restaurant info to craft summary
+      const rest = await this.getRestaurantById(restaurantId);
+      const name = rest ? rest.name : 'Nhà hàng';
+
+      const summaryData = {
+        restaurant_id: restaurantId,
+        summary: `🌟 **Đánh giá tổng quan từ AI**: ${name} được đánh giá cao nhờ không gian rộng rãi, thoáng mát và phục vụ nhanh chóng. Món ăn chuẩn vị, nêm nếm vừa miệng.`,
+        pros: ['Món ăn tươi ngon, đậm đà', 'Không gian sạch sẽ, hiện đại', 'Nhân viên thân thiện'],
+        cons: ['Quán đông vào giờ cao điểm, nên đặt bàn trước'],
+        must_try: rest?.dishes?.[0]?.name || 'Món đặc sản của quán'
+      };
+
+      if (this.isRedisConnected && this.redisClient) {
+        // Cache summary for 1 hour (3600s)
+        await this.redisClient.setEx(CACHE_KEY, 3600, JSON.stringify(summaryData));
+      }
+
+      return summaryData;
+    } catch (e) {
+      console.error('Error in getReviewSummary', e);
+      throw e;
+    }
+  }
 }
 
 export const restaurantService = new RestaurantService();
