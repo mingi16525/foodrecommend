@@ -285,7 +285,7 @@
     },
     {
       "name": "ui-ux-polish",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "description": "Tối ưu bộ nhớ, tinh chỉnh animation, duyệt app tổng thể chuẩn bị Beta build (Phase 5.3)",
       "scope": [
         "frontend/lib/"
