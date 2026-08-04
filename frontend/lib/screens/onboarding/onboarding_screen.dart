@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -17,6 +19,47 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<String> _diets = ['Bình thường', 'Keto', 'Ăn chay', 'Low-carb'];
   String _selectedDiet = 'Bình thường';
+  
+  bool _isSaving = false;
+
+  Future<void> _savePreferences() async {
+    setState(() => _isSaving = true);
+    try {
+      final payload = {
+        'preferences': {
+          'spicy_level': _spicyLevel,
+          'salty_level': _saltyLevel,
+          'sweet_level': _sweetLevel,
+          'allergies': _selectedAllergies,
+          'diet': _selectedDiet,
+        }
+      };
+      
+      final response = await http.put(
+        Uri.parse('http://10.0.2.2:3000/api/users/me/preferences'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(payload),
+      );
+      
+      if (response.statusCode == 200) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Lưu thiết lập thành công!')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Có lỗi xảy ra khi lưu.')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isSaving = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,10 +136,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: () {
-                  // TODO: Save preferences via API
-                },
-                child: const Text('Lưu Thiết Lập'),
+                onPressed: _isSaving ? null : _savePreferences,
+                child: _isSaving 
+                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                  : const Text('Lưu Thiết Lập'),
               ),
             ),
           ],

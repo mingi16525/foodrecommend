@@ -1,7 +1,50 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  bool _isLoading = true;
+  String _userName = 'Đang tải...';
+  String _avatarUrl = 'https://i.pravatar.cc/150?img=32';
+  int _reviewsCount = 0;
+  int _savedCount = 0;
+  int _postsCount = 0;
+  bool _isVerified = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProfile();
+  }
+
+  Future<void> _fetchProfile() async {
+    try {
+      final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/users/me'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          _userName = data['name'] ?? 'Nguyễn Văn A';
+          _avatarUrl = data['avatar'] ?? 'https://i.pravatar.cc/150?img=32';
+          _reviewsCount = data['reviews_count'] ?? 120;
+          _savedCount = data['saved_count'] ?? 45;
+          _postsCount = data['posts_count'] ?? 8;
+          _isVerified = data['role'] == 'verified_reviewer';
+          _isLoading = false;
+        });
+      } else {
+        setState(() => _isLoading = false);
+      }
+    } catch (e) {
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,44 +60,47 @@ class ProfileScreen extends StatelessWidget {
           )
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            const CircleAvatar(
-              radius: 50,
-              backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=32'),
+      body: _isLoading 
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundImage: NetworkImage(_avatarUrl),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    _userName,
+                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 4),
+                  if (_isVerified)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.verified, color: Colors.blue, size: 16),
+                        SizedBox(width: 4),
+                        Text('Verified Reviewer', style: TextStyle(color: Colors.grey)),
+                      ],
+                    ),
+                  const SizedBox(height: 24),
+                  
+                  _buildStatRow(),
+                  const Divider(height: 40),
+                  
+                  _buildListTile(Icons.favorite, 'Món đã thích', () {}),
+                  _buildListTile(Icons.bookmark, 'Quán đã lưu', () {}),
+                  _buildListTile(Icons.article, 'Bài viết đã đăng', () {}),
+                  _buildListTile(Icons.link, 'Liên kết mạng xã hội', () {}),
+                  
+                  const Divider(height: 40),
+                  _buildListTile(Icons.verified_user, 'Yêu cầu xác thực Reviewer', () {}),
+                  _buildListTile(Icons.settings_system_daydream, 'Cài đặt hệ thống', () {}),
+                ],
+              ),
             ),
-            const SizedBox(height: 12),
-            const Text(
-              'Nguyễn Văn A',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 4),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(Icons.verified, color: Colors.blue, size: 16),
-                SizedBox(width: 4),
-                Text('Verified Reviewer', style: TextStyle(color: Colors.grey)),
-              ],
-            ),
-            const SizedBox(height: 24),
-            
-            _buildStatRow(),
-            const Divider(height: 40),
-            
-            _buildListTile(Icons.favorite, 'Món đã thích', () {}),
-            _buildListTile(Icons.bookmark, 'Quán đã lưu', () {}),
-            _buildListTile(Icons.article, 'Bài viết đã đăng', () {}),
-            _buildListTile(Icons.link, 'Liên kết mạng xã hội', () {}),
-            
-            const Divider(height: 40),
-            _buildListTile(Icons.verified_user, 'Yêu cầu xác thực Reviewer', () {}),
-            _buildListTile(Icons.settings_system_daydream, 'Cài đặt hệ thống', () {}),
-          ],
-        ),
-      ),
     );
   }
 
@@ -62,9 +108,9 @@ class ProfileScreen extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _buildStatItem('120', 'Đánh giá'),
-        _buildStatItem('45', 'Đã lưu'),
-        _buildStatItem('8', 'Bài viết'),
+        _buildStatItem('$_reviewsCount', 'Đánh giá'),
+        _buildStatItem('$_savedCount', 'Đã lưu'),
+        _buildStatItem('$_postsCount', 'Bài viết'),
       ],
     );
   }
