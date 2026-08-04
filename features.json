@@ -211,6 +211,85 @@
         "features.json",
         "claude_progress.md"
       ]
+    },
+    {
+      "name": "platform-message-queue",
+      "status": "IN_PROGRESS",
+      "description": "Setup Kafka/RabbitMQ container cho môi trường local (Phase 1.2)",
+      "scope": [
+        "docker-compose.yml"
+      ]
+    },
+    {
+      "name": "platform-api-gateway",
+      "status": "TODO",
+      "description": "Khởi tạo base source code cho API Gateway Kong/Nginx (Phase 1.3)",
+      "scope": [
+        "gateway/"
+      ]
+    },
+    {
+      "name": "module-auth",
+      "status": "TODO",
+      "description": "Backend: Viết API Đăng ký tài khoản (Register), Đăng nhập (Login) sinh JWT token (Phase 2.1)",
+      "scope": [
+        "src/auth/",
+        "src/api/auth.routes.ts",
+        "tests/auth.test.ts"
+      ]
+    },
+    {
+      "name": "frontend-auth-ui",
+      "status": "TODO",
+      "description": "Frontend: Code UI Đăng ký / Đăng nhập, tích hợp API Auth và lưu token an toàn (Phase 2.1)",
+      "scope": [
+        "frontend/lib/screens/auth/",
+        "frontend/lib/services/auth_service.dart"
+      ]
+    },
+    {
+      "name": "data-pipeline-kafka",
+      "status": "TODO",
+      "description": "Cấu hình Kafka Producer phát event Swipe và Consumer lưu trữ event (Phase 3.1)",
+      "scope": [
+        "src/recommendation/kafka_producer.ts",
+        "src/recommendation/kafka_consumer.ts"
+      ]
+    },
+    {
+      "name": "ai-offline-training",
+      "status": "TODO",
+      "description": "Viết script Python tính toán Vector Embedding và đẩy vào Qdrant (Phase 3.2)",
+      "scope": [
+        "ai/scripts/generate_embeddings.py",
+        "ai/scripts/ingest_qdrant.py"
+      ]
+    },
+    {
+      "name": "qa-e2e-testing",
+      "status": "TODO",
+      "description": "Lên kịch bản test tự động E2E các luồng chính của hệ thống (Phase 5.1)",
+      "scope": [
+        "tests/e2e/"
+      ]
+    },
+    {
+      "name": "load-testing-optimization",
+      "status": "TODO",
+      "description": "Viết script k6/JMeter test tải, cấu hình Caching Redis, tối ưu DB (Phase 5.2)",
+      "scope": [
+        "tests/load/",
+        "src/api/",
+        "schema.sql"
+      ]
+    },
+    {
+      "name": "ui-ux-polish",
+      "status": "TODO",
+      "description": "Tối ưu bộ nhớ, tinh chỉnh animation, duyệt app tổng thể chuẩn bị Beta build (Phase 5.3)",
+      "scope": [
+        "frontend/lib/"
+      ]
     }
   ]
 }
