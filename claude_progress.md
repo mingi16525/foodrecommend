@@ -1,24 +1,23 @@
 # Session Progress
 
-## Last Session Summary (Session Fix CI Permission Denied - 2026-08-04)
-- User báo lỗi GitHub CI khi chạy `npm run lint` bị `eslint: Permission denied`.
-- Kiểm tra phát hiện thư mục `node_modules` vô tình bị track trên Git dẫn đến khi GitHub Actions checkout code, thư mục `.bin/eslint` bị mất cờ executable trên Ubuntu runner (do push từ Windows).
-- Khắc phục bằng cách chạy `git rm -r --cached node_modules` để loại bỏ khỏi tracking, giúp npm install trên CI chạy đúng hành vi cấp quyền.
+## Last Session Summary (Session Fix CI Deprecated Actions - 2026-08-04)
+- Báo lỗi từ GitHub Actions: pipeline bị hủy tự động do dùng phiên bản `actions/upload-artifact@v3` đã bị deprecate từ tháng 4/2024.
+- Đã khắc phục bằng cách nâng cấp phiên bản cho tất cả các GitHub Actions trong `.github/workflows/ci.yml` từ `v3` lên `v4` (bao gồm `checkout`, `setup-node`, `setup-java`, và `upload-artifact`).
 
 ## Current State
-- `node_modules` đã bị xóa khỏi git tracking và chỉ còn ở file `.gitignore`.
-- Đã chạy verify lại `npm test` thành công (34/34 passing).
-- `features.json` đang nhắm vào mục tiêu `app-build-and-run` và các luồng liên quan.
+- `ci.yml` đã được sửa hoàn chỉnh với chuẩn Actions v4.
+- `node_modules` đã xóa trên Git.
+- Mọi bài test backend pass (34/34).
 - Branch: main
 
 ## What Next Session Should Do First
-Push các thay đổi lên GitHub để xác nhận pipeline GitHub Actions pass ở bước lint. Tiếp tục feature đầu tiên đang TODO trong features.json là `ai-pipeline-ranking`.
+Tiến hành Push code này lên GitHub, đợi CI Action build xong file APK và tải về test thử. Nếu thành công, có thể chuyển sang task `ai-pipeline-ranking`.
 
 ## Known Issues / Blockers
-- None at this stage for CI. Local Flutter run still depends on SDK installation.
+- Không có lỗi nội tại.
 
 ## Observations (Not Fixed — Outside Current Scope)
-- Cần đảm bảo endpoint API cấu hình trong mã nguồn Flutter đang trỏ đúng. (Đã xử lý ở bước trước thông qua `api_config.dart`).
+- Cần tiếp tục theo dõi xem `upload-artifact@v4` có thay đổi cơ chế đóng gói file ZIP nào làm ảnh hưởng đến bước download APK của người dùng không (thường v4 chỉ nhanh hơn và đổi backend lưu trữ).
 
 ## Architectural Decisions This Session
-- Nghiêm ngặt không track `node_modules` trong git repository để tránh lỗi file permission và làm rác repo. Mọi CI/CD runner phải tự cài package qua `npm ci` hoặc `npm install`.
+- Luôn cố định hoặc ưu tiên dùng phiên bản Action mới nhất (v4) để tránh rủi ro bảo mật và cảnh báo lỗi build sau này.
