@@ -258,7 +258,7 @@
     },
     {
       "name": "ai-offline-training",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "description": "Viết script Python tính toán Vector Embedding và đẩy vào Qdrant (Phase 3.2)",
       "scope": [
         "ai/scripts/generate_embeddings.py",
@@ -267,7 +267,7 @@
     },
     {
       "name": "qa-e2e-testing",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "description": "Lên kịch bản test tự động E2E các luồng chính của hệ thống (Phase 5.1)",
       "scope": [
         "tests/e2e/"
