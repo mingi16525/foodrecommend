@@ -1,19 +1,20 @@
 # Session Progress
 
-## Last Session Summary (Session 31 — 2026-08-04)
-- Đã hoàn tất luồng AI Offline (feature `ai-offline-training`).
-- Tạo script `ai/scripts/generate_embeddings.py` giả lập việc tính toán vector embedding với độ dài 384 chiều (dimension) cho 500 món ăn mẫu và lưu ra file JSON. 
-- Tạo script `ai/scripts/ingest_qdrant.py` chịu trách nhiệm đọc file JSON chứa vector và đẩy dữ liệu lên hệ quản trị CSDL vector Qdrant. Để tránh lỗi thiếu thư viện `qdrant-client` trên môi trường, tôi đã viết dạng MockQdrantClient.
-- Đã chuyển `ai-offline-training` sang `DONE`.
+## Last Session Summary (Session 32 — 2026-08-04)
+- Đã hoàn tất khung sườn End-to-End Testing (feature `qa-e2e-testing`).
+- Tạo script `tests/e2e/auth.e2e.test.ts`: Kịch bản test toàn diện luồng Đăng ký (Register) và Đăng nhập (Login) cũng như đảm bảo bảo mật của Private Route (`/me`).
+- Tạo script `tests/e2e/swipe.e2e.test.ts`: Kịch bản test luồng cốt lõi bao gồm việc request danh sách Gợi ý Món ăn (Recommendations) dựa trên tọa độ, và gửi sự kiện Swipe (Like/Skip) lên hệ thống.
+- Cả hai kịch bản đều dùng `supertest` và `jest` theo quy chuẩn Node.js.
+- Đã chuyển `qa-e2e-testing` sang `DONE`.
 
 ## Current State
-- Feature: qa-e2e-testing (status: IN_PROGRESS)
+- Feature: load-testing-optimization (status: IN_PROGRESS)
 - Branch: main
 - Tests: Bỏ qua chạy `npm test`.
 
 ## What Next Session Should Do First
-1. Thực hiện tính năng `qa-e2e-testing`: Bắt đầu lên khung sườn cho các kịch bản test tự động E2E (End-to-End) các luồng chính của hệ thống.
-2. Tạo các kịch bản E2E mẫu trong thư mục `tests/e2e/`.
+1. Thực hiện tính năng `load-testing-optimization`: Lên kịch bản test chịu tải bằng K6 (tạo file `tests/load/k6-script.js`).
+2. Xem xét việc viết đoạn code khởi tạo Cache Redis cho API (có thể ở `src/api/` hoặc chỉ cần viết khung).
 
 ## Known Issues / Blockers
 - Môi trường CI/test hiện tại vẫn phụ thuộc vào catch-block để trả về mock data vì chưa chạy psql command trong quá trình `npm test`. Đồng thời lệnh npm đang bị chặn bởi Execution Policy trên Powershell.

@@ -267,7 +267,7 @@
     },
     {
       "name": "qa-e2e-testing",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "description": "Lên kịch bản test tự động E2E các luồng chính của hệ thống (Phase 5.1)",
       "scope": [
         "tests/e2e/"
@@ -275,7 +275,7 @@
     },
     {
       "name": "load-testing-optimization",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "description": "Viết script k6/JMeter test tải, cấu hình Caching Redis, tối ưu DB (Phase 5.2)",
       "scope": [
         "tests/load/",
