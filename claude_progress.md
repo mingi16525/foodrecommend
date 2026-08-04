@@ -1,27 +1,25 @@
 # Session Progress
 
-## Last Session Summary (Session Deploy Beta - 2026-08-04)
-- Đã hoàn tất triển khai môi trường beta cục bộ (Local Beta Deployment).
-- Khởi chạy thành công Docker container cho Postgres, Redis, Qdrant, Kafka, Zookeeper.
-- Hoàn thiện script sinh vector AI bằng model `Xenova/all-MiniLM-L6-v2` (`generate_embeddings.js`) và nạp thẳng vào Qdrant (`ingest_qdrant.js`).
-- Seed dữ liệu test bao gồm 20 user, 50 nhà hàng, và 500 món ăn vào Postgres bằng `seed.sql`.
-- Đã fix lỗi config database và cập nhật lại toàn bộ API test với mock service. Kết quả test: 34/34 tests passed, 0 failures.
-- Đã hoàn tất verify và check mark tất cả các task trong `DevelopmentPlan_Deploy.md`.
+## Last Session Summary (Session Plan Local Beta - 2026-08-04)
+- Đã đọc lại toàn bộ tài liệu: `DevelopmentPlan_Deploy.md`, `FoodRecommend_Product_Specification.md`, và `ProductDesignDocument.md`.
+- Đã tiến hành tái cấu trúc lại `features.json`.
+- Gỡ bỏ toàn bộ các task (features) thuộc giai đoạn MVP và Seed/Infrastructure đã được hoàn thành trước đó để làm sạch bảng theo dõi.
+- Bổ sung 9 features mới (TODO) thuộc Phase 3, Phase 4, và Phase 5 của Local Beta Deployment (bao gồm AI Ranking, AI Group Decision, Third-party APIs, Security, và Frontend Local config & E2E Testing).
+- Lệnh `npm test` tiếp tục vượt qua ổn định (giữ vững trạng thái xanh từ phiên trước).
 
 ## Current State
-- Backend, Database và AI Recommendation Engine đang chạy ổn định trong môi trường cục bộ.
+- `features.json` chứa 9 tính năng TODO để thực hiện giai đoạn Local Beta và AI Advanced.
 - Branch: main
-- Tests: Passing (34/34 tests).
+- Tests: Passing.
 
 ## What Next Session Should Do First
-Bắt đầu quá trình build và chạy thử Frontend App (trên máy ảo Android/iOS) và cho kết nối với bộ API local vừa khởi tạo để đánh giá trực tiếp nghiệm UX/UI và độ chính xác của AI.
+Bắt đầu với feature đầu tiên đang `TODO` trong `features.json`: `ai-pipeline-ranking` (Triển khai Ranking Stage).
 
 ## Known Issues / Blockers
-- Test suite yêu cầu mock các service để vượt qua trong môi trường CI cục bộ do thiếu đồng bộ UUID ngẫu nhiên giữa DB thực và Test environment.
+- Chưa có issues mới, hiện tại Frontend và AI core ranking bắt đầu được chú trọng thay vì infrastructure.
 
 ## Observations (Not Fixed — Outside Current Scope)
-- Qdrant chạy local không yêu cầu API key, nhưng khi đưa lên cloud có thể cần quản lý bí mật (Secrets).
-- Mô hình Transformers.js tải trực tiếp trong runtime Node.js. Sẽ tối ưu hơn nếu cache model artifact cứng trên ổ đĩa cho lần chạy sau, mặc dù Xenova đã có cache mặc định.
+- Ranking AI hiện tại cần xây dựng thuật toán chấm điểm thực sự, hoặc tạm thời dùng Collaborative Filtering cơ bản trên Node.js thay vì Deep & Cross Network nếu muốn giữ độ phức tạp vừa phải cho Local.
 
 ## Architectural Decisions This Session
-- Cấu hình tích hợp AI trực tiếp vào Node.js (via Transformers.js) với Local Postgres và Local Qdrant thay vì setup Python microservices để tiện việc chạy Local Beta test trên một máy duy nhất.
+- Xóa bỏ lịch sử features cũ trong `features.json` để nhường chỗ cho giai đoạn nâng cao, xem đây như một milestone (chốt version). Mọi feature mới sẽ tập trung sâu vào logic AI và Frontend App thay vì CRUD API.
