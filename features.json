@@ -426,6 +426,21 @@
         "Nhóm có thể tạo phiên bình chọn (Voting session) quán ăn",
         "Cập nhật kết quả bình chọn realtime trên nhiều client"
       ]
+    },
+    {
+      "name": "feature-map-location-gps",
+      "status": "DONE",
+      "description": "Tích hợp Geolocation API để lấy tọa độ thực tế của người dùng và hiển thị quán ăn xung quanh trên bản đồ",
+      "scope": [
+        "frontend/package.json",
+        "frontend/src/store/mapStore.ts",
+        "frontend/src/pages/ExploreMap.tsx"
+      ],
+      "definition_of_done": [
+        "Lấy được tọa độ GPS thực tế của người dùng qua trình duyệt",
+        "Hiển thị vị trí người dùng trên Leaflet Map (Tab 3)",
+        "Tính toán khoảng cách từ người dùng đến các quán ăn"
+      ]
     }
   ]
 }

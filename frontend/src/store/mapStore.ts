@@ -12,22 +12,62 @@ export interface MapLocation {
   address: string;
 }
 
+export const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+  const R = 6371; // Radius of the earth in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2); 
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  const d = R * c; // Distance in km
+  return d;
+}
+
 interface MapState {
   locations: MapLocation[];
   selectedLocation: MapLocation | null;
+  userLocation: { lat: number; lng: number } | null;
   isLoading: boolean;
   error: string | null;
   setSelectedLocation: (location: MapLocation | null) => void;
+  setUserLocation: (location: { lat: number; lng: number } | null) => void;
   fetchLocations: () => Promise<void>;
+  getUserLocation: () => void;
 }
 
 export const useMapStore = create<MapState>((set) => ({
   locations: [],
   selectedLocation: null,
+  userLocation: null,
   isLoading: false,
   error: null,
   
   setSelectedLocation: (location) => set({ selectedLocation: location }),
+  setUserLocation: (location) => set({ userLocation: location }),
+  
+  getUserLocation: () => {
+    if (!navigator.geolocation) {
+      console.warn("Geolocation is not supported by your browser");
+      return;
+    }
+    
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        set({
+          userLocation: {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          }
+        });
+      },
+      (error) => {
+        console.error("Error getting location:", error);
+      },
+      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+    );
+  },
   
   fetchLocations: async () => {
     set({ isLoading: true, error: null });

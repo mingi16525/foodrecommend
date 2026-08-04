@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { useMapStore, type MapLocation } from '../store/mapStore';
+import { useMapStore, calculateDistance } from '../store/mapStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, MapPin, Star, Navigation, X } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
@@ -15,31 +15,57 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
+// Custom icon for user's current location
+const userIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
 // HCMC Center roughly
 const DEFAULT_CENTER: [number, number] = [10.7769, 106.7009];
 const DEFAULT_ZOOM = 14;
 
-// Component to recenter map when a location is selected
-const MapUpdater: React.FC<{ selectedLocation: MapLocation | null }> = ({ selectedLocation }) => {
+// Component to recenter map when triggered
+const MapUpdater: React.FC<{ centerCoords: [number, number] | null }> = ({ centerCoords }) => {
   const map = useMap();
   React.useEffect(() => {
-    if (selectedLocation) {
-      map.flyTo([selectedLocation.lat, selectedLocation.lng], 16, {
+    if (centerCoords) {
+      map.flyTo(centerCoords, 15, {
         animate: true,
         duration: 1
       });
     }
-  }, [selectedLocation, map]);
+  }, [centerCoords, map]);
   return null;
 };
 
 const ExploreMap: React.FC = () => {
-  const { locations, selectedLocation, setSelectedLocation, fetchLocations, isLoading, error } = useMapStore();
+  const { locations, selectedLocation, setSelectedLocation, fetchLocations, isLoading, error, userLocation, getUserLocation } = useMapStore();
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [centerTrigger, setCenterTrigger] = useState<[number, number] | null>(null);
 
   React.useEffect(() => {
     fetchLocations();
-  }, [fetchLocations]);
+    getUserLocation();
+  }, [fetchLocations, getUserLocation]);
+
+  // Center map on user location once it's available for the first time
+  React.useEffect(() => {
+    if (userLocation && !centerTrigger && !selectedLocation) {
+      setCenterTrigger([userLocation.lat, userLocation.lng]);
+    }
+  }, [userLocation, centerTrigger, selectedLocation]);
+
+  // Sync selected location with center trigger
+  React.useEffect(() => {
+    if (selectedLocation) {
+      setCenterTrigger([selectedLocation.lat, selectedLocation.lng]);
+    }
+  }, [selectedLocation]);
 
   return (
     <div className="map-page-container">
@@ -84,7 +110,13 @@ const ExploreMap: React.FC = () => {
             </Marker>
           ))}
           
-          <MapUpdater selectedLocation={selectedLocation} />
+          {userLocation && (
+            <Marker position={[userLocation.lat, userLocation.lng]} icon={userIcon}>
+              <Popup className="custom-popup"><strong>You are here</strong></Popup>
+            </Marker>
+          )}
+          
+          <MapUpdater centerCoords={centerTrigger} />
         </MapContainer>
       </div>
 
@@ -95,7 +127,11 @@ const ExploreMap: React.FC = () => {
         </button>
         <button className="map-fab" onClick={() => {
           setSelectedLocation(null);
-          // Optional: re-center to default
+          if (userLocation) {
+            setCenterTrigger([userLocation.lat, userLocation.lng]);
+          } else {
+            setCenterTrigger(DEFAULT_CENTER);
+          }
         }}>
           <Navigation size={24} />
         </button>
@@ -147,19 +183,25 @@ const ExploreMap: React.FC = () => {
                 <div className="nearby-list">
                   <h3 className="list-title">Trending Nearby</h3>
                   <div className="list-items">
-                    {locations.map(loc => (
-                      <div key={loc.id} className="list-item" onClick={() => setSelectedLocation(loc)}>
-                        <img src={loc.imageUrl} alt={loc.name} className="list-item-img" />
-                        <div className="list-item-info">
-                          <h4>{loc.name}</h4>
-                          <p>{loc.category}</p>
+                    {locations.map(loc => {
+                      const distance = userLocation 
+                        ? calculateDistance(userLocation.lat, userLocation.lng, loc.lat, loc.lng).toFixed(1)
+                        : null;
+                      
+                      return (
+                        <div key={loc.id} className="list-item" onClick={() => setSelectedLocation(loc)}>
+                          <img src={loc.imageUrl} alt={loc.name} className="list-item-img" />
+                          <div className="list-item-info">
+                            <h4>{loc.name}</h4>
+                            <p>{loc.category} {distance ? `• ${distance} km` : ''}</p>
+                          </div>
+                          <div className="list-item-rating">
+                            <Star size={14} fill="#FFC371" color="#FFC371" />
+                            <span>{loc.rating}</span>
+                          </div>
                         </div>
-                        <div className="list-item-rating">
-                          <Star size={14} fill="#FFC371" color="#FFC371" />
-                          <span>{loc.rating}</span>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               )}
