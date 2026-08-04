@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../config/api_config.dart';
 import '../../widgets/swipe_card.dart';
-
+import '../../services/maps_service.dart';
+import '../../services/delivery_link_service.dart';
 class RecommendationScreen extends StatefulWidget {
   const RecommendationScreen({super.key});
 
@@ -152,8 +153,17 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                         children: [
                           _buildActionButton(Icons.close, Colors.red, () => _onSwipe(false)),
                           _buildActionButton(Icons.favorite, Colors.green, () => _onSwipe(true)),
-                          _buildActionButton(Icons.map, Colors.blue, () {}), // Tích hợp Maps
-                          _buildActionButton(Icons.delivery_dining, Colors.orange, () {}), // Grab/Shopee
+                          _buildActionButton(Icons.map, Colors.blue, () {
+                            if (_recommendations.isNotEmpty) {
+                              // Giả lập toạ độ (thực tế sẽ dùng toạ độ quán từ API)
+                              MapsService.openMapsDirection(10.762622, 106.660172, _recommendations.first['restaurant_name']);
+                            }
+                          }), // Tích hợp Maps
+                          _buildActionButton(Icons.delivery_dining, Colors.orange, () {
+                            if (_recommendations.isNotEmpty) {
+                              DeliveryLinkService.openGrabFood(_recommendations.first['restaurant_name']);
+                            }
+                          }), // Grab/Shopee
                         ],
                       ),
                       const SizedBox(height: 20),

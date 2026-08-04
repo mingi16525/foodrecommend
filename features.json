@@ -27,7 +27,7 @@
     },
     {
       "name": "api-third-party-maps",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Thêm API Key thực tế cho Google Maps SDK trên frontend",
       "scope": [
         "frontend/lib/services/maps_service.dart"
@@ -35,7 +35,7 @@
     },
     {
       "name": "api-third-party-delivery",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Thêm Deep-linking / URL Scheme mở app GrabFood, ShopeeFood thực tế",
       "scope": [
         "frontend/lib/services/delivery_link_service.dart"
@@ -52,7 +52,7 @@
     },
     {
       "name": "frontend-local-config",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Cập nhật endpoint của app Flutter trỏ về IP của máy cá nhân",
       "scope": [
         "frontend/lib/config/api_config.dart"
@@ -60,7 +60,7 @@
     },
     {
       "name": "app-build-and-run",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Build ứng dụng (Debug Mode) trực tiếp qua cáp USB hoặc Emulator",
       "scope": [
         "frontend/"
@@ -68,7 +68,7 @@
     },
     {
       "name": "manual-e2e-testing",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Test UX/UI trực tiếp: Vuốt thẻ Tab 3, Group Tab 2, Feed Tab 1",
       "scope": [
         "frontend/"

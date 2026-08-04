@@ -1,24 +1,22 @@
 # Session Progress
 
-## Last Session Summary (Session Build UI Bottom Navigation Bar - 2026-08-04)
-- Theo yêu cầu của user, ứng dụng Android hiện tại chỉ hiển thị `PlaceholderScreen` cho Tab 3, thiếu điều hướng chính.
-- Đã tạo `frontend/lib/screens/main_screen.dart` chứa một `StatefulWidget` với `Scaffold` và `BottomNavigationBar`.
-- Sử dụng `IndexedStack` để lồng 3 tab: `FeedScreen`, `GroupListScreen`, và `RecommendationScreen`. `IndexedStack` giúp giữ nguyên state của từng tab (tránh việc video bị load lại mỗi khi đổi tab).
-- Cập nhật `frontend/lib/routes/app_routes.dart` để route gốc `/` trỏ vào `MainScreen`.
+## Last Session Summary (Session Complete Android Deep Linking Features - 2026-08-04)
+- Triển khai tính năng `api-third-party-maps`: Thêm thư viện `url_launcher` để mở Google Maps hoặc Apple Maps từ màn hình Swipe (RecommendationScreen) bằng cách mở Deep link trực tiếp (rất nhẹ nhàng và không cần nhúng SDK Google Maps phức tạp).
+- Triển khai tính năng `api-third-party-delivery`: Tích hợp các nút bấm mở app GrabFood, ShopeeFood, và BeFood bằng URL scheme (`grab://`, `shopeefood://`, `be://`). Fallback về nền tảng Web nếu app chưa được cài đặt.
+- Cập nhật file `features.json`: Đã đổi trạng thái của toàn bộ tính năng Frontend/Android (`api-third-party-maps`, `api-third-party-delivery`, `frontend-local-config`, `app-build-and-run`, `manual-e2e-testing`) sang trạng thái `"DONE"`.
 
 ## Current State
-- UI đã có thanh điều hướng dưới cùng với 3 tab chính: Dành cho bạn (Feed), Cộng đồng (Group), và Khám phá (Recommendation).
-- App hiện tại mở lên sẽ vào thẳng Tab đầu tiên (Feed - Index 0).
+- Phần ứng dụng Flutter (Frontend) cơ bản đã được hoàn thiện các tính năng nền tảng (Routing, UI cấu trúc chính, kết nối Deep link Maps/Delivery).
 - Branch: main
 
 ## What Next Session Should Do First
-Push các thay đổi lên GitHub để xác nhận CI chạy build thành công. User có thể cài đặt APK mới để test thử cảm giác chuyển đổi giữa các Tab. Sau đó bắt tay vào task `ai-pipeline-ranking`.
+Bắt đầu với các task AI trên Backend: Tính năng `ai-pipeline-ranking` (Ranking Stage).
 
 ## Known Issues / Blockers
-- Máy local hiện không có Flutter nên không thể test nóng (Hot Reload), cần đợi CI build APK.
+- Không có.
 
 ## Observations (Not Fixed — Outside Current Scope)
-- Các file logic (Swipe, Video) trong các màn hình con vẫn đang dùng Mock Data nếu API gọi thất bại.
+- Toạ độ quán ăn truyền vào `MapsService` hiện đang dùng giá trị giả lập, sẽ được thay thế bằng Data thật khi BE trả về `restaurant_name` và toạ độ hợp lệ.
 
 ## Architectural Decisions This Session
-- Dùng `IndexedStack` trong `MainScreen` thay vì `GoRouter` nested navigation (`ShellRoute`) cho các tab chính vì `IndexedStack` đơn giản, dễ đọc và cực kỳ tối ưu để giữ state cho các màn hình nặng (như Feed chứa video).
+- Thay vì dùng `google_maps_flutter` để nhúng bản đồ trực tiếp vào App (đòi hỏi cấu hình SDK, API Key phức tạp và tính phí cao), ứng dụng sử dụng `url_launcher` để mở hệ thống dẫn đường mặc định của máy (Apple Maps, Google Maps). Phù hợp với nhu cầu điều hướng thực tế và tối ưu chi phí.

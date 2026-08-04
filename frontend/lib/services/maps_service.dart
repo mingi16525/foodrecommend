@@ -1,23 +1,32 @@
 import 'dart:io';
+import 'package:url_launcher/url_launcher.dart';
 
 class MapsService {
   /// Mở bản đồ dẫn đường (Google Maps hoặc Apple Maps) đến một tọa độ
   static Future<void> openMapsDirection(double lat, double lng, String label) async {
-    // Trong môi trường thực tế sẽ dùng url_launcher
-    // final Uri googleMapsUrl = Uri.parse("google.navigation:q=$lat,$lng&mode=d");
-    // final Uri appleMapsUrl = Uri.parse("https://maps.apple.com/?daddr=$lat,$lng");
+    final Uri googleMapsUrl = Uri.parse("google.navigation:q=$lat,$lng&mode=d");
+    final Uri appleMapsUrl = Uri.parse("https://maps.apple.com/?daddr=$lat,$lng");
     
-    // if (Platform.isIOS) {
-    //   if (await canLaunchUrl(appleMapsUrl)) {
-    //     await launchUrl(appleMapsUrl);
-    //   }
-    // } else {
-    //   if (await canLaunchUrl(googleMapsUrl)) {
-    //     await launchUrl(googleMapsUrl);
-    //   }
-    // }
+    try {
+      if (Platform.isIOS) {
+        if (await canLaunchUrl(appleMapsUrl)) {
+          await launchUrl(appleMapsUrl);
+        } else if (await canLaunchUrl(googleMapsUrl)) {
+          await launchUrl(googleMapsUrl);
+        }
+      } else {
+        if (await canLaunchUrl(googleMapsUrl)) {
+          await launchUrl(googleMapsUrl);
+        } else {
+          final webUrl = Uri.parse("https://www.google.com/maps/dir/?api=1&destination=$lat,$lng");
+          await launchUrl(webUrl);
+        }
+      }
+    } catch (e) {
+      print('Lỗi khi mở bản đồ: $e');
+    }
     
-    print('Giả lập mở bản đồ hướng dẫn tới: $label ($lat, $lng)');
+    print('Đã mở bản đồ hướng dẫn tới: $label ($lat, $lng)');
   }
 
   /// Khởi tạo Google Maps SDK (Cần API Key)
