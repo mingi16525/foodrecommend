@@ -1,22 +1,19 @@
 # Session Progress
 
 ## Last Session Summary
-- Đã thiết lập cấu trúc cho hệ thống Push Notifications (FCM).
-- Tạo `NotificationService` (Mock) hỗ trợ lưu trữ Device Tokens và gửi Push Payload chuẩn.
-- Thêm API endpoints `POST /api/notifications/token` và `POST /api/notifications/send`.
-- Tạo `notificationStore.ts` bằng Zustand bên Frontend để quản lý state của thông báo trên client (unread count, mark as read, etc).
-- Đã chạy verify (tests & linter): 24 tests passed, 0 linter errors, 0 TS errors.
+- Đã đọc tài liệu `ProductDesignDocument.md` và `FoodRecommend_Product_Specification.md`.
+- Trích xuất 6 tính năng cao cấp (Beta / Scale V2) để mở rộng ứng dụng trong tương lai.
+- Liệt kê và thêm 6 tính năng mới này vào `features.json` với trạng thái `TODO` (Verified Reviewer, AI Review Summary, AI Trip Planner, Conversational AI Agent, Office Ordering & Health Rec, B2B Merchant Dashboard).
 
 ## Current State
-- Feature: feature-push-notifications (status: DONE, 100% complete)
+- Các tính năng mở rộng đã được đưa vào backlog (TODO).
 - Branch: main
-- Tests: 24 passing / 24 total (Backend)
-- Linter & TypeScript: 0 errors
-- Tất cả 23/23 tính năng của ứng dụng MVP đã hoàn thành.
+- Dự án MVP Core: 100% hoàn thành (23/23).
+- Linter & TypeScript: Clean.
 
 ## What Next Session Should Do First
-1. Dự án đã hoàn thiện 100% tất cả các module tính năng theo yêu cầu (AI Recommendation, Map, Realtime Voting, Group, Social, Caching, CI/CD, Push Notifications).
-2. Tùy theo nhu cầu của User, có thể bắt đầu tạo tài khoản Firebase thực tế và thay thế code Mock, hoặc bắt đầu tiến hành QA/Testing end-to-end trên giả lập Android.
+1. Kiểm tra backlog `features.json` và pick tính năng đầu tiên trong nhóm Beta/V1 (ví dụ: `feature-verified-reviewer` hoặc `feature-ai-review-summary`) để chuyển sang `IN_PROGRESS`.
+2. Lập kế hoạch (Implementation Plan) để phát triển tính năng được chọn.
 
 ## Known Issues / Blockers
 - Khi test bằng Jest, Redis logger in ra "Redis connected successfully" ở Background dẫn đến message "Cannot log after tests are done". Không ảnh hưởng chất lượng code chạy thật.

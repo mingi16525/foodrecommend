@@ -492,6 +492,95 @@
         "Tạo API routes lưu trữ device token của người dùng",
         "Tích hợp frontend store để quản lý hiển thị Notification"
       ]
+    },
+    {
+      "name": "feature-verified-reviewer",
+      "status": "TODO",
+      "description": "Triển khai chương trình Verified Reviewer (tích xanh). Cấp quyền đăng bài đánh giá chuyên sâu và quản lý chỉ số uy tín cho Reviewer.",
+      "scope": [
+        "src/user/service.ts",
+        "src/api/user.routes.ts",
+        "frontend/src/pages/UserProfile.tsx"
+      ],
+      "definition_of_done": [
+        "Cập nhật Schema cho user có cờ is_verified_reviewer",
+        "Tạo API cấp tích xanh và nộp yêu cầu xác thực",
+        "Frontend hiển thị huy hiệu tích xanh trên bài post của Reviewer"
+      ]
+    },
+    {
+      "name": "feature-ai-review-summary",
+      "status": "TODO",
+      "description": "Tích hợp LLM để tóm tắt các đánh giá quán ăn từ nhiều nguồn (AI Review Summary) giúp user đọc nhanh ưu/nhược điểm.",
+      "scope": [
+        "src/restaurant/service.ts",
+        "src/api/restaurant.routes.ts",
+        "frontend/src/pages/ExploreMap.tsx"
+      ],
+      "definition_of_done": [
+        "Sử dụng AI API (Gemini/OpenAI) để tóm tắt reviews",
+        "Lưu kết quả tóm tắt vào DB/Cache",
+        "Hiển thị đoạn tóm tắt AI trên thông tin nhà hàng ở Frontend"
+      ]
+    },
+    {
+      "name": "feature-ai-trip-planner",
+      "status": "TODO",
+      "description": "Lên lịch trình ẩm thực dọc tuyến đường (Trip Planner). Dùng LLM và Google Maps API để đề xuất quán ăn theo các điểm dừng.",
+      "scope": [
+        "src/group/tripPlanner.ts",
+        "src/api/group.routes.ts",
+        "frontend/src/pages/GroupSplit.tsx"
+      ],
+      "definition_of_done": [
+        "Giao diện nhập điểm đi, điểm đến và các trạm dừng",
+        "Tích hợp API Maps tính khoảng cách/thời gian",
+        "Gọi LLM để lập lịch trình ăn uống hợp lý theo timeline di chuyển"
+      ]
+    },
+    {
+      "name": "feature-conversational-ai-agent",
+      "status": "TODO",
+      "description": "Phát triển AI Agent hội thoại thông minh (AI Chatbot) đóng vai trò trợ lý đặt món và tư vấn trực tiếp cho người dùng.",
+      "scope": [
+        "src/ai/chatbot.ts",
+        "src/api/ai.routes.ts",
+        "frontend/src/components/Chatbot.tsx"
+      ],
+      "definition_of_done": [
+        "Tạo luồng hội thoại với LLM có cung cấp ngữ cảnh (Sở thích user, Vị trí)",
+        "Giao diện chat bong bóng ở Frontend",
+        "Chatbot có thể tự động trigger action (tìm quán, thêm vào giỏ hàng)"
+      ]
+    },
+    {
+      "name": "feature-office-ordering-health",
+      "status": "TODO",
+      "description": "Mở rộng tính năng Đặt đồ ăn văn phòng định kỳ và Gợi ý món ăn theo chuẩn Sức khỏe/Dinh dưỡng (Calories, Macro).",
+      "scope": [
+        "src/recommendation/engine.ts",
+        "frontend/src/pages/GroupSplit.tsx"
+      ],
+      "definition_of_done": [
+        "Thêm tuỳ chọn dinh dưỡng (Calories limit, Protein target) vào Profile",
+        "Lọc món ăn văn phòng theo khung giờ trưa cố định",
+        "UI hiển thị chỉ số dinh dưỡng dự kiến của món ăn"
+      ]
+    },
+    {
+      "name": "feature-b2b-merchant-dashboard",
+      "status": "TODO",
+      "description": "Xây dựng cổng quản trị B2B Merchant SaaS & API Monetization. Cung cấp Dashboard dữ liệu thị trường và xu hướng cho Chủ nhà hàng.",
+      "scope": [
+        "src/merchant/",
+        "src/api/merchant.routes.ts",
+        "frontend/src/pages/MerchantDashboard.tsx"
+      ],
+      "definition_of_done": [
+        "Hệ thống Login riêng cho Merchant",
+        "Dashboard tổng hợp Analytics (lượt view, lượt like món, click đặt hàng)",
+        "Quản lý thực đơn và chạy chiến dịch khuyến mãi (Control-Promoted Listings)"
+      ]
     }
   ]
 }
