@@ -42,7 +42,9 @@ jobs:
         channel: 'stable'
         architecture: x64
     - name: Install Flutter Dependencies
-      run: flutter pub get
+      run: |
+        flutter create .
+        flutter pub get
       working-directory: ./frontend
     - name: Build Android APK
       run: flutter build apk --release
