@@ -1,23 +1,22 @@
 # Session Progress
 
 ## Last Session Summary
-- Hoàn thiện luồng CI/CD & Deployment bằng cách tạo Dockerfiles Multi-stage cho Frontend (React/Vite) và Backend (Node.js).
-- Tạo cấu hình `nginx.prod.conf` trong frontend để tự động serve SPA, đồng thời Reverse Proxy các request `/api/` và `/socket.io/` sang Backend container.
-- Tạo `docker-compose.prod.yml` để chạy toàn bộ Stack hoàn chỉnh bao gồm PostgreSQL, Redis, Backend, và Frontend Nginx.
-- Thiết lập các tệp `.dockerignore` để tránh tải các module dư thừa.
-- Test hệ thống: Typescript build Frontend/Backend thành công.
-- Đánh dấu `feature-cloud-deployment` thành DONE.
+- Đã thiết lập cấu trúc cho hệ thống Push Notifications (FCM).
+- Tạo `NotificationService` (Mock) hỗ trợ lưu trữ Device Tokens và gửi Push Payload chuẩn.
+- Thêm API endpoints `POST /api/notifications/token` và `POST /api/notifications/send`.
+- Tạo `notificationStore.ts` bằng Zustand bên Frontend để quản lý state của thông báo trên client (unread count, mark as read, etc).
+- Đã chạy verify (tests & linter): 24 tests passed, 0 linter errors, 0 TS errors.
 
 ## Current State
-- Feature: feature-cloud-deployment (status: DONE, 100% complete)
+- Feature: feature-push-notifications (status: DONE, 100% complete)
 - Branch: main
-- Tests: 25 passing / 25 total (Backend)
+- Tests: 24 passing / 24 total (Backend)
 - Linter & TypeScript: 0 errors
-- Đã hoàn thành 22/22 tính năng MVP. Dự án đã sẵn sàng 100% để go-live.
+- Tất cả 23/23 tính năng của ứng dụng MVP đã hoàn thành.
 
 ## What Next Session Should Do First
-1. Dự án FoodRecommend đã đạt trạng thái Release Candidate.
-2. User có thể tiến hành test deploy trên môi trường Cloud, hoặc tiếp tục mở rộng app Mobile bằng Flutter/Capacitor.
+1. Dự án đã hoàn thiện 100% tất cả các module tính năng theo yêu cầu (AI Recommendation, Map, Realtime Voting, Group, Social, Caching, CI/CD, Push Notifications).
+2. Tùy theo nhu cầu của User, có thể bắt đầu tạo tài khoản Firebase thực tế và thay thế code Mock, hoặc bắt đầu tiến hành QA/Testing end-to-end trên giả lập Android.
 
 ## Known Issues / Blockers
 - Khi test bằng Jest, Redis logger in ra "Redis connected successfully" ở Background dẫn đến message "Cannot log after tests are done". Không ảnh hưởng chất lượng code chạy thật.

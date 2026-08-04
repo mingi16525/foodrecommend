@@ -475,6 +475,23 @@
         "Tạo docker-compose.prod.yml để chạy toàn bộ stack trên server Production",
         "Cấu hình các biến môi trường Production an toàn"
       ]
+    },
+    {
+      "name": "feature-push-notifications",
+      "status": "DONE",
+      "description": "Hoàn thiện hệ thống Push Notifications (FCM) để gửi thông báo (VD: Nhắc nhở Split Bill, Bầu chọn quán ăn) tới người dùng Mobile/Web.",
+      "scope": [
+        "src/notifications/service.ts",
+        "src/api/notification.routes.ts",
+        "src/index.ts",
+        "package.json",
+        "frontend/src/store/notificationStore.ts"
+      ],
+      "definition_of_done": [
+        "Tạo service xử lý gửi thông báo (mock FCM/Firebase Admin nếu chưa có credentials)",
+        "Tạo API routes lưu trữ device token của người dùng",
+        "Tích hợp frontend store để quản lý hiển thị Notification"
+      ]
     }
   ]
 }
