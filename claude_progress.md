@@ -1,19 +1,18 @@
 # Session Progress
 
-## Last Session Summary (Session 15 — 2026-08-03)
-- Đã thêm feature mới `module-db-seeding` vào `features.json`.
-- Tạo file `seed.sql` với dữ liệu mẫu (users, preferences, restaurants, dishes, posts, groups) bám sát theo schema của `schema.sql`.
-- Đã cập nhật `package.json` với script `"db:init"` và `"seed"` để thiết lập schema và load seed data nhanh chóng bằng lệnh psql.
-- Các bước kiểm tra dự án (tests, linter, tsc) đều pass 100%.
+## Last Session Summary (Session 16 — 2026-08-04)
+- Đánh giá dự án hiện tại: Đã hoàn tất MVP Backend (Phase 1 & 2), chuẩn bị chuyển sang Frontend Foundation (Phase 1.5).
+- Tạo file `UI.txt` tóm tắt mô tả chi tiết UI/UX cho 5 Tab chính của ứng dụng Android theo `ProductDesignDocument.md`.
+- Cập nhật `features.json`: Thêm các UI/Frontend feature (frontend-foundation, tab-1 đến tab-5, tích hợp bản đồ) và đánh dấu `frontend-foundation` là IN_PROGRESS.
 
 ## Current State
-- Feature: module-db-seeding (status: DONE, 100% complete)
+- Feature: frontend-foundation (status: IN_PROGRESS)
 - Branch: main
 - Tests: 24 passing / 24 total
 
 ## What Next Session Should Do First
-1. Chọn feature tiếp theo trong `features.json` hoặc khởi tạo Frontend Repository với Flutter.
-2. Hoặc thực thi chạy thử container Database + script seed để kiểm tra API bằng Postman/Insomnia (xóa mock fallback data).
+1. Thực hiện feature `frontend-foundation`: Khởi tạo project Flutter, thiết lập Routing, State Management, và UI/Theme colors.
+2. Chuẩn bị môi trường backend (PostgreSQL + Redis) để bắt đầu ghép API cho Mobile App.
 
 ## Known Issues / Blockers
 - Môi trường CI/test hiện tại vẫn phụ thuộc vào catch-block để trả về mock data vì chưa chạy psql command trong quá trình `npm test`.
@@ -23,4 +22,4 @@
 - Tính năng nhóm chưa tích hợp websocket/realtime cho việc tạo bill/bỏ phiếu (Voting) chọn quán ăn chung.
 
 ## Architectural Decisions This Session
-- Cung cấp data seed đơn giản trực tiếp bằng raw SQL query (với raw UUIDs cố định) để đảm bảo việc migrate và test cực kỳ nhẹ nhàng mà không cần thư viện seeding cồng kềnh.
+- Quyết định chia nhỏ các tính năng UI của Android app thành từng feature độc lập theo Tab trong `features.json` để dễ theo dõi và gán task cho Frontend team.
