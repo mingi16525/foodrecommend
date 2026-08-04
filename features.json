@@ -191,22 +191,25 @@
     },
     {
       "name": "tab-2-group-trip-ui",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "description": "Thiết kế màn hình tạo nhóm, Chat thread, Tạo đơn đồ ăn nhóm, Giao diện Trip Planner",
       "scope": [
         "frontend/lib/screens/group/",
         "frontend/lib/screens/trip/",
         "features.json",
-        "claude_progress.md"
+        "claude_progress.md",
+        "DevelopmentPlan.md"
       ]
     },
     {
       "name": "integration-maps-delivery",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "description": "Tích hợp Google Maps SDK, xử lý Deep-link sang GrabFood/ShopeeFood",
       "scope": [
         "frontend/lib/services/maps_service.dart",
-        "frontend/lib/services/delivery_link_service.dart"
+        "frontend/lib/services/delivery_link_service.dart",
+        "features.json",
+        "claude_progress.md"
       ]
     }
   ]

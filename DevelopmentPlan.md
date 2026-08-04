@@ -79,9 +79,9 @@ Hệ thống được chia thành 6 Core Modules để các team (Backend, Front
   - [x] Backend: Viết API lấy thông tin Profile (`GET /me`).
   - [x] Backend: Viết API cập nhật Preferences (Khẩu vị, Dị ứng lưu dạng JSONB).
 * **Phase 2.3: User Profile UI (Tab 4 & Tab 5)**
-  - [ ] Frontend: Dựng UI màn hình Onboarding (chọn món thích/ghét ban đầu).
-  - [ ] Frontend: Dựng UI Tab Tài khoản (Tab 5).
-  - [ ] Frontend: Ghép API Profile và Preferences.
+  - [x] Frontend: Dựng UI màn hình Onboarding (chọn món thích/ghét ban đầu).
+  - [x] Frontend: Dựng UI Tab Tài khoản (Tab 5).
+  - [x] Frontend: Ghép API Profile và Preferences.
 * **Phase 2.4: Seed Data & Restaurant CRUD**
   - [x] Data: Viết script cào dữ liệu (crawl) hoặc seed 100 quán ăn và 500 món ăn mẫu.
   - [x] Backend: Viết API CRUD cơ bản để query Quán ăn và Món ăn.
@@ -97,10 +97,10 @@ Hệ thống được chia thành 6 Core Modules để các team (Backend, Front
   - [x] Backend: Cấu hình API lấy danh sách Món ăn gợi ý bằng Vector Similarity Search.
   - [x] Backend: Tích hợp thuật toán lọc Geohash (lọc các quán ăn trong bán kính 5km).
 * **Phase 3.4: Swipe UI & Interaction (Tab 3)**
-  - [ ] Frontend: Thiết kế UI Card món ăn (Ảnh to, Tag AI, Giá tiền).
-  - [ ] Frontend: Cài đặt logic vuốt thẻ (Tinder-style swipe animations).
-  - [ ] Frontend: Ghép API Recommendation để tải danh sách thẻ liên tục (Pagination).
-  - [ ] Frontend: Gửi event Kafka (thông qua Backend API) khi user vuốt thẻ.
+  - [x] Frontend: Thiết kế UI Card món ăn (Ảnh to, Tag AI, Giá tiền).
+  - [x] Frontend: Cài đặt logic vuốt thẻ (Tinder-style swipe animations).
+  - [x] Frontend: Ghép API Recommendation để tải danh sách thẻ liên tục (Pagination).
+  - [x] Frontend: Gửi event Kafka (thông qua Backend API) khi user vuốt thẻ.
 * **Phase 3.5: Delivery & Maps Integration**
   - [ ] Frontend: Xử lý Deep-link truyền tham số mở ShopeeFood / GrabFood.
   - [ ] Frontend: Gắn schema Google Maps URL để mở bản đồ dẫn đường (Directions API).
@@ -111,11 +111,11 @@ Hệ thống được chia thành 6 Core Modules để các team (Backend, Front
   - [x] Backend: Viết API Lấy danh sách Post (Sử dụng Cursor-based pagination cho luồng lướt).
   - [x] Backend: Viết API Like, Comment bài viết.
 * **Phase 4.2: TikTok-style UI (Tab 1)**
-  - [ ] Frontend: Dựng UI Feed dọc toàn màn hình (Vertical Scroll View).
-  - [ ] Frontend: Tích hợp Video Player (Auto-play, Mute, Cache video offline).
+  - [x] Frontend: Dựng UI Feed dọc toàn màn hình (Vertical Scroll View).
+  - [x] Frontend: Tích hợp Video Player (Auto-play, Mute, Cache video offline).
 * **Phase 4.3: Dish Floating Overlay**
-  - [ ] Frontend: Xây dựng UI Popup thông tin món ăn nổi lên phía dưới góc Video.
-  - [ ] Frontend: Xử lý sự kiện click nút "Thử ngay" trên Popup chuyển hướng sang màn hình Chi tiết Món ăn hoặc Bản đồ.
+  - [x] Frontend: Xây dựng UI Popup thông tin món ăn nổi lên phía dưới góc Video.
+  - [x] Frontend: Xử lý sự kiện click nút "Thử ngay" trên Popup chuyển hướng sang màn hình Chi tiết Món ăn hoặc Bản đồ.
 
 ### Phase 5: MVP Polish, QA & Load Testing (Sprint 10)
 * **Phase 5.1: End-to-End Testing**
