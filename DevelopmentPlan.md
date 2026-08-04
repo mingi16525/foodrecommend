@@ -49,73 +49,73 @@ Hệ thống được chia thành 6 Core Modules để các team (Backend, Front
 
 ### Phase 1: Foundation & Platform Setup (Sprint 1-2)
 * **Phase 1.1: DevOps & Repository Setup**
-  - Khởi tạo Git repository, cấu hình `.gitignore`.
-  - Thiết lập Branching model (GitFlow / GitHub Flow).
-  - Cấu hình CI cơ bản (Linter, Formatter) qua GitHub Actions / GitLab CI.
+  - [x] Khởi tạo Git repository, cấu hình `.gitignore`.
+  - [x] Thiết lập Branching model (GitFlow / GitHub Flow).
+  - [x] Cấu hình CI cơ bản (Linter, Formatter) qua GitHub Actions / GitLab CI.
 * **Phase 1.2: Infrastructure Provisioning**
-  - Viết `docker-compose.yml` cho PostgreSQL và Redis.
-  - Tích hợp Qdrant/Milvus (Vector DB) vào Docker Compose.
-  - Setup Kafka/RabbitMQ container cho môi trường local.
+  - [x] Viết `docker-compose.yml` cho PostgreSQL và Redis.
+  - [x] Tích hợp Qdrant/Milvus (Vector DB) vào Docker Compose.
+  - [ ] Setup Kafka/RabbitMQ container cho môi trường local.
 * **Phase 1.3: Backend Base Setup**
-  - Khởi tạo base source code cho API Gateway.
-  - Khởi tạo base source code cho Backend Service (Node.js/Go).
-  - Cấu hình kết nối DB (Postgres) và Cache (Redis).
+  - [ ] Khởi tạo base source code cho API Gateway.
+  - [x] Khởi tạo base source code cho Backend Service (Node.js/Go).
+  - [x] Cấu hình kết nối DB (Postgres) và Cache (Redis).
 * **Phase 1.4: Database Schema Initialization**
-  - Viết script migration cho bảng `users`.
-  - Viết script migration cho bảng `restaurants`, `dishes`, `preferences`.
-  - Thực thi migration và kiểm tra tính toàn vẹn (Constraints, Foreign Keys).
+  - [x] Viết script migration cho bảng `users`.
+  - [x] Viết script migration cho bảng `restaurants`, `dishes`, `preferences`.
+  - [x] Thực thi migration và kiểm tra tính toàn vẹn (Constraints, Foreign Keys).
 * **Phase 1.5: Frontend Foundation**
-  - Khởi tạo project Mobile (Flutter/React Native).
-  - Setup Routing system và State Management (Redux/Riverpod/Zustand).
-  - Cấu hình thư mục assets (fonts, images) và UI/Theme colors.
+  - [ ] Khởi tạo project Mobile (Flutter/React Native).
+  - [ ] Setup Routing system và State Management (Redux/Riverpod/Zustand).
+  - [ ] Cấu hình thư mục assets (fonts, images) và UI/Theme colors.
 
 ### Phase 2: Auth, User Profile & Data Ingestion (Sprint 3-4)
 * **Phase 2.1: Authentication Service**
-  - Backend: Viết API Đăng ký tài khoản (Register).
-  - Backend: Viết API Đăng nhập (Login) sinh JWT token.
-  - Frontend: Code UI màn hình Đăng ký / Đăng nhập.
-  - Frontend: Tích hợp gọi API Auth và lưu trữ token an toàn (Secure Storage).
+  - [ ] Backend: Viết API Đăng ký tài khoản (Register).
+  - [ ] Backend: Viết API Đăng nhập (Login) sinh JWT token.
+  - [ ] Frontend: Code UI màn hình Đăng ký / Đăng nhập.
+  - [ ] Frontend: Tích hợp gọi API Auth và lưu trữ token an toàn (Secure Storage).
 * **Phase 2.2: User Profile API**
-  - Backend: Viết API lấy thông tin Profile (`GET /me`).
-  - Backend: Viết API cập nhật Preferences (Khẩu vị, Dị ứng lưu dạng JSONB).
+  - [x] Backend: Viết API lấy thông tin Profile (`GET /me`).
+  - [x] Backend: Viết API cập nhật Preferences (Khẩu vị, Dị ứng lưu dạng JSONB).
 * **Phase 2.3: User Profile UI (Tab 4 & Tab 5)**
-  - Frontend: Dựng UI màn hình Onboarding (chọn món thích/ghét ban đầu).
-  - Frontend: Dựng UI Tab Tài khoản (Tab 5).
-  - Frontend: Ghép API Profile và Preferences.
+  - [ ] Frontend: Dựng UI màn hình Onboarding (chọn món thích/ghét ban đầu).
+  - [ ] Frontend: Dựng UI Tab Tài khoản (Tab 5).
+  - [ ] Frontend: Ghép API Profile và Preferences.
 * **Phase 2.4: Seed Data & Restaurant CRUD**
-  - Data: Viết script cào dữ liệu (crawl) hoặc seed 100 quán ăn và 500 món ăn mẫu.
-  - Backend: Viết API CRUD cơ bản để query Quán ăn và Món ăn.
+  - [x] Data: Viết script cào dữ liệu (crawl) hoặc seed 100 quán ăn và 500 món ăn mẫu.
+  - [x] Backend: Viết API CRUD cơ bản để query Quán ăn và Món ăn.
 
 ### Phase 3: Core AI Recommendation & Swipe Engine (Sprint 5-7)
 * **Phase 3.1: Recommendation Data Pipeline**
-  - Backend: Cấu hình Kafka Producer phát event Swipe (Like/Skip/View).
-  - Backend: Xây dựng Kafka Consumer lưu trữ event vào `recommendation_logs`.
+  - [ ] Backend: Cấu hình Kafka Producer phát event Swipe (Like/Skip/View).
+  - [ ] Backend: Xây dựng Kafka Consumer lưu trữ event vào `recommendation_logs`.
 * **Phase 3.2: AI Offline Training & Embeddings**
-  - AI: Viết script Python tính toán Vector Embedding cho 500 món ăn mẫu dựa trên mô tả, thành phần.
-  - AI: Đẩy (Ingest) Embeddings vào Qdrant (Vector DB).
+  - [ ] AI: Viết script Python tính toán Vector Embedding cho 500 món ăn mẫu dựa trên mô tả, thành phần.
+  - [ ] AI: Đẩy (Ingest) Embeddings vào Qdrant (Vector DB).
 * **Phase 3.3: Online Inference API**
-  - Backend: Cấu hình API lấy danh sách Món ăn gợi ý bằng Vector Similarity Search.
-  - Backend: Tích hợp thuật toán lọc Geohash (lọc các quán ăn trong bán kính 5km).
+  - [x] Backend: Cấu hình API lấy danh sách Món ăn gợi ý bằng Vector Similarity Search.
+  - [x] Backend: Tích hợp thuật toán lọc Geohash (lọc các quán ăn trong bán kính 5km).
 * **Phase 3.4: Swipe UI & Interaction (Tab 3)**
-  - Frontend: Thiết kế UI Card món ăn (Ảnh to, Tag AI, Giá tiền).
-  - Frontend: Cài đặt logic vuốt thẻ (Tinder-style swipe animations).
-  - Frontend: Ghép API Recommendation để tải danh sách thẻ liên tục (Pagination).
-  - Frontend: Gửi event Kafka (thông qua Backend API) khi user vuốt thẻ.
+  - [ ] Frontend: Thiết kế UI Card món ăn (Ảnh to, Tag AI, Giá tiền).
+  - [ ] Frontend: Cài đặt logic vuốt thẻ (Tinder-style swipe animations).
+  - [ ] Frontend: Ghép API Recommendation để tải danh sách thẻ liên tục (Pagination).
+  - [ ] Frontend: Gửi event Kafka (thông qua Backend API) khi user vuốt thẻ.
 * **Phase 3.5: Delivery & Maps Integration**
-  - Frontend: Xử lý Deep-link truyền tham số mở ShopeeFood / GrabFood.
-  - Frontend: Gắn schema Google Maps URL để mở bản đồ dẫn đường (Directions API).
+  - [ ] Frontend: Xử lý Deep-link truyền tham số mở ShopeeFood / GrabFood.
+  - [ ] Frontend: Gắn schema Google Maps URL để mở bản đồ dẫn đường (Directions API).
 
 ### Phase 4: Social Feed & TikTok-style UI (Sprint 8-9)
 * **Phase 4.1: Social Feed Backend**
-  - Backend: Thiết kế Schema cho `posts` và `comments`.
-  - Backend: Viết API Lấy danh sách Post (Sử dụng Cursor-based pagination cho luồng lướt).
-  - Backend: Viết API Like, Comment bài viết.
+  - [x] Backend: Thiết kế Schema cho `posts` và `comments`.
+  - [x] Backend: Viết API Lấy danh sách Post (Sử dụng Cursor-based pagination cho luồng lướt).
+  - [x] Backend: Viết API Like, Comment bài viết.
 * **Phase 4.2: TikTok-style UI (Tab 1)**
-  - Frontend: Dựng UI Feed dọc toàn màn hình (Vertical Scroll View).
-  - Frontend: Tích hợp Video Player (Auto-play, Mute, Cache video offline).
+  - [ ] Frontend: Dựng UI Feed dọc toàn màn hình (Vertical Scroll View).
+  - [ ] Frontend: Tích hợp Video Player (Auto-play, Mute, Cache video offline).
 * **Phase 4.3: Dish Floating Overlay**
-  - Frontend: Xây dựng UI Popup thông tin món ăn nổi lên phía dưới góc Video.
-  - Frontend: Xử lý sự kiện click nút "Thử ngay" trên Popup chuyển hướng sang màn hình Chi tiết Món ăn hoặc Bản đồ.
+  - [ ] Frontend: Xây dựng UI Popup thông tin món ăn nổi lên phía dưới góc Video.
+  - [ ] Frontend: Xử lý sự kiện click nút "Thử ngay" trên Popup chuyển hướng sang màn hình Chi tiết Món ăn hoặc Bản đồ.
 
 ### Phase 5: MVP Polish, QA & Load Testing (Sprint 10)
 * **Phase 5.1: End-to-End Testing**

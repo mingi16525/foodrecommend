@@ -40,12 +40,12 @@ LOG_FILE="log/LOG_$(date +'%H:%M_%d-%m-%Y').txt"
   # 4. Progress file freshness
   echo ""
   echo "── Progress File ───────────────────────"
-  echo "Last modified: $(git log -1 --format="%ar" -- claude-progress.md)"
+  echo "Last modified: $(git log -1 --format="%ar" -- claude_progress.md)"
 
   # 5. Open observations
   echo ""
   echo "── Agent Observations ──────────────────"
-  awk '/## Observations/,/^## [^O]/' claude-progress.md | head -20
+  awk '/## Observations/,/^## [^O]/' claude_progress.md | head -20
   echo ""
   echo "Review complete. Log saved to $LOG_FILE"
 } | tee "$LOG_FILE"

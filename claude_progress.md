@@ -1,9 +1,9 @@
 # Session Progress
 
-## Last Session Summary (Session 16 — 2026-08-04)
-- Đánh giá dự án hiện tại: Đã hoàn tất MVP Backend (Phase 1 & 2), chuẩn bị chuyển sang Frontend Foundation (Phase 1.5).
-- Tạo file `UI.txt` tóm tắt mô tả chi tiết UI/UX cho 5 Tab chính của ứng dụng Android theo `ProductDesignDocument.md`.
-- Cập nhật `features.json`: Thêm các UI/Frontend feature (frontend-foundation, tab-1 đến tab-5, tích hợp bản đồ) và đánh dấu `frontend-foundation` là IN_PROGRESS.
+## Last Session Summary (Session 17 — 2026-08-04)
+- Đánh dấu hoàn thành (`[x]`) cho các thành phần Backend đã hoàn tất (Phase 1, 2, 3.3, 4.1) trong `DevelopmentPlan.md` dựa trên `features.json`.
+- Sửa lỗi tên file (`claude-progress.md` thành `claude_progress.md`) trong script `agent-review.sh`.
+- Xác nhận các task liên quan đến UI/Frontend (Phase 1.5, 3.4, 4.2, v.v.) hiện vẫn đang chờ thực hiện.
 
 ## Current State
 - Feature: frontend-foundation (status: IN_PROGRESS)
@@ -11,8 +11,8 @@
 - Tests: 24 passing / 24 total
 
 ## What Next Session Should Do First
-1. Thực hiện feature `frontend-foundation`: Khởi tạo project Flutter, thiết lập Routing, State Management, và UI/Theme colors.
-2. Chuẩn bị môi trường backend (PostgreSQL + Redis) để bắt đầu ghép API cho Mobile App.
+1. Thực hiện feature `frontend-foundation`: Khởi tạo project Flutter (hoặc tạo cấu trúc thủ công nếu không cài sẵn flutter), thiết lập Routing, State Management, và UI/Theme colors.
+2. Thiết lập CI pipeline tự động chạy `agent-review.sh` để kiểm tra tiến độ mỗi phiên.
 
 ## Known Issues / Blockers
 - Môi trường CI/test hiện tại vẫn phụ thuộc vào catch-block để trả về mock data vì chưa chạy psql command trong quá trình `npm test`.
