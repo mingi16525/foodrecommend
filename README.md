@@ -1,42 +1,45 @@
 # AI Food Decision Platform
 
 ## 📌 Tổng quan dự án (Project Overview)
-Nền tảng **AI Food Decision Platform** giúp người dùng quyết định "Ăn gì, ở đâu, đặt như thế nào?" bằng cách gợi ý món ăn/quán ăn theo sở thích cá nhân, học hỏi từ lịch sử tương tác (swipe like/skip), cá nhân hóa theo ngữ cảnh và điều hướng liền mạch sang các nền tảng giao đồ ăn hiện có (ShopeeFood, GrabFood, BeFood, v.v.).
+Nền tảng **AI Food Decision Platform** giúp người dùng quyết định "Ăn gì, ở đâu, đặt như thế nào?" bằng cách gợi ý món ăn/quán ăn theo sở thích cá nhân, học hỏi từ lịch sử tương tác, cá nhân hóa theo ngữ cảnh và điều hướng liền mạch sang các nền tảng giao đồ ăn hiện có.
 
-## 🚀 Hướng phát triển hiện tại (Current Development Direction)
-Hiện tại, dự án đang ở giai đoạn xây dựng **Core Architecture & MVP Backend**, bao gồm:
-- **Modular Monolith**: Khung cấu trúc backend được chia thành các module độc lập (`user`, `restaurant`, `recommendation`, `social`, `group`) nhằm dễ dàng tách thành Microservices trong tương lai.
-- **Swipe-to-Recommend Engine**: Hệ thống AI gợi ý món ăn dựa trên thao tác quẹt (Swipe). Đã tích hợp API endpoints để thu thập hành vi người dùng, lưu vào **PostgreSQL** và tiến hành query embedding từ **Qdrant (Vector DB)**.
-- **CI/CD & DevOps Pipeline**: Thiết lập chuẩn hóa với TypeScript, ESLint, Jest, GitHub Actions, cùng Docker Compose để chạy database cục bộ.
+## 🚀 Tính năng nổi bật & Tiến độ (Features & Status)
+Tất cả các tính năng cốt lõi MVP đã được hoàn thiện 100% bao gồm cả Frontend (React/TypeScript) và Backend (Node.js/Express):
 
-## 🧩 Các thành phần (Modules) & Tiến độ
+### 1. 👤 User & Profile Module (Hoàn thiện)
+- Quản lý hồ sơ cơ bản và sở thích người dùng.
+- **Verified Reviewer**: Hệ thống cấp "Tích xanh" cho người đánh giá uy tín, hiển thị huy hiệu trên các bài post đánh giá.
 
-### 1. 👤 User & Profile Module (Đã dựng MVP)
-- **Hiện tại:** Quản lý hồ sơ cơ bản và sở thích người dùng.
-- **Tương lai:** Tích hợp xác thực (Auth - JWT/OAuth2), quản lý chế độ ăn (Dietary restrictions) chi tiết.
+### 2. 🍔 Restaurant & Menu Module (Hoàn thiện)
+- Quản lý danh sách nhà hàng.
+- **AI Review Summary**: Tích hợp AI (LLM) để tự động tóm tắt các đánh giá từ nhiều nguồn, giúp người dùng nắm bắt nhanh ưu/nhược điểm của quán.
 
-### 2. 🍔 Restaurant & Menu Module (Đã dựng MVP)
-- **Hiện tại:** Quản lý danh sách nhà hàng cơ bản.
-- **Tương lai:** Tích hợp định vị địa lý (Geohashing/PostGIS), liên kết sâu (Deep links) tới GrabFood, ShopeeFood.
+### 3. 🧠 AI Recommendation & Context Engine (Hoàn thiện)
+- Hệ thống xử lý `Swipe Event` (Right/Left) thu thập dữ liệu hành vi.
+- **Office Ordering Health**: Gợi ý món ăn văn phòng theo khung giờ trưa cố định dựa trên chỉ số dinh dưỡng (Calories limit, Protein target).
+- **Conversational AI Agent**: Chatbot thông minh đóng vai trò trợ lý tư vấn món ăn trực tiếp dựa trên ngữ cảnh người dùng.
 
-### 3. 🧠 AI Recommendation & Context Engine (Đã dựng nền tảng Swipe)
-- **Hiện tại:** Mockup logic xử lý `Swipe Event` (Right/Left) chuẩn bị cho Vector DB.
-- **Tương lai:** Triển khai model sinh vector embedding, gợi ý theo ngữ cảnh (thời gian, thời tiết, tâm trạng).
+### 4. 👥 Group & Trip Planner Module (Hoàn thiện)
+- Tính năng chia hóa đơn (Split Bill) nhóm.
+- Tích hợp WebSocket cho tính năng Voting chọn quán realtime.
+- **AI Trip Planner**: Tính năng lên lịch trình ẩm thực dọc tuyến đường (Food Tour) kết hợp Google Maps và LLM để tự động đề xuất điểm dừng và món ăn.
 
-### 4. 👥 Group, Trip Order & Split Bill Module (Đã dựng MVP)
-- **Hiện tại:** Quản lý nhóm (thêm thành viên), logic tách hóa đơn (chia đều, chia theo món) xử lý in-memory hiệu năng cao.
-- **Tương lai:** Tích hợp WebSocket/Realtime để bỏ phiếu (Voting) chọn quán ăn chung theo nhóm.
+### 5. 📸 Social & Review Module (Hoàn thiện)
+- Quản lý bài đăng dạng Feed cơ bản (liên kết tác giả).
+- UI/UX mượt mà, phân trang cơ bản.
 
-### 5. 📸 Social & Review Module (Đã dựng MVP)
-- **Hiện tại:** Quản lý bài đăng dạng Feed cơ bản (liên kết tác giả).
-- **Tương lai:** Phân trang (Pagination) lượng dữ liệu lớn, lọc theo follower, Feed dạng video ngắn (Reels).
-
-## 🌍 Tương lai tổng thể & CI/CD
-- **Hệ thống Front-end:** Dự kiến sử dụng **Flutter** để build Mobile App đa nền tảng (iOS/Android), cung cấp trải nghiệm vuốt (Tinder-like) mượt mà.
-- **Data Pipeline:** Triển khai CI/CD pipeline tự động deploy lên Cloud (AWS/GCP), tích hợp pipeline train model AI (Offline training trên GPU) và cập nhật Vector Database định kỳ.
+### 6. 💼 B2B Merchant Dashboard (Hoàn thiện)
+- Cổng quản trị dành riêng cho chủ nhà hàng (Merchant).
+- Dashboard thống kê Analytics (lượt view, lượt thích, lượt click).
+- Quản lý Menu và chạy chiến dịch quảng cáo (Promoted Listings) trực tiếp từ giao diện.
 
 ## 🛠 Tech Stack
 - **Backend**: Node.js, Express, TypeScript
+- **Frontend**: React, Zustand, Framer Motion, TypeScript
 - **Database**: PostgreSQL (Main), Redis (Cache), Qdrant (Vector DB)
-- **Frontend** *(Tương lai)*: Flutter / React Native
 - **Testing**: Jest, Supertest
+
+## 🌍 CI/CD & Vận hành
+- Thiết lập chuẩn hóa với TypeScript, ESLint, và Jest.
+- CI/CD tự động check lint và test.
+- Hệ thống được thiết kế theo kiến trúc Modular Monolith dễ dàng scale lên Microservices.
