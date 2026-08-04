@@ -1,0 +1,17 @@
+{
+  "features": [
+    {
+      "id": "feature-add-ui-button",
+      "status": "TODO",
+      "description": "Thêm một nút bấm UI đơn giản để test luồng Đa tác nhân",
+      "scope": [
+        "src/mock-button.ts",
+        "tests/mock-button.test.ts"
+      ],
+      "definition_of_done": [
+        "Hàm renderButton trả về chuỗi HTML của nút bấm",
+        "Unit test renderButton.test.ts phải pass"
+      ]
+    }
+  ]
+}

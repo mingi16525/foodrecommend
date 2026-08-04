@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { createClient } from 'redis';
 
 export interface Restaurant {
   id: string;
@@ -17,11 +18,37 @@ export interface Dish {
 
 export class RestaurantService {
   private db: Pool;
+  private redisClient: ReturnType<typeof createClient> | null = null;
+  private isRedisConnected = false;
 
   constructor() {
     this.db = new Pool({
       connectionString: process.env.DATABASE_URL || 'postgresql://fooduser:foodpassword@localhost:5432/foodrecommend'
     });
+    this.initRedis();
+  }
+
+  private async initRedis() {
+    try {
+      this.redisClient = createClient({
+        url: process.env.REDIS_URL || 'redis://localhost:6379'
+      });
+
+      this.redisClient.on('error', (err) => {
+        console.error('Redis Client Error:', err);
+        this.isRedisConnected = false;
+      });
+
+      this.redisClient.on('ready', () => {
+        this.isRedisConnected = true;
+        console.log('Redis connected successfully for RestaurantService.');
+      });
+
+      await this.redisClient.connect();
+    } catch (err) {
+      console.error('Failed to connect to Redis:', err);
+      this.isRedisConnected = false;
+    }
   }
 
   async getRestaurantById(id: string) {
@@ -55,8 +82,23 @@ export class RestaurantService {
   }
 
   async getAllRestaurants() {
+    const CACHE_KEY = 'cache:restaurants:all';
+    
     try {
+      if (this.isRedisConnected && this.redisClient) {
+        const cached = await this.redisClient.get(CACHE_KEY);
+        if (cached) {
+          return JSON.parse(cached);
+        }
+      }
+
       const result = await this.db.query('SELECT * FROM restaurants LIMIT 50');
+      
+      if (this.isRedisConnected && this.redisClient) {
+        // Cache for 300 seconds (5 minutes)
+        await this.redisClient.setEx(CACHE_KEY, 300, JSON.stringify(result.rows));
+      }
+
       return result.rows;
     } catch (e) {
       console.error('DB error in getAllRestaurants', e);

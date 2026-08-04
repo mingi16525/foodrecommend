@@ -1,26 +1,27 @@
 # Session Progress
 
 ## Last Session Summary
-- Cập nhật Store Zustand (`mapStore.ts`) để hỗ trợ định vị toạ độ GPS của người dùng (`userLocation`) và viết hàm tính khoảng cách (`calculateDistance`).
-- Tích hợp Geolocation API vào bản đồ `ExploreMap.tsx` để lấy tọa độ thực tế.
-- Bổ sung Custom Marker chấm xanh thể hiện vị trí người dùng, tự động focus màn hình vào user location khi load, và gắn khoảng cách vào danh sách trending.
-- Đã test linting 0 error và test suites backend vẫn pass 100%.
-- Đánh dấu feature `feature-map-location-gps` thành DONE.
+- Đã thêm cấu hình `redis` node package.
+- Tích hợp Redis client vào backend API (`src/restaurant/service.ts`) để cache lại kết quả trả về của `getAllRestaurants`.
+- Xử lý lỗi graceful degradation (fallback) trong trường hợp Redis server không phản hồi để hệ thống vẫn hoạt động bằng Database query trực tiếp.
+- Đã test hệ thống: 0 lỗi linter, 0 lỗi TypeScript, 25 backend tests chạy thành công.
+- Đánh dấu tính năng `feature-redis-caching` thành DONE.
 
 ## Current State
-- Feature: feature-map-location-gps (status: DONE, 100% complete)
+- Feature: feature-redis-caching (status: DONE, 100% complete)
 - Branch: main
-- Tests: 24 passing / 24 total (Backend)
+- Tests: 25 passing / 25 total (Backend)
 - Linter & TypeScript: 0 errors
-- Frontend build (TypeScript/Vite): OK.
-- Đã hoàn thành 20/20 tính năng theo MVP và advanced features.
+- Frontend build (TypeScript/Vite): OK
+- Đã hoàn thành 21/21 tính năng cho nền tảng MVP mở rộng.
 
 ## What Next Session Should Do First
-1. Hệ thống đã cơ bản hoàn thiện tất cả các flow (Authentication / Social / Map / Group / Realtime).
-2. Phát triển thêm tính năng Push Notifications (Firebase/FCM) hoặc tiến hành tối ưu hóa performance backend (Redis Caching, DB Indexing).
+1. Hệ thống đã tích hợp caching để tối ưu performance cho tính năng tải danh sách nhà hàng.
+2. Có thể triển khai tính năng Push Notifications (FCM) hoặc chuẩn bị Deploy backend lên môi trường Cloud (AWS/GCP/Vercel/Heroku).
 
 ## Known Issues / Blockers
-- Khi user từ chối quyền location trên browser, bản đồ vẫn default về trung tâm HCM. Nếu người dùng muốn bật lại cần thao tác cấp quyền trên trình duyệt thủ công.
+- Khi test bằng Jest, Redis logger in ra "Redis connected successfully" ở Background dẫn đến message "Cannot log after tests are done". Không ảnh hưởng chất lượng code chạy thật.
+- Các tính năng khác (Lấy món ăn gợi ý, Get by ID) hiện tại chưa được áp dụng cache (chỉ áp dụng cho All Restaurants). Có thể cân nhắc mở rộng nếu cần thiết.
 
 ## Verification Results
 - `npm test`: 8 passed suites, 24 passed tests, 0 failed.

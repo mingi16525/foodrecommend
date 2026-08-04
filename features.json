@@ -441,6 +441,22 @@
         "Hiển thị vị trí người dùng trên Leaflet Map (Tab 3)",
         "Tính toán khoảng cách từ người dùng đến các quán ăn"
       ]
+    },
+    {
+      "name": "feature-redis-caching",
+      "status": "DONE",
+      "description": "Tối ưu hóa performance Backend bằng cách áp dụng Redis Caching cho các API thường xuyên được truy xuất (như danh sách nhà hàng).",
+      "scope": [
+        "src/restaurant/service.ts",
+        "src/api/restaurant.routes.ts",
+        "package.json"
+      ],
+      "definition_of_done": [
+        "Cài đặt thư viện redis cho Node.js",
+        "Tạo middleware hoặc logic cache cho API lấy danh sách nhà hàng",
+        "Lưu trữ dữ liệu nhà hàng vào Redis và trả về từ Redis thay vì Database trong những lần gọi sau",
+        "Đảm bảo các Unit test liên quan đến nhà hàng vẫn chạy đúng"
+      ]
     }
   ]
 }
