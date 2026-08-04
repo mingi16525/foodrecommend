@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../../config/api_config.dart';
 import '../../widgets/video_player.dart';
 
 class FeedScreen extends StatefulWidget {
@@ -25,7 +26,7 @@ class _FeedScreenState extends State<FeedScreen> {
   Future<void> _fetchFeed() async {
     setState(() => _isLoading = true);
     try {
-      final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/social/feed'));
+      final response = await http.get(Uri.parse('${ApiConfig.baseUrl}/api/social/feed'));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {

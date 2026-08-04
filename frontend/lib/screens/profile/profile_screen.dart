@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../../config/api_config.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -26,7 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _fetchProfile() async {
     try {
-      final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/users/me'));
+      final response = await http.get(Uri.parse('${ApiConfig.baseUrl}/api/users/me'));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {

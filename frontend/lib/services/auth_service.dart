@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import '../config/api_config.dart';
 
 class AuthService {
-  final String baseUrl = 'http://localhost:3000'; // Default API URL for local backend
+  final String baseUrl = ApiConfig.baseUrl;
 
   Future<Map<String, dynamic>> login(String email) async {
     try {

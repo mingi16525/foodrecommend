@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../../config/api_config.dart';
 import '../../widgets/swipe_card.dart';
 
 class RecommendationScreen extends StatefulWidget {
@@ -23,7 +24,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   Future<void> _fetchRecommendations() async {
     setState(() => _isLoading = true);
     try {
-      final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/recommendation'));
+      final response = await http.get(Uri.parse('${ApiConfig.baseUrl}/api/recommendation'));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
@@ -69,7 +70,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     
     // Gửi sự kiện quẹt thẻ về backend
     http.post(
-      Uri.parse('http://10.0.2.2:3000/api/recommendation/swipe'),
+      Uri.parse('${ApiConfig.baseUrl}/api/recommendation/swipe'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
         'dish_id': item['id'],

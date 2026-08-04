@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../../config/api_config.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -36,7 +37,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       };
       
       final response = await http.put(
-        Uri.parse('http://10.0.2.2:3000/api/users/me/preferences'),
+        Uri.parse('${ApiConfig.baseUrl}/api/users/me/preferences'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode(payload),
       );
