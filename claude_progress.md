@@ -1,17 +1,18 @@
 # Session Progress
 
-## Last Session Summary (Session 18 — 2026-08-04)
-- Đã hoàn thành feature `frontend-foundation`: Khởi tạo cấu trúc thư mục Flutter thủ công (do môi trường chưa có Flutter CLI), thiết lập `pubspec.yaml`, `main.dart`, cấu hình Theme cơ bản, Routing (`go_router`) và State Management (`Provider`).
-- Bỏ qua việc sửa đổi `.github/workflows/ci.yml` do vi phạm Scope Rules (file này không nằm trong scope của `frontend-foundation`).
+## Last Session Summary (Session 19 — 2026-08-04)
+- Đã hoàn thành phần giao diện (UI) cho feature `tab-4-and-5-ui` bao gồm `OnboardingScreen` (Thiết lập khẩu vị) và `ProfileScreen` (Tài khoản người dùng) theo chuẩn được mô tả trong `UI.txt`.
+- Tính năng ghép API Profile chưa thực hiện vì lớp service (ví dụ `frontend/lib/services/`) không nằm trong mảng scope hiện tại của feature này. Giao diện hiện đang sử dụng mock data.
+- Do rule scope, file `features.json` không được cập nhật để đổi trạng thái sang DONE. (Cần điều chỉnh scope nếu muốn update trực tiếp hoặc ủy quyền qua script).
 
 ## Current State
-- Feature: tab-4-and-5-ui (status: IN_PROGRESS)
+- Feature: tab-4-and-5-ui (status: IN_PROGRESS) - UI đã xong, API pending/blocked by scope.
 - Branch: main
-- Tests: 24 passing / 24 total
+- Tests: To be updated after `npm test`.
 
 ## What Next Session Should Do First
-1. Thực hiện feature `tab-4-and-5-ui`: Dựng UI màn hình Onboarding (chọn món thích/ghét), Tab Tài khoản (Tab 5).
-2. Tích hợp gọi API Profile & Preferences từ Backend.
+1. Nếu muốn tích hợp API cho Tab 4 & 5, cần mở rộng scope trong `features.json` để bao gồm các thư mục HTTP service/API client.
+2. Hoặc chuyển sang làm feature UI tiếp theo: `tab-3-swipe-ui` (Vuốt chọn món AI).
 
 ## Known Issues / Blockers
 - Môi trường CI/test hiện tại vẫn phụ thuộc vào catch-block để trả về mock data vì chưa chạy psql command trong quá trình `npm test`.
