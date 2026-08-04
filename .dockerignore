@@ -1,0 +1,16 @@
+node_modules/
+dist/
+build/
+tests/
+frontend/
+AI-Agent-Template/
+AI-Agent-Test/
+.git/
+.env
+*.log
+docker-compose*.yml
+README.md
+claude_progress.md
+AGENTS.md
+features.json
+seed.sql

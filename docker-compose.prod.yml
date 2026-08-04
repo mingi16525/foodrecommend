@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: foodrecommend_db_prod
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-fooduser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-foodpassword}
+      POSTGRES_DB: ${POSTGRES_DB:-foodrecommend}
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - foodrecommend_network
+
+  redis:
+    image: redis:6-alpine
+    container_name: foodrecommend_redis_prod
+    restart: unless-stopped
+    networks:
+      - foodrecommend_network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: foodrecommend_backend_prod
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-fooduser}:${POSTGRES_PASSWORD:-foodpassword}@db:5432/${POSTGRES_DB:-foodrecommend}
+      - REDIS_URL=redis://redis:6379
+      - NODE_ENV=production
+      - PORT=3000
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+    networks:
+      - foodrecommend_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: foodrecommend_frontend_prod
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - foodrecommend_network
+
+networks:
+  foodrecommend_network:
+    driver: bridge
+
+volumes:
+  postgres_data_prod:

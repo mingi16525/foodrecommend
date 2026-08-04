@@ -457,6 +457,24 @@
         "Lưu trữ dữ liệu nhà hàng vào Redis và trả về từ Redis thay vì Database trong những lần gọi sau",
         "Đảm bảo các Unit test liên quan đến nhà hàng vẫn chạy đúng"
       ]
+    },
+    {
+      "name": "feature-cloud-deployment",
+      "status": "DONE",
+      "description": "Chuẩn bị cấu hình Deploy lên Cloud (Dockerfiles cho Backend và Frontend) để sẵn sàng đưa sản phẩm lên Production.",
+      "scope": [
+        "Dockerfile",
+        "frontend/Dockerfile",
+        "docker-compose.prod.yml",
+        ".dockerignore",
+        "frontend/.dockerignore"
+      ],
+      "definition_of_done": [
+        "Tạo Dockerfile cho Backend Node.js",
+        "Tạo Dockerfile cho Frontend (Vite build + Nginx)",
+        "Tạo docker-compose.prod.yml để chạy toàn bộ stack trên server Production",
+        "Cấu hình các biến môi trường Production an toàn"
+      ]
     }
   ]
 }

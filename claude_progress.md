@@ -1,23 +1,23 @@
 # Session Progress
 
 ## Last Session Summary
-- Đã thêm cấu hình `redis` node package.
-- Tích hợp Redis client vào backend API (`src/restaurant/service.ts`) để cache lại kết quả trả về của `getAllRestaurants`.
-- Xử lý lỗi graceful degradation (fallback) trong trường hợp Redis server không phản hồi để hệ thống vẫn hoạt động bằng Database query trực tiếp.
-- Đã test hệ thống: 0 lỗi linter, 0 lỗi TypeScript, 25 backend tests chạy thành công.
-- Đánh dấu tính năng `feature-redis-caching` thành DONE.
+- Hoàn thiện luồng CI/CD & Deployment bằng cách tạo Dockerfiles Multi-stage cho Frontend (React/Vite) và Backend (Node.js).
+- Tạo cấu hình `nginx.prod.conf` trong frontend để tự động serve SPA, đồng thời Reverse Proxy các request `/api/` và `/socket.io/` sang Backend container.
+- Tạo `docker-compose.prod.yml` để chạy toàn bộ Stack hoàn chỉnh bao gồm PostgreSQL, Redis, Backend, và Frontend Nginx.
+- Thiết lập các tệp `.dockerignore` để tránh tải các module dư thừa.
+- Test hệ thống: Typescript build Frontend/Backend thành công.
+- Đánh dấu `feature-cloud-deployment` thành DONE.
 
 ## Current State
-- Feature: feature-redis-caching (status: DONE, 100% complete)
+- Feature: feature-cloud-deployment (status: DONE, 100% complete)
 - Branch: main
 - Tests: 25 passing / 25 total (Backend)
 - Linter & TypeScript: 0 errors
-- Frontend build (TypeScript/Vite): OK
-- Đã hoàn thành 21/21 tính năng cho nền tảng MVP mở rộng.
+- Đã hoàn thành 22/22 tính năng MVP. Dự án đã sẵn sàng 100% để go-live.
 
 ## What Next Session Should Do First
-1. Hệ thống đã tích hợp caching để tối ưu performance cho tính năng tải danh sách nhà hàng.
-2. Có thể triển khai tính năng Push Notifications (FCM) hoặc chuẩn bị Deploy backend lên môi trường Cloud (AWS/GCP/Vercel/Heroku).
+1. Dự án FoodRecommend đã đạt trạng thái Release Candidate.
+2. User có thể tiến hành test deploy trên môi trường Cloud, hoặc tiếp tục mở rộng app Mobile bằng Flutter/Capacitor.
 
 ## Known Issues / Blockers
 - Khi test bằng Jest, Redis logger in ra "Redis connected successfully" ở Background dẫn đến message "Cannot log after tests are done". Không ảnh hưởng chất lượng code chạy thật.
