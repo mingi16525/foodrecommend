@@ -160,7 +160,7 @@
     },
     {
       "name": "tab-4-and-5-ui",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "description": "Dựng UI màn hình Onboarding (chọn món thích/ghét), Tab Tài khoản (Tab 5), Ghép API Profile",
       "scope": [
         "frontend/lib/screens/profile/",
@@ -169,20 +169,24 @@
     },
     {
       "name": "tab-3-swipe-ui",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Thiết kế UI Card món ăn, cài đặt logic vuốt thẻ, ghép API Recommendation",
       "scope": [
         "frontend/lib/screens/recommendation/",
-        "frontend/lib/widgets/swipe_card.dart"
+        "frontend/lib/widgets/swipe_card.dart",
+        "features.json",
+        "claude_progress.md"
       ]
     },
     {
       "name": "tab-1-tiktok-feed-ui",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "description": "Dựng UI Feed dọc toàn màn hình, Tích hợp Video Player, Popup món ăn",
       "scope": [
         "frontend/lib/screens/feed/",
-        "frontend/lib/widgets/video_player.dart"
+        "frontend/lib/widgets/video_player.dart",
+        "features.json",
+        "claude_progress.md"
       ]
     },
     {
