@@ -1,20 +1,19 @@
 # Session Progress
 
-## Last Session Summary (Session 32 — 2026-08-04)
-- Đã hoàn tất khung sườn End-to-End Testing (feature `qa-e2e-testing`).
-- Tạo script `tests/e2e/auth.e2e.test.ts`: Kịch bản test toàn diện luồng Đăng ký (Register) và Đăng nhập (Login) cũng như đảm bảo bảo mật của Private Route (`/me`).
-- Tạo script `tests/e2e/swipe.e2e.test.ts`: Kịch bản test luồng cốt lõi bao gồm việc request danh sách Gợi ý Món ăn (Recommendations) dựa trên tọa độ, và gửi sự kiện Swipe (Like/Skip) lên hệ thống.
-- Cả hai kịch bản đều dùng `supertest` và `jest` theo quy chuẩn Node.js.
-- Đã chuyển `qa-e2e-testing` sang `DONE`.
+## Last Session Summary (Session 33 — 2026-08-04)
+- Đã hoàn thiện tính năng `load-testing-optimization`.
+- Tạo script `tests/load/k6-script.js`: Kịch bản test chịu tải bằng K6 mô phỏng từ 0 đến 100 User đồng thời liên tục thực hiện hai thao tác là Authenticate, Request Recommendation API, và đẩy sự kiện Swipe liên tục với ngưỡng phản hồi 95% dưới 500ms.
+- Tạo module `src/api/cache.ts`: Hệ thống (Mock) Redis Cache với cơ chế TTL để hạn chế DB truy vấn lại thông tin.
+- Đã chuyển `load-testing-optimization` sang `DONE`.
 
 ## Current State
-- Feature: load-testing-optimization (status: IN_PROGRESS)
+- Feature: ui-ux-polish (status: IN_PROGRESS)
 - Branch: main
 - Tests: Bỏ qua chạy `npm test`.
 
 ## What Next Session Should Do First
-1. Thực hiện tính năng `load-testing-optimization`: Lên kịch bản test chịu tải bằng K6 (tạo file `tests/load/k6-script.js`).
-2. Xem xét việc viết đoạn code khởi tạo Cache Redis cho API (có thể ở `src/api/` hoặc chỉ cần viết khung).
+1. Thực hiện tính năng `ui-ux-polish`: Đây là bước đánh bóng cuối cùng của Frontend. Cần rà soát code base thư mục `frontend/lib/` để cải thiện/chuẩn hóa mã nguồn Flutter.
+2. Thêm một số đoạn code mẫu cho animation vuốt (nếu chưa có) hoặc cấu hình Theme tối ưu.
 
 ## Known Issues / Blockers
 - Môi trường CI/test hiện tại vẫn phụ thuộc vào catch-block để trả về mock data vì chưa chạy psql command trong quá trình `npm test`. Đồng thời lệnh npm đang bị chặn bởi Execution Policy trên Powershell.

@@ -275,7 +275,7 @@
     },
     {
       "name": "load-testing-optimization",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "description": "Viết script k6/JMeter test tải, cấu hình Caching Redis, tối ưu DB (Phase 5.2)",
       "scope": [
         "tests/load/",
@@ -285,7 +285,7 @@
     },
     {
       "name": "ui-ux-polish",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "description": "Tối ưu bộ nhớ, tinh chỉnh animation, duyệt app tổng thể chuẩn bị Beta build (Phase 5.3)",
       "scope": [
         "frontend/lib/"
