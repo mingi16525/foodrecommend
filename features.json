@@ -572,7 +572,7 @@
     },
     {
       "name": "feature-b2b-merchant-dashboard",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Xây dựng cổng quản trị B2B Merchant SaaS & API Monetization. Cung cấp Dashboard dữ liệu thị trường và xu hướng cho Chủ nhà hàng.",
       "scope": [
         "src/merchant/",

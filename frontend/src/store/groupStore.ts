@@ -47,7 +47,7 @@ export interface TripPlanData {
 
 interface GroupState {
   groups: FoodGroup[];
-  activeTab: 'GROUPS' | 'BILLS' | 'TRIPS';
+  activeTab: 'GROUPS' | 'BILLS' | 'TRIPS' | 'OFFICE';
   isLoading: boolean;
   isTripLoading: boolean;
   error: string | null;
@@ -56,7 +56,7 @@ interface GroupState {
   activeVotes: { [groupId: string]: VoteStateData | null };
   tripPlan: TripPlanData | null;
   
-  setActiveTab: (tab: 'GROUPS' | 'BILLS' | 'TRIPS') => void;
+  setActiveTab: (tab: 'GROUPS' | 'BILLS' | 'TRIPS' | 'OFFICE') => void;
   fetchGroups: () => Promise<void>;
   generateTripPlan: (tripTitle: string, stops: string[]) => Promise<void>;
   

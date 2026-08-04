@@ -1,24 +1,24 @@
 # Session Progress
 
 ## Last Session Summary
-- Updated `features.json` to mark `feature-office-ordering-health` as `DONE`.
-- Added `getOfficeHealthRecommendations` method in `src/recommendation/engine.ts` to process mocked health queries for office lunches based on calories limit and protein target.
-- Added a new `Office` tab in `frontend/src/pages/GroupSplit.tsx` where users can input max calories and min protein goals.
-- Displayed simulated results with detailed macro breakdowns (Calories, Protein, Carbs, Fat).
-- Ensured strict compliance with the project's scope limits and passed all tests.
+- Updated `features.json` to mark `feature-b2b-merchant-dashboard` as `DONE`. All features in the backlog are now completed.
+- Fixed `groupStore.ts` type definition to include `'OFFICE'` in `activeTab` which resolved compiler errors in `GroupSplit.tsx`.
+- Implemented `MerchantService` backend module with `getAnalytics`, `getMenu`, and `promoteListing` methods.
+- Implemented `merchant.routes.ts` with API endpoints to interact with `MerchantService`.
+- Built `MerchantDashboard.tsx` and `MerchantDashboard.css` with a full UI including Login page, Analytics charts, and Menu promotion features.
 
 ## Current State
-- Feature: `feature-office-ordering-health` (status: DONE, 100% complete within defined scope)
+- Feature: `feature-b2b-merchant-dashboard` (status: DONE, 100% complete within defined scope)
+- All planned features are now complete!
 - Branch: main
 - Tests: 28 passing / 28 total (Backend)
 - Linter & TypeScript: 0 errors for both Backend & Frontend
 
 ## What Next Session Should Do First
-1. Check `features.json` to select the next TODO feature (likely `feature-b2b-merchant-dashboard`).
-2. Read the scope of the next feature and plan the implementation accordingly.
+1. The project roadmap is complete according to `features.json`. The agent should notify the user that all features are successfully built and ask for further instructions (e.g., deployment, polishing, or starting a new phase).
 
 ## Known Issues / Blockers
-- Profile update for health settings was excluded due to strict scope rules. Inputs remain component-level in the `GroupSplit` page.
+- None.
 
 ## Verification Results
 - `npm test`: 8 passed suites, 28 passed tests, 0 failed.
