@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import '../screens/main_screen.dart';
 
 class AppRoutes {
   static final router = GoRouter(
@@ -7,7 +8,7 @@ class AppRoutes {
     routes: [
       GoRoute(
         path: '/',
-        builder: (context, state) => const PlaceholderScreen(title: 'Home (Tab 3)'),
+        builder: (context, state) => const MainScreen(),
       ),
       GoRoute(
         path: '/profile',

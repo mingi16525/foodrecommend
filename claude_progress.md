@@ -1,25 +1,24 @@
 # Session Progress
 
-## Last Session Summary (Session Fix CI Android v1 Embedding - 2026-08-04)
-- Báo lỗi từ GitHub Actions khi chạy lệnh `flutter build apk --release`: `Build failed due to use of deleted Android v1 embedding`.
-- Điều tra cho thấy thư mục `frontend/android` hiện tại đang chứa cấu trúc của dự án Capacitor/Cordova cũ, không phải của Flutter. Flutter cố build trên framework android đó dẫn đến lỗi v1 embedding vì không tương thích.
-- Đã khắc phục bằng cách xóa bỏ hoàn toàn thư mục `frontend/android` cũ khỏi Git tracking.
-- Bổ sung lệnh `flutter create .` vào `.github/workflows/ci.yml` trước lệnh `flutter pub get` để GitHub Actions tự động sinh ra một shell Native Android mới nhất (v2 embedding) và chuẩn xác nhất cho Flutter trước khi tiến hành build APK.
+## Last Session Summary (Session Build UI Bottom Navigation Bar - 2026-08-04)
+- Theo yêu cầu của user, ứng dụng Android hiện tại chỉ hiển thị `PlaceholderScreen` cho Tab 3, thiếu điều hướng chính.
+- Đã tạo `frontend/lib/screens/main_screen.dart` chứa một `StatefulWidget` với `Scaffold` và `BottomNavigationBar`.
+- Sử dụng `IndexedStack` để lồng 3 tab: `FeedScreen`, `GroupListScreen`, và `RecommendationScreen`. `IndexedStack` giúp giữ nguyên state của từng tab (tránh việc video bị load lại mỗi khi đổi tab).
+- Cập nhật `frontend/lib/routes/app_routes.dart` để route gốc `/` trỏ vào `MainScreen`.
 
 ## Current State
-- `ci.yml` đã được thêm bước tự động generate thư mục `android`.
-- Thư mục rác `android` Capacitor đã bị xóa.
-- Mọi bài test backend pass (34/34).
+- UI đã có thanh điều hướng dưới cùng với 3 tab chính: Dành cho bạn (Feed), Cộng đồng (Group), và Khám phá (Recommendation).
+- App hiện tại mở lên sẽ vào thẳng Tab đầu tiên (Feed - Index 0).
 - Branch: main
 
 ## What Next Session Should Do First
-Push các thay đổi lên GitHub để kiểm chứng Action có thể tự `flutter create` và build APK thành công. Sau khi lấy được APK, có thể bắt đầu với `ai-pipeline-ranking`.
+Push các thay đổi lên GitHub để xác nhận CI chạy build thành công. User có thể cài đặt APK mới để test thử cảm giác chuyển đổi giữa các Tab. Sau đó bắt tay vào task `ai-pipeline-ranking`.
 
 ## Known Issues / Blockers
-- Không có.
+- Máy local hiện không có Flutter nên không thể test nóng (Hot Reload), cần đợi CI build APK.
 
 ## Observations (Not Fixed — Outside Current Scope)
-- Việc dùng `flutter create .` trên CI đảm bảo build luôn có shell native sạch sẽ và cập nhật (tương thích Gradle mới nhất của runner).
+- Các file logic (Swipe, Video) trong các màn hình con vẫn đang dùng Mock Data nếu API gọi thất bại.
 
 ## Architectural Decisions This Session
-- Không lưu trữ Native Shells (`android`, `ios`) trong source control nếu chúng ta chỉ code thuần bằng Dart (không có code native custom). Việc để CI tự generate giúp framework không bao giờ bị lỗi outdated embedding v1/v2 hay Gradle cũ.
+- Dùng `IndexedStack` trong `MainScreen` thay vì `GoRouter` nested navigation (`ShellRoute`) cho các tab chính vì `IndexedStack` đơn giản, dễ đọc và cực kỳ tối ưu để giữ state cho các màn hình nặng (như Feed chứa video).
