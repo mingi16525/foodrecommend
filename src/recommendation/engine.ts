@@ -2,6 +2,13 @@ import { QdrantClient } from '@qdrant/js-client-rest';
 import { Pool } from 'pg';
 import { generateEmbedding, maximalMarginalRelevance } from '../ai/utils';
 
+interface DishCandidate {
+  id: string;
+  score: number;
+  embedding: number[];
+  payload: Record<string, unknown>;
+}
+
 export class RecommendationEngine {
   private qdrant: QdrantClient;
   private db: Pool;
@@ -44,22 +51,22 @@ export class RecommendationEngine {
           { id: '3', score: 0.90, payload: { name: 'Phở Gà' }, vector: generateEmbedding('Pho Ga') }, // similar to Pho Bo
           { id: '4', score: 0.85, payload: { name: 'Bánh Mì' }, vector: generateEmbedding('Banh Mi') },
           { id: '5', score: 0.80, payload: { name: 'Nem Rán' }, vector: generateEmbedding('Nem Ran') }
-        ] as Record<string, unknown>[];
+        ];
       });
 
       // 3. Apply MMR (Re-ranking) for Diversity
-      const mappedResults = qdrantResults.map(r => ({
+      const mappedResults: DishCandidate[] = qdrantResults.map(r => ({
         id: String(r.id),
-        score: r.score,
+        score: Number(r.score),
         embedding: (r.vector as number[]) || generateEmbedding(((r.payload as Record<string, unknown>)?.name as string) || ''),
-        payload: r.payload
+        payload: (r.payload as Record<string, unknown>) || {}
       }));
 
       const mmrResults = maximalMarginalRelevance(mappedResults, userVector, 0.5, 5);
 
       return mmrResults.map(res => ({
         id: res.id,
-        name: (res.payload as Record<string, unknown>)?.name || 'Unknown',
+        name: (res.payload.name as string) || 'Unknown',
         score: res.score
       }));
     } catch (e) {
