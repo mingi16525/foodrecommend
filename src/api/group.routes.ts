@@ -2,6 +2,8 @@ import { Router, Request, Response } from 'express';
 import { groupService } from '../group/service';
 import { splitBillService, BillItem } from '../group/splitBill';
 
+import { tripPlannerService } from '../group/tripPlanner';
+
 const router = Router();
 
 router.post('/', async (req: Request, res: Response): Promise<void> => {
@@ -60,6 +62,17 @@ router.post('/:id/split-items', (req: Request, res: Response): void => {
   
   const results = splitBillService.splitByItems(items as BillItem[]);
   res.json({ data: results });
+});
+
+router.post('/trip-planner', (req: Request, res: Response): void => {
+  const { tripTitle, stops } = req.body;
+  if (!stops || !Array.isArray(stops) || stops.length === 0) {
+    res.status(400).json({ error: 'stops (non-empty array) is required' });
+    return;
+  }
+  
+  const tripPlan = tripPlannerService.planTrip(tripTitle, stops);
+  res.json({ data: tripPlan });
 });
 
 export const groupRouter = router;

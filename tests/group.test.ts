@@ -37,4 +37,20 @@ describe('Group API Routes', () => {
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
   });
+
+  it('POST /api/groups/trip-planner should return 400 if stops missing', async () => {
+    const res = await request(app).post('/api/groups/trip-planner').send({ tripTitle: 'Test Trip' });
+    expect(res.status).toBe(400);
+  });
+
+  it('POST /api/groups/trip-planner should generate trip plan with google maps URL', async () => {
+    const res = await request(app).post('/api/groups/trip-planner').send({
+      tripTitle: 'Food Tour Hai Phong',
+      stops: ['Ga Hai Phong', 'Khach san Imperial', 'Cho Cat Bi']
+    });
+    expect(res.status).toBe(200);
+    expect(res.body.data).toBeDefined();
+    expect(res.body.data.stops.length).toBe(3);
+    expect(res.body.data.googleMapsUrl).toContain('google.com/maps/dir');
+  });
 });

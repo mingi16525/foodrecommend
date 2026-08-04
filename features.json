@@ -527,12 +527,13 @@
     },
     {
       "name": "feature-ai-trip-planner",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Lên lịch trình ẩm thực dọc tuyến đường (Trip Planner). Dùng LLM và Google Maps API để đề xuất quán ăn theo các điểm dừng.",
       "scope": [
         "src/group/tripPlanner.ts",
         "src/api/group.routes.ts",
-        "frontend/src/pages/GroupSplit.tsx"
+        "frontend/src/pages/GroupSplit.tsx",
+        "frontend/src/store/groupStore.ts"
       ],
       "definition_of_done": [
         "Giao diện nhập điểm đi, điểm đến và các trạm dừng",

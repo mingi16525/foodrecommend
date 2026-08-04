@@ -30,17 +30,35 @@ export interface VoteStateData {
   userVotes: { [userId: string]: string };
 }
 
+export interface TripStopData {
+  stopOrder: number;
+  stopName: string;
+  recommendedDish: string;
+  recommendedPlace: string;
+  estimatedTime: string;
+}
+
+export interface TripPlanData {
+  tripTitle: string;
+  stops: TripStopData[];
+  googleMapsUrl: string;
+  totalEstimatedTime: string;
+}
+
 interface GroupState {
   groups: FoodGroup[];
-  activeTab: 'GROUPS' | 'BILLS';
+  activeTab: 'GROUPS' | 'BILLS' | 'TRIPS';
   isLoading: boolean;
+  isTripLoading: boolean;
   error: string | null;
   
   socket: Socket | null;
   activeVotes: { [groupId: string]: VoteStateData | null };
+  tripPlan: TripPlanData | null;
   
-  setActiveTab: (tab: 'GROUPS' | 'BILLS') => void;
+  setActiveTab: (tab: 'GROUPS' | 'BILLS' | 'TRIPS') => void;
   fetchGroups: () => Promise<void>;
+  generateTripPlan: (tripTitle: string, stops: string[]) => Promise<void>;
   
   connectSocket: () => void;
   joinGroupVoting: (groupId: string) => void;
@@ -52,9 +70,11 @@ export const useGroupStore = create<GroupState>((set, get) => ({
   groups: [],
   activeTab: 'GROUPS',
   isLoading: false,
+  isTripLoading: false,
   error: null,
   socket: null,
   activeVotes: {},
+  tripPlan: null,
   
   setActiveTab: (tab) => set({ activeTab: tab }),
   
@@ -141,6 +161,17 @@ export const useGroupStore = create<GroupState>((set, get) => ({
     const { socket } = get();
     if (socket) {
       socket.emit('castVote', groupId, userId, restaurantId);
+    }
+  },
+
+  generateTripPlan: async (tripTitle: string, stops: string[]) => {
+    set({ isTripLoading: true });
+    try {
+      const response = await apiClient.post('/groups/trip-planner', { tripTitle, stops });
+      set({ tripPlan: response.data.data, isTripLoading: false });
+    } catch (err: any) {
+      console.error('Failed to generate trip plan:', err);
+      set({ isTripLoading: false });
     }
   }
 }));
