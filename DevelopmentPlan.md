@@ -55,9 +55,9 @@ Hệ thống được chia thành 6 Core Modules để các team (Backend, Front
 * **Phase 1.2: Infrastructure Provisioning**
   - [x] Viết `docker-compose.yml` cho PostgreSQL và Redis.
   - [x] Tích hợp Qdrant/Milvus (Vector DB) vào Docker Compose.
-  - [ ] Setup Kafka/RabbitMQ container cho môi trường local.
+  - [x] Setup Kafka/RabbitMQ container cho môi trường local.
 * **Phase 1.3: Backend Base Setup**
-  - [ ] Khởi tạo base source code cho API Gateway.
+  - [x] Khởi tạo base source code cho API Gateway.
   - [x] Khởi tạo base source code cho Backend Service (Node.js/Go).
   - [x] Cấu hình kết nối DB (Postgres) và Cache (Redis).
 * **Phase 1.4: Database Schema Initialization**
@@ -65,16 +65,16 @@ Hệ thống được chia thành 6 Core Modules để các team (Backend, Front
   - [x] Viết script migration cho bảng `restaurants`, `dishes`, `preferences`.
   - [x] Thực thi migration và kiểm tra tính toàn vẹn (Constraints, Foreign Keys).
 * **Phase 1.5: Frontend Foundation**
-  - [ ] Khởi tạo project Mobile (Flutter/React Native).
-  - [ ] Setup Routing system và State Management (Redux/Riverpod/Zustand).
-  - [ ] Cấu hình thư mục assets (fonts, images) và UI/Theme colors.
+  - [x] Khởi tạo project Mobile (Flutter/React Native).
+  - [x] Setup Routing system và State Management (Redux/Riverpod/Zustand).
+  - [x] Cấu hình thư mục assets (fonts, images) và UI/Theme colors.
 
 ### Phase 2: Auth, User Profile & Data Ingestion (Sprint 3-4)
 * **Phase 2.1: Authentication Service**
-  - [ ] Backend: Viết API Đăng ký tài khoản (Register).
-  - [ ] Backend: Viết API Đăng nhập (Login) sinh JWT token.
-  - [ ] Frontend: Code UI màn hình Đăng ký / Đăng nhập.
-  - [ ] Frontend: Tích hợp gọi API Auth và lưu trữ token an toàn (Secure Storage).
+  - [x] Backend: Viết API Đăng ký tài khoản (Register).
+  - [x] Backend: Viết API Đăng nhập (Login) sinh JWT token.
+  - [x] Frontend: Code UI màn hình Đăng ký / Đăng nhập.
+  - [x] Frontend: Tích hợp gọi API Auth và lưu trữ token an toàn (Secure Storage).
 * **Phase 2.2: User Profile API**
   - [x] Backend: Viết API lấy thông tin Profile (`GET /me`).
   - [x] Backend: Viết API cập nhật Preferences (Khẩu vị, Dị ứng lưu dạng JSONB).
@@ -88,11 +88,11 @@ Hệ thống được chia thành 6 Core Modules để các team (Backend, Front
 
 ### Phase 3: Core AI Recommendation & Swipe Engine (Sprint 5-7)
 * **Phase 3.1: Recommendation Data Pipeline**
-  - [ ] Backend: Cấu hình Kafka Producer phát event Swipe (Like/Skip/View).
-  - [ ] Backend: Xây dựng Kafka Consumer lưu trữ event vào `recommendation_logs`.
+  - [x] Backend: Cấu hình Kafka Producer phát event Swipe (Like/Skip/View).
+  - [x] Backend: Xây dựng Kafka Consumer lưu trữ event vào `recommendation_logs`.
 * **Phase 3.2: AI Offline Training & Embeddings**
-  - [ ] AI: Viết script Python tính toán Vector Embedding cho 500 món ăn mẫu dựa trên mô tả, thành phần.
-  - [ ] AI: Đẩy (Ingest) Embeddings vào Qdrant (Vector DB).
+  - [x] AI: Viết script Python tính toán Vector Embedding cho 500 món ăn mẫu dựa trên mô tả, thành phần.
+  - [x] AI: Đẩy (Ingest) Embeddings vào Qdrant (Vector DB).
 * **Phase 3.3: Online Inference API**
   - [x] Backend: Cấu hình API lấy danh sách Món ăn gợi ý bằng Vector Similarity Search.
   - [x] Backend: Tích hợp thuật toán lọc Geohash (lọc các quán ăn trong bán kính 5km).
@@ -119,16 +119,16 @@ Hệ thống được chia thành 6 Core Modules để các team (Backend, Front
 
 ### Phase 5: MVP Polish, QA & Load Testing (Sprint 10)
 * **Phase 5.1: End-to-End Testing**
-  - QA/Dev: Lên kịch bản test tự động luồng Đăng nhập -> Vuốt chọn món -> Mở App giao hàng.
-  - QA/Dev: Lên kịch bản test luồng Xem Feed -> Tương tác Popup món ăn.
+  - [x] QA/Dev: Lên kịch bản test tự động luồng Đăng nhập -> Vuốt chọn món -> Mở App giao hàng.
+  - [x] QA/Dev: Lên kịch bản test luồng Xem Feed -> Tương tác Popup món ăn.
 * **Phase 5.2: Load Testing & Optimization**
-  - DevOps: Viết script k6/JMeter test tải vào API Recommendation và API Gateway.
-  - Backend: Phân tích slow queries và tối ưu PostgreSQL (Thêm index, explain analyze).
-  - Backend: Cấu hình Caching Redis cho API danh sách Post (Feed).
+  - [x] DevOps: Viết script k6/JMeter test tải vào API Recommendation và API Gateway.
+  - [x] Backend: Phân tích slow queries và tối ưu PostgreSQL (Thêm index, explain analyze).
+  - [x] Backend: Cấu hình Caching Redis cho API danh sách Post (Feed).
 * **Phase 5.3: UI/UX Polish**
-  - Frontend: Tối ưu bộ nhớ (Lazy Load Image/Video tránh tràn RAM).
-  - Frontend: Tinh chỉnh animation, fix các bug giật lag (jank frames).
-  - Review: Duyệt app tổng thể, chuẩn bị bản build Beta nội bộ (TestFlight / APK).
+  - [x] Frontend: Tối ưu bộ nhớ (Lazy Load Image/Video tránh tràn RAM).
+  - [x] Frontend: Tinh chỉnh animation, fix các bug giật lag (jank frames).
+  - [x] Review: Duyệt app tổng thể, chuẩn bị bản build Beta nội bộ (TestFlight / APK).
 
 ---
 
