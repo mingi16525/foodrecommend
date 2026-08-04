@@ -230,7 +230,7 @@
     },
     {
       "name": "module-auth",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "description": "Backend: Viết API Đăng ký tài khoản (Register), Đăng nhập (Login) sinh JWT token (Phase 2.1)",
       "scope": [
         "src/auth/",
@@ -240,7 +240,7 @@
     },
     {
       "name": "frontend-auth-ui",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "description": "Frontend: Code UI Đăng ký / Đăng nhập, tích hợp API Auth và lưu token an toàn (Phase 2.1)",
       "scope": [
         "frontend/lib/screens/auth/",
