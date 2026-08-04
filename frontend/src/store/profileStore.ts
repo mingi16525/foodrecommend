@@ -18,12 +18,14 @@ interface ProfileState {
     followers: number;
     following: number;
     reviews: number;
+    isReviewer: boolean;
   };
   preferences: string[];
   history: UserHistoryItem[];
   isLoading: boolean;
   error: string | null;
   fetchProfile: (userId: string) => Promise<void>;
+  requestVerification: (userId: string) => Promise<void>;
 }
 
 const DEFAULT_PROFILE = {
@@ -34,7 +36,8 @@ const DEFAULT_PROFILE = {
     bio: '...',
     followers: 0,
     following: 0,
-    reviews: 0
+    reviews: 0,
+    isReviewer: false
   },
   preferences: [],
   history: [
@@ -81,6 +84,7 @@ export const useProfileStore = create<ProfileState>((set) => ({
           name: data.full_name || data.email,
           handle: `@${(data.full_name || 'user').replace(/\s+/g, '').toLowerCase()}`,
           bio: data.is_reviewer ? 'Food Critic & Reviewer' : 'Food lover exploring town',
+          isReviewer: data.is_reviewer || false,
         },
         preferences: prefs,
         isLoading: false
@@ -88,6 +92,24 @@ export const useProfileStore = create<ProfileState>((set) => ({
     } catch (error: any) {
       console.error("Failed to fetch profile:", error);
       set({ error: error.message || 'Failed to fetch', isLoading: false });
+    }
+  },
+
+  requestVerification: async (userId: string) => {
+    try {
+      const response = await apiClient.post(`/users/${userId}/verify-reviewer`);
+      if (response.data.success) {
+        set((state) => ({
+          user: {
+            ...state.user,
+            isReviewer: true,
+            bio: 'Food Critic & Reviewer',
+          }
+        }));
+      }
+    } catch (error: any) {
+      console.error("Failed to request verification:", error);
+      // Optional: set an error state here if needed
     }
   }
 }));

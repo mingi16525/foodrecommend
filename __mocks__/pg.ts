@@ -43,6 +43,9 @@ export class Pool {
     if (queryText.includes('INSERT INTO user_swipes')) {
       return Promise.resolve({ rows: [] });
     }
+    if (queryText.includes('UPDATE users SET is_reviewer = TRUE')) {
+      return Promise.resolve({ rows: [{ id: values[0], is_reviewer: true }] });
+    }
 
     return Promise.resolve({ rows: [] });
   });

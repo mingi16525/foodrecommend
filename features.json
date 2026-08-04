@@ -495,12 +495,13 @@
     },
     {
       "name": "feature-verified-reviewer",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Triển khai chương trình Verified Reviewer (tích xanh). Cấp quyền đăng bài đánh giá chuyên sâu và quản lý chỉ số uy tín cho Reviewer.",
       "scope": [
         "src/user/service.ts",
         "src/api/user.routes.ts",
-        "frontend/src/pages/UserProfile.tsx"
+        "frontend/src/pages/UserProfile.tsx",
+        "frontend/src/store/profileStore.ts"
       ],
       "definition_of_done": [
         "Cập nhật Schema cho user có cờ is_verified_reviewer",

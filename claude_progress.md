@@ -1,18 +1,20 @@
 # Session Progress
 
 ## Last Session Summary
-- Đã đọc tài liệu `ProductDesignDocument.md` và `FoodRecommend_Product_Specification.md`.
-- Trích xuất 6 tính năng cao cấp (Beta / Scale V2) để mở rộng ứng dụng trong tương lai.
-- Liệt kê và thêm 6 tính năng mới này vào `features.json` với trạng thái `TODO` (Verified Reviewer, AI Review Summary, AI Trip Planner, Conversational AI Agent, Office Ordering & Health Rec, B2B Merchant Dashboard).
+- Cập nhật `UserService` thêm hàm `verifyReviewer` và định tuyến POST `/api/users/:id/verify-reviewer`.
+- Cập nhật Mock PG cho Unit Test hoạt động khớp với query mới.
+- Cập nhật `profileStore.ts` để lưu `isReviewer` và gọi API `requestVerification`.
+- Giao diện `UserProfile.tsx` đã hiển thị huy hiệu `BadgeCheck` (tích xanh) khi là Reviewer, và nút Request nếu chưa phải.
+- Unit Test chạy PASS toàn bộ.
 
 ## Current State
-- Các tính năng mở rộng đã được đưa vào backlog (TODO).
+- Feature: `feature-verified-reviewer` (status: DONE, 100% complete)
 - Branch: main
-- Dự án MVP Core: 100% hoàn thành (23/23).
-- Linter & TypeScript: Clean.
+- Tests: 25 passing / 25 total (Backend)
+- Linter & TypeScript: 0 errors
 
 ## What Next Session Should Do First
-1. Kiểm tra backlog `features.json` và pick tính năng đầu tiên trong nhóm Beta/V1 (ví dụ: `feature-verified-reviewer` hoặc `feature-ai-review-summary`) để chuyển sang `IN_PROGRESS`.
+1. Kiểm tra backlog `features.json` để chọn tính năng tiếp theo (gợi ý: `feature-ai-review-summary` hoặc `feature-ai-trip-planner`).
 2. Lập kế hoạch (Implementation Plan) để phát triển tính năng được chọn.
 
 ## Known Issues / Blockers
@@ -20,7 +22,7 @@
 - Các tính năng khác (Lấy món ăn gợi ý, Get by ID) hiện tại chưa được áp dụng cache (chỉ áp dụng cho All Restaurants). Có thể cân nhắc mở rộng nếu cần thiết.
 
 ## Verification Results
-- `npm test`: 8 passed suites, 24 passed tests, 0 failed.
+- `npm test`: 8 passed suites, 25 passed tests, 0 failed.
 - `npx tsc --noEmit`: 0 errors.
 - `npm run lint`: clean, 0 errors.
 - `npm run build` frontend: clean, 0 errors.

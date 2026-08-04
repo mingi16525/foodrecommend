@@ -62,6 +62,19 @@ export class UserService {
       throw e;
     }
   }
+
+  async verifyReviewer(userId: string) {
+    try {
+      const res = await this.db.query(
+        'UPDATE users SET is_reviewer = TRUE WHERE id = $1 RETURNING *',
+        [userId]
+      );
+      return res.rows[0];
+    } catch (e) {
+      console.error('DB error in verifyReviewer', e);
+      throw e;
+    }
+  }
 }
 
 export const userService = new UserService();

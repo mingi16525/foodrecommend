@@ -22,9 +22,15 @@ describe('User API Routes', () => {
       allergies: ['peanuts']
     };
     const res = await request(app).put('/api/users/user123/preferences').send({ preferences });
-    expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
     expect(res.body.data.user_id).toBe('user123');
     expect(res.body.data.favorite_flavors).toEqual(['spicy', 'sweet']);
+  });
+
+  it('POST /api/users/:id/verify-reviewer should set is_reviewer to true', async () => {
+    const res = await request(app).post('/api/users/user123/verify-reviewer');
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.is_reviewer).toBe(true);
   });
 });

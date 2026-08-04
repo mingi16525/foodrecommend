@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useProfileStore } from '../store/profileStore';
-import { Settings, Edit3, Star, Clock } from 'lucide-react';
+import { Settings, Edit3, Star, Clock, BadgeCheck } from 'lucide-react';
 import './UserProfile.css';
 
 const UserProfile: React.FC = () => {
-  const { user, preferences, history, fetchProfile, isLoading, error } = useProfileStore();
+  const { user, preferences, history, fetchProfile, requestVerification, isLoading, error } = useProfileStore();
 
   useEffect(() => {
     // Using mock user ID from our seed data: Alice Nguyen
@@ -41,9 +41,21 @@ const UserProfile: React.FC = () => {
         </div>
         
         <div className="profile-details">
-          <h2>{user.name}</h2>
+          <h2>
+            {user.name}
+            {user.isReviewer && <BadgeCheck size={20} color="#3b82f6" style={{ marginLeft: '8px', verticalAlign: 'text-bottom' }} />}
+          </h2>
           <p className="profile-handle">{user.handle}</p>
           <p className="profile-bio">{user.bio}</p>
+          {!user.isReviewer && (
+            <button 
+              className="action-btn-primary" 
+              style={{ marginTop: '10px', fontSize: '0.85rem', padding: '6px 12px' }}
+              onClick={() => requestVerification('11111111-1111-1111-1111-111111111111')}
+            >
+              Request Verified Status
+            </button>
+          )}
         </div>
 
         {/* Stats */}
