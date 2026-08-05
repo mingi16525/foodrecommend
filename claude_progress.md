@@ -16,20 +16,13 @@
 - Tests (Jest): `npm test` ĐÃ PASS TOÀN BỘ (34/34 tests).
 
 ### Current Session
-- Implemented **Guest Mode** (isGuest state, locked tabs 2/4, locked interactions in tab 1/3, Guest Profile layout).
-- Added `geolocator` and real GPS access to `LocationService`.
-- Replaced buggy Navigation routes with `go_router` in Profile and Login screen for stable flow.
-- Added UX feedback (Snackbars) to all Swipe and Like interactions in Feed and Recommendation screens.
-- Added dynamic Custom Allergy input to Tab 4 Onboarding setup.
-- Created `scripts/seedTestUser.ts` for database AI test-seeding.
+- Reviewed manual E2E test results in `Checklist.txt`.
+- Identified major failures: Guest Mode GPS data sparse, Feed missing data, Swipe UI missing snackbars/AI feedback, Group & Trip Planner completely failed, Onboarding dislikes not saving.
+- Re-initialized `features.json`: Removed all DONE features, and mapped the failures into 4 new features (`improve-hanoi-mock-data`, `fix-feed-and-swipe`, `fix-group-and-planner`, `fix-onboarding-dislikes`).
 
 ### What Next Session Should Do First
-- Build and test the Mobile app (`flutter run`) to verify Guest Mode features natively on an emulator or device.
-- Add remaining end-to-end integration tests using `Checklist.txt` cases.
-- Investigate linking AI response generated from `fastTier` into UI (e.g., verifying 1KM Guest data filter in backend).
-- Tiếp tục Manual E2E Testing các tính năng còn lại trên Emulator / Máy thật dựa vào `Checklist.txt` (đặc biệt là Feed/Swipe/Group).
-- Sửa bất kỳ lỗi UI / Logic nào phát sinh trong quá trình Manual Testing.
-- Nếu Manual E2E pass, chuyển sang chuẩn bị mô hình model ML offline hoặc deploy production.
+- Start working on `improve-hanoi-mock-data` (updating `seed.sql` and `scripts/seedTestUser.ts` with dense, realistic Hanoi data).
+- Follow `features.json` for subsequent bug fixes.
 
 ## Known Issues / Blockers
 - Cần có `GEMINI_API_KEY` trong file `.env` để luồng Trip Planner hoạt động trơn tru.

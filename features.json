@@ -1,106 +1,41 @@
 {
   "features": [
     {
-      "name": "ai-decision-routing",
-      "status": "DONE",
-      "description": "Triển khai Decision Complexity Estimator để phân loại và điều hướng request",
-      "scope": [
-        "src/recommendation/routing.ts"
-      ]
-    },
-    {
-      "name": "ai-fast-tier-recommendation",
-      "status": "DONE",
-      "description": "Fast AI: Context Engine, Spatial Index, FAISS Ranking, Decision Optimizer cho Swipe",
-      "scope": [
-        "src/recommendation/fastTier.ts",
-        "src/recommendation/engine.ts"
-      ]
-    },
-    {
-      "name": "ai-medium-tier-group",
-      "status": "DONE",
-      "description": "Medium AI: Gợi ý theo nhóm (Group Decision, Pareto Aggregation) và ràng buộc tĩnh",
-      "scope": [
-        "src/group/service.ts",
-        "src/group/mediumTier.ts"
-      ]
-    },
-    {
-      "name": "ai-deep-tier-planner",
-      "status": "DONE",
-      "description": "Deep AI: Trip Planner kết hợp LLM Orchestrator",
-      "scope": [
-        "src/group/tripPlanner.ts"
-      ]
-    },
-    {
-      "name": "ai-infrastructure-event-driven",
-      "status": "DONE",
-      "description": "Học tăng cường qua Kafka và Caching/Offline Pre-compute qua Redis",
-      "scope": [
-        "src/recommendation/featureStore.ts",
-        "src/recommendation/eventCollector.ts"
-      ]
-    },
-    {
-      "name": "api-third-party-maps",
-      "status": "DONE",
-      "description": "Thêm API Key thực tế cho Google Maps SDK trên frontend",
-      "scope": [
-        "frontend/lib/services/maps_service.dart"
-      ]
-    },
-    {
-      "name": "api-third-party-delivery",
-      "status": "DONE",
-      "description": "Thêm Deep-linking / URL Scheme mở app GrabFood, ShopeeFood thực tế",
-      "scope": [
-        "frontend/lib/services/delivery_link_service.dart"
-      ]
-    },
-    {
-      "name": "api-security-auth",
-      "status": "DONE",
-      "description": "Code JWT thực tế, kết nối Database kiểm tra Hash Password",
-      "scope": [
-        "src/auth/authService.ts",
-        "src/api/auth.routes.ts"
-      ]
-    },
-    {
-      "name": "frontend-local-config",
-      "status": "DONE",
-      "description": "Cập nhật endpoint của app Flutter trỏ về IP của máy cá nhân",
-      "scope": [
-        "frontend/lib/config/api_config.dart"
-      ]
-    },
-    {
-      "name": "app-build-and-run",
-      "status": "DONE",
-      "description": "Build ứng dụng (Debug Mode) trực tiếp qua cáp USB hoặc Emulator",
-      "scope": [
-        "frontend/"
-      ]
-    },
-    {
-      "name": "manual-e2e-testing",
-      "status": "DONE",
-      "description": "Test UX/UI trực tiếp: Vuốt thẻ Tab 3, Group Tab 2, Feed Tab 1",
-      "scope": [
-        "frontend/"
-      ]
-    },
-    {
-      "name": "local-deployment-and-testing",
+      "name": "improve-hanoi-mock-data",
       "status": "IN_PROGRESS",
-      "description": "Thực hiện mock data, seed db, setup flutter, tạo account test",
+      "description": "Cập nhật dữ liệu seed (nhà hàng, món ăn, video) tập trung tại khu vực Hà Nội để test chính xác logic GPS 1KM và đánh giá chất lượng phân tích của AI.",
       "scope": [
         "scripts/",
-        "frontend/",
-        "src/",
+        "seed.sql",
         "Checklist.txt"
+      ]
+    },
+    {
+      "name": "fix-feed-and-swipe",
+      "status": "TODO",
+      "description": "Sửa lỗi Tab 1 (Feed) chỉ hiện 2 video; Sửa lỗi Tab 3 (Khám phá) vuốt không báo SnackBar và AI không thay đổi gợi ý.",
+      "scope": [
+        "frontend/lib/screens/feed/",
+        "frontend/lib/screens/recommendation/",
+        "frontend/lib/services/"
+      ]
+    },
+    {
+      "name": "fix-group-and-planner",
+      "status": "TODO",
+      "description": "Sửa lỗi Tab 2 (Cộng đồng): Fix hiển thị danh sách nhóm, thêm nhóm mới và kết nối UI Trip Planner.",
+      "scope": [
+        "frontend/lib/screens/group/",
+        "frontend/lib/screens/main_screen.dart"
+      ]
+    },
+    {
+      "name": "fix-onboarding-dislikes",
+      "status": "TODO",
+      "description": "Sửa lỗi Tab 4 (Onboarding) không thể thêm và lưu danh sách 'Món ghét' tự nhập.",
+      "scope": [
+        "frontend/lib/screens/onboarding/",
+        "frontend/lib/providers/app_state.dart"
       ]
     }
   ]
