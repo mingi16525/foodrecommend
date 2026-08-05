@@ -11,18 +11,23 @@
 - Trả lại quyền điền `[x] Pass` trong `Checklist.txt` cho User.
 
 ## Current State
-- Backend: Local Beta hoàn thiện 100%. Đã bổ sung API middleware (`authenticateToken`). Postgres và Qdrant đã được load 100% data mock (50 nhà hàng, 500 món ăn, có test user).
+- Backend: Local Beta hoàn thiện 100%. Đã bổ sung API middleware (`authenticateToken`). Postgres và Qdrant đã được load 100% data mock (50 nhà hàng, 500 món ăn, 21 user, 30 video bài viết). Tọa độ GPS đã được phân bố xoay quanh Hồ Hoàn Kiếm, Hà Nội.
 - Frontend: Đã có đủ các trang và tab cơ bản. Setup Android có thể mở trên Android Studio thông qua lệnh `flutter create .`. Form login/register đã đầy đủ.
 - Tests (Jest): `npm test` ĐÃ PASS TOÀN BỘ (34/34 tests).
 
 ### Current Session
-- Reviewed manual E2E test results in `Checklist.txt`.
 - Identified major failures: Guest Mode GPS data sparse, Feed missing data, Swipe UI missing snackbars/AI feedback, Group & Trip Planner completely failed, Onboarding dislikes not saving.
-- Re-initialized `features.json`: Removed all DONE features, and mapped the failures into 4 new features (`improve-hanoi-mock-data`, `fix-feed-and-swipe`, `fix-group-and-planner`, `fix-onboarding-dislikes`).
+- Re-initialized `features.json`: Mapped the failures into 4 new features.
+- Completed feature `improve-hanoi-mock-data`: 
+  - Đã thêm cột `location` vào `seed.sql` cho bảng `restaurants` (tọa độ tại Hà Nội).
+  - Bổ sung data mẫu bảng `posts` (30 video) cho tab Feed.
+  - Sửa lỗi script `seedTestUser.ts` (sai tên cột `author_id` -> `user_id`) và tìm test user bằng email thay vì ID cố định.
+  - Xóa insert `user_swipes` do bảng này không tồn tại trong DB thật.
 
 ### What Next Session Should Do First
-- Start working on `improve-hanoi-mock-data` (updating `seed.sql` and `scripts/seedTestUser.ts` with dense, realistic Hanoi data).
-- Follow `features.json` for subsequent bug fixes.
+- Bắt đầu với feature `fix-feed-and-swipe` trong `features.json`.
+- Sửa lỗi hiển thị UI ở Tab 1 (Feed) để load dữ liệu Video từ Backend/DB.
+- Sửa lỗi Tab 3 (Khám phá): Bổ sung SnackBar cho sự kiện Vuốt trái/phải, đồng thời đảm bảo action này được gửi xuống Backend (AI/Kafka) và nhận gợi ý mới.
 
 ## Known Issues / Blockers
 - Cần có `GEMINI_API_KEY` trong file `.env` để luồng Trip Planner hoạt động trơn tru.
