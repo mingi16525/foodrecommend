@@ -64,6 +64,26 @@ export class GroupService {
       throw e;
     }
   }
+  async getUserGroups(userId: string) {
+    try {
+      const result = await this.db.query(
+        `SELECT g.id, g.name, g.creator_id, 
+          (SELECT COUNT(*) FROM group_members gm2 WHERE gm2.group_id = g.id) as members,
+          'Vừa xong' as time,
+          'Nhóm vừa được tạo' as last_message,
+          'https://i.pravatar.cc/150?u=' || g.id as avatar
+         FROM groups g 
+         JOIN group_members gm ON g.id = gm.group_id 
+         WHERE gm.user_id = $1
+         ORDER BY g.id DESC`,
+        [userId]
+      );
+      return result.rows;
+    } catch (e) {
+      console.error('DB error in getUserGroups', e);
+      throw e;
+    }
+  }
 }
 
 export const groupService = new GroupService();

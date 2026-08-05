@@ -1,17 +1,38 @@
 import { Router, Request, Response } from 'express';
 import { groupService } from '../group/service';
+import { AuthRequest } from '../auth/authMiddleware';
 import { splitBillService, BillItem } from '../group/splitBill';
 
 const router = Router();
 
-router.post('/', async (req: Request, res: Response): Promise<void> => {
-  const { name, creatorId } = req.body;
-  if (!name || !creatorId) {
-    res.status(400).json({ error: 'Name and creatorId are required' });
+router.get('/', async (req: AuthRequest, res: Response): Promise<void> => {
+  const userId = req.user?.userId;
+  if (!userId) {
+    res.status(401).json({ error: 'Unauthorized' });
     return;
   }
-  const newGroup = await groupService.createGroup(name, creatorId);
-  res.json({ data: newGroup });
+  try {
+    const groups = await groupService.getUserGroups(userId);
+    res.json({ data: groups });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message || 'Internal server error' });
+  }
+});
+
+router.post('/', async (req: AuthRequest, res: Response): Promise<void> => {
+  const { name } = req.body;
+  const creatorId = req.user?.userId;
+  
+  if (!name || !creatorId) {
+    res.status(400).json({ error: 'Name and valid session are required' });
+    return;
+  }
+  try {
+    const newGroup = await groupService.createGroup(name, creatorId);
+    res.json({ data: newGroup });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message || 'Internal server error' });
+  }
 });
 
 router.get('/:id', async (req: Request, res: Response): Promise<void> => {

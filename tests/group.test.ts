@@ -13,7 +13,7 @@ describe('Group API Routes', () => {
   it('POST /api/groups should return 400 if data is missing', async () => {
     const res = await request(app).post('/api/groups').send({});
     expect(res.status).toBe(400);
-    expect(res.body.error).toBe('Name and creatorId are required');
+    expect(res.body.error).toBe('Name and valid session are required');
   });
 
   it('POST /api/groups should create a group successfully', async () => {

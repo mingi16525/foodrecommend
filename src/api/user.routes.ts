@@ -1,7 +1,38 @@
 import { Router, Request, Response } from 'express';
 import { userService } from '../user/service';
+import { AuthRequest } from '../auth/authMiddleware';
 
 export const userRouter = Router();
+
+userRouter.get('/me', async (req: AuthRequest, res: Response): Promise<void> => {
+  const userId = req.user?.userId;
+  if (!userId) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+  const profile = await userService.getUserProfile(userId);
+  if (!profile) {
+    res.status(404).json({ error: 'User not found' });
+    return;
+  }
+  res.json(profile);
+});
+
+userRouter.put('/me/preferences', async (req: AuthRequest, res: Response): Promise<void> => {
+  const userId = req.user?.userId;
+  if (!userId) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+  const { preferences } = req.body;
+  if (!preferences) {
+    res.status(400).json({ error: 'Preferences are required' });
+    return;
+  }
+  
+  const updated = await userService.updatePreferences(userId, preferences);
+  res.json({ success: true, data: updated });
+});
 
 userRouter.get('/:id', async (req: Request, res: Response): Promise<void> => {
   const userId = req.params.id as string;

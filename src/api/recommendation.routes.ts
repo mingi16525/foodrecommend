@@ -20,8 +20,9 @@ recommendationRouter.get('/', async (req, res) => {
     };
     const results = await estimator.handleRequest(aiRequest);
     res.json({ data: results });
-  } catch {
-    res.status(500).json({ error: 'Internal server error' });
+  } catch (e: any) {
+    console.error('Error in recommendation route:', e);
+    res.status(500).json({ error: e.message || 'Internal server error' });
   }
 });
 

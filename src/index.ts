@@ -14,11 +14,11 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 app.use('/api/auth', authRouter);
-app.use('/api/recommendations', authenticateToken as express.RequestHandler, recommendationRouter);
-app.use('/api/users', userRouter);
+app.use('/api/recommendation', authenticateToken as express.RequestHandler, recommendationRouter);
+app.use('/api/users', authenticateToken as express.RequestHandler, userRouter);
 app.use('/api/restaurants', restaurantRouter);
 app.use('/api/social', socialRouter);
-app.use('/api/groups', groupRouter);
+app.use('/api/groups', authenticateToken as express.RequestHandler, groupRouter);
 
 app.get('/', (req, res) => {
   res.send('FoodRecommend API is running');

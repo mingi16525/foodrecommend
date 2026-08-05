@@ -1,63 +1,81 @@
-/* eslint-disable */
-import { Request, Response } from 'express';
-import { register, login } from '../src/api/auth.routes';
+import request from 'supertest';
+import express from 'express';
+import { authRouter } from '../src/api/auth.routes';
+import { authService } from '../src/auth/authService';
+
+jest.mock('../src/auth/authService');
+
+const app = express();
+app.use(express.json());
+app.use('/api/auth', authRouter);
 
 describe('Auth API mock tests', () => {
-  let mockRequest: Partial<Request>;
-  let mockResponse: Partial<Response>;
-  let responseObject: any;
-
   beforeEach(() => {
-    mockRequest = {};
-    responseObject = {};
-    mockResponse = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockImplementation((result) => {
-        responseObject = result;
-      })
-    };
+    jest.clearAllMocks();
   });
 
   test('should register a user successfully', async () => {
-    mockRequest = {
-      body: {
+    (authService.register as jest.Mock).mockResolvedValue({
+      id: 'mock-id-123',
+      email: 'test@example.com'
+    });
+
+    const res = await request(app)
+      .post('/api/auth/register')
+      .send({
         email: 'test@example.com',
-        phone: '123456789',
-        full_name: 'Test User'
-      }
-    };
+        password: 'password123',
+        fullName: 'Test User'
+      });
 
-    await register(mockRequest as Request, mockResponse as Response);
+    expect(res.status).toBe(201);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data).toHaveProperty('id');
+    expect(res.body.data.email).toBe('test@example.com');
+  });
 
-    expect(mockResponse.status).toHaveBeenCalledWith(201);
-    expect(responseObject).toHaveProperty('id');
-    expect(responseObject.email).toBe('test@example.com');
+  test('should return 400 when missing email/password on register', async () => {
+    const res = await request(app)
+      .post('/api/auth/register')
+      .send({
+        email: 'test@example.com'
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe('Email and password are required');
   });
 
   test('should login and return token', async () => {
-    mockRequest = {
-      body: {
-        email: 'test@example.com'
-      }
-    };
+    (authService.login as jest.Mock).mockResolvedValue({
+      token: 'mock.jwt.token',
+      user: { id: 'mock-id-123', email: 'test@example.com' }
+    });
 
-    await login(mockRequest as Request, mockResponse as Response);
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send({
+        email: 'test@example.com',
+        password: 'password123'
+      });
 
-    expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(responseObject).toHaveProperty('token');
-    expect(responseObject.user.email).toBe('test@example.com');
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data).toHaveProperty('token');
+    expect(res.body.data.user.email).toBe('test@example.com');
   });
 
   test('should return 401 for unknown user login', async () => {
-    mockRequest = {
-      body: {
-        email: 'unknown@example.com'
-      }
-    };
+    (authService.login as jest.Mock).mockRejectedValue(new Error('Invalid email or password'));
 
-    await login(mockRequest as Request, mockResponse as Response);
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send({
+        email: 'unknown@example.com',
+        password: 'wrongpassword'
+      });
 
-    expect(mockResponse.status).toHaveBeenCalledWith(401);
-    expect(responseObject).toHaveProperty('error');
+    expect(res.status).toBe(401);
+    expect(res.body).toHaveProperty('error');
+    expect(res.body.error).toBe('Invalid email or password');
   });
 });
