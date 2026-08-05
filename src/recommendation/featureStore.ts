@@ -1,7 +1,7 @@
 import Redis from 'ioredis';
 
 // Mock in-memory storage if Redis is not available
-const memoryCache: Record<string, unknown> = {};
+const memoryCache: Record<string, { flavors: string[], allergies: string[] }> = {};
 
 export class FeatureStore {
   private redis: Redis | null = null;

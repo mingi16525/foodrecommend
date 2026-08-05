@@ -1,25 +1,25 @@
 # Session Progress
 
-## Last Session Summary (Implement AI Event-Driven Infrastructure - 2026-08-05)
-- Triển khai tính năng `ai-infrastructure-event-driven` (HOÀN THÀNH).
-- Đã cài đặt `kafkajs` và `ioredis`. Docker Compose file cho dự án đã có sẵn Kafka và Redis.
-- Viết `src/recommendation/eventCollector.ts` tạo Kafka Producer/Consumer. API `/swipe` không còn chọc thẳng Database mà đẩy message (fire-and-forget) vào topic `swipe-events`.
-- Viết `src/recommendation/featureStore.ts` sử dụng Redis để lưu trữ Cache In-Memory siêu nhanh cho `flavors` và `allergies` của User. Consumer từ Kafka sẽ đọc event và cập nhật liên tục vào Redis.
-- Tích hợp thành công **Mock Fallback**: Nếu Docker Kafka/Redis chưa bật, hệ thống tự động fallback về Array Memory trên RAM của Node.js để ngăn app bị crash.
+## Last Session Summary (Implement API Security Auth - 2026-08-05)
+- Triển khai tính năng `api-security-auth` (HOÀN THÀNH).
+- Cài đặt `bcrypt` và `jsonwebtoken`.
+- Cập nhật `schema.sql` để thêm cột `password_hash` vào bảng `users`.
+- Tạo `src/auth/authService.ts`: Triển khai hàm `register` (mã hóa mật khẩu) và `login` (so khớp mật khẩu, cấp phát JWT).
+- Tạo `src/auth/authMiddleware.ts`: Viết middleware `authenticateToken` chặn các Request không chứa Bearer Token hợp lệ.
+- Thêm `authRouter` vào `src/index.ts` (`/api/auth`) và bảo vệ các routes quan trọng như `/api/recommendations` bằng middleware xác thực.
 
 ## Current State
-- Tầng hạ tầng dữ liệu luân chuyển liên tục đã hoàn thiện, đảm bảo khả năng Scale cho hàng triệu request.
-- Các tính năng AI Backend (Decision Routing, Fast Tier, Medium Tier, Deep Tier, Event-Driven) ĐÃ XONG HOÀN TOÀN.
-- Tính năng `ai-infrastructure-event-driven` trong `features.json` đã được đánh dấu là "DONE".
-- Mã nguồn chạy mượt, pass ESLint và TSC.
+- Backend giờ đã được bảo vệ đúng tiêu chuẩn thực tế. Ứng dụng đã có luồng Đăng ký/Đăng nhập và cấp Token.
+- Tính năng `api-security-auth` trong `features.json` đã được đánh dấu là "DONE".
+- Mã nguồn chạy mượt, không lỗi (0 errors, 0 warnings cho TSC & ESLint).
 - Branch: main
 
 ## What Next Session Should Do First
-Bắt đầu triển khai tính năng `api-security-auth` (Code JWT thực tế, kết nối Database kiểm tra Hash Password).
+Không còn tính năng Backend hay Frontend nào trong `features.json` ở trạng thái TODO (Tất cả đều DONE). Quá trình phát triển ứng dụng (Development) đã chính thức khép lại. Nên chuyển sang phase User Testing hoặc Deploy!
 
 ## Known Issues / Blockers
-- Toàn bộ Backend Recommendation Engine đã ổn định. Không có issue gì.
+- Toàn bộ Backend và Frontend đã hoàn tất.
 
 ## Architectural Decisions This Session
-- Lựa chọn giải pháp Event Sourcing (CQRS) kết hợp Feature Store (Redis) để tách biệt luồng Ghi (Swipe) và luồng Đọc (AI Query). Điều này đảm bảo tốc độ phản hồi cho người dùng là nhanh nhất có thể.
-- Xây dựng cơ chế Graceful Degradation (Fallback): Code không phụ thuộc cứng vào service bên ngoài (Kafka/Redis) khi phát triển ở máy cá nhân (Local dev).
+- Dùng `bcrypt` với Salt Rounds = 10 để bảo đảm an toàn mà không làm chậm server.
+- Thiết lập thời gian sống của JWT là 7 ngày (`7d`) để giảm thiểu số lần User phải đăng nhập lại trên App Mobile.

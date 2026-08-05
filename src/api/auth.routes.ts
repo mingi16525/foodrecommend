@@ -1,33 +1,32 @@
-/* eslint-disable */
-import { Request, Response } from 'express';
-import { AuthService } from '../auth/authService';
+import { Router } from 'express';
+import { authService } from '../auth/authService';
 
-const authService = new AuthService();
+export const authRouter = Router();
 
-export const register = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { email, phone, full_name } = req.body;
-    if (!email) {
-      res.status(400).json({ error: 'Email is required' });
-      return;
-    }
-    const user = await authService.register(email, phone, full_name);
-    res.status(201).json(user);
-  } catch (error: any) {
-    res.status(400).json({ error: error.message });
+authRouter.post('/register', async (req, res) => {
+  const { email, password, fullName } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required' });
   }
-};
 
-export const login = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email } = req.body;
-    if (!email) {
-      res.status(400).json({ error: 'Email is required' });
-      return;
-    }
-    const result = await authService.login(email);
-    res.status(200).json(result);
-  } catch (error: any) {
-    res.status(401).json({ error: error.message });
+    const user = await authService.register(email, password, fullName || '');
+    res.status(201).json({ success: true, data: user });
+  } catch (e: unknown) {
+    res.status(400).json({ error: (e as Error).message || 'Registration failed' });
   }
-};
+});
+
+authRouter.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required' });
+  }
+
+  try {
+    const data = await authService.login(email, password);
+    res.json({ success: true, data });
+  } catch (e: unknown) {
+    res.status(401).json({ error: (e as Error).message || 'Login failed' });
+  }
+});

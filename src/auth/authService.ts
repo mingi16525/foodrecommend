@@ -1,42 +1,74 @@
-/* eslint-disable */
+import { Pool } from 'pg';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key-123456';
+const SALT_ROUNDS = 10;
+
 export class AuthService {
-  // Temporary in-memory store for MVP since schema lacks a password field
-  // and we don't have a DB connection configured here in this basic mock.
-  private users: any[] = [];
+  private db: Pool;
 
-  async register(email: string, phone?: string, fullName?: string) {
-    const existing = this.users.find(u => u.email === email);
-    if (existing) {
-      throw new Error('User already exists');
-    }
-
-    const newUser = {
-      id: `mock-uuid-${Date.now()}`,
-      email,
-      phone,
-      full_name: fullName,
-    };
-    
-    this.users.push(newUser);
-    return newUser;
+  constructor() {
+    this.db = new Pool({
+      connectionString: process.env.DATABASE_URL || 'postgresql://fooduser:foodpassword@localhost:5432/foodrecommend'
+    });
   }
 
-  async login(email: string) {
-    const user = this.users.find(u => u.email === email);
-    if (!user) {
-      throw new Error('Invalid credentials');
+  public async register(email: string, passwordRaw: string, fullName: string) {
+    // Kiểm tra xem email đã tồn tại chưa
+    const existingUser = await this.db.query('SELECT id FROM users WHERE email = $1', [email]);
+    if (existingUser.rowCount && existingUser.rowCount > 0) {
+      throw new Error('Email already exists');
     }
 
-    // Mocking a JWT token using base64 for MVP
-    const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64');
-    const payload = Buffer.from(JSON.stringify({ userId: user.id, email: user.email })).toString('base64');
-    const signature = 'mock-signature';
-    
-    const token = `${header}.${payload}.${signature}`;
+    // Mã hóa mật khẩu
+    const passwordHash = await bcrypt.hash(passwordRaw, SALT_ROUNDS);
+
+    // Lưu vào cơ sở dữ liệu
+    const result = await this.db.query(
+      'INSERT INTO users (email, password_hash, full_name) VALUES ($1, $2, $3) RETURNING id, email, full_name',
+      [email, passwordHash, fullName]
+    );
+
+    return result.rows[0];
+  }
+
+  public async login(email: string, passwordRaw: string) {
+    // Lấy thông tin user
+    const result = await this.db.query(
+      'SELECT id, email, password_hash, full_name FROM users WHERE email = $1',
+      [email]
+    );
+
+    if (!result.rowCount || result.rowCount === 0) {
+      throw new Error('Invalid email or password');
+    }
+
+    const user = result.rows[0];
+
+    // So sánh mật khẩu
+    const isMatch = await bcrypt.compare(passwordRaw, user.password_hash);
+    if (!isMatch) {
+      throw new Error('Invalid email or password');
+    }
+
+    // Tạo JWT Token
+    const token = this.generateToken(user.id, user.email);
 
     return {
-      user,
-      token
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        fullName: user.full_name
+      }
     };
   }
+
+  private generateToken(id: string, email: string) {
+    const payload = { userId: id, email };
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+  }
 }
+
+export const authService = new AuthService();

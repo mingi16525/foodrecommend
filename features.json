@@ -61,7 +61,7 @@
     },
     {
       "name": "api-security-auth",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Code JWT thực tế, kết nối Database kiểm tra Hash Password",
       "scope": [
         "src/auth/authService.ts",
