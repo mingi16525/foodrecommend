@@ -36,6 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        if (!mounted) return;
         setState(() {
           _userName = data['name'] ?? 'Nguyễn Văn A';
           _avatarUrl = data['avatar'] ?? 'https://i.pravatar.cc/150?img=32';
@@ -46,9 +47,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _isLoading = false;
         });
       } else {
+        if (!mounted) return;
         setState(() => _isLoading = false);
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() => _isLoading = false);
     }
   }

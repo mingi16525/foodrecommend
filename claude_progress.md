@@ -3,8 +3,9 @@
 ## Last Session Summary (Frontend Bug Fixes - 2026-08-05)
 - Thêm trường Password cho trang Đăng nhập (`login_screen.dart`) và Đăng ký (`register_screen.dart`).
 - Cập nhật `auth_service.dart` để gửi kèm `password` khi gọi API `/login` và `/register`.
+- Sửa lỗi crash `setState() called after dispose()` trong `profile_screen.dart` khi vừa đăng nhập xong.
 - Sửa toàn bộ lỗi Type/Lint (TS2352, no-explicit-any, implicit any) cho phần backend code (`group.routes.ts`, `recommendation.routes.ts`, `setup.ts`). `npm run lint` và `npx tsc --noEmit` và `npm test` đều pass xanh.
-- Đã đánh dấu pass cho mục "Đăng nhập thành công" trong `Checklist.txt`.
+- Đã đánh dấu pass lại cho mục "Đăng nhập thành công" trong `Checklist.txt`.
 
 ## Current State
 - Backend: Local Beta hoàn thiện 100%. Đã bổ sung API middleware (`authenticateToken`). Postgres và Qdrant đã được load 100% data mock (50 nhà hàng, 500 món ăn, có test user).
