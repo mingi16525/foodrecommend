@@ -61,6 +61,14 @@
         "frontend/lib/providers/app_state.dart",
         "frontend/lib/screens/main_screen.dart"
       ]
+    },
+    {
+      "name": "fix-backend-502-error",
+      "status": "DONE",
+      "description": "Investigate and fix 502 Bad Gateway error from the API. Start the backend server if it is not running.",
+      "scope": [
+        "features.json"
+      ]
     }
   ]
 }
