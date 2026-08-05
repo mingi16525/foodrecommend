@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import '../../providers/app_state.dart';
 import '../../config/api_config.dart';
 import '../../widgets/video_player.dart';
+import '../../services/location_service.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
@@ -25,11 +28,24 @@ class _FeedScreenState extends State<FeedScreen> {
 
   Future<void> _fetchFeed() async {
     setState(() => _isLoading = true);
+    
+    final isGuest = Provider.of<AppState>(context, listen: false).isGuest;
+    String queryParams = '';
+    
+    if (isGuest) {
+      final position = await LocationService.getCurrentPosition();
+      if (position != null) {
+        queryParams = '?guest=true&lat=${position.latitude}&lng=${position.longitude}';
+      } else {
+        queryParams = '?guest=true';
+      }
+    }
+
     try {
       final response = await http.get(
-        Uri.parse('${ApiConfig.baseUrl}/api/social/feed'),
+        Uri.parse('${ApiConfig.baseUrl}/api/social/feed$queryParams'),
         headers: {
-          'Authorization': 'Bearer ${ApiConfig.token}',
+          if (!isGuest) 'Authorization': 'Bearer ${ApiConfig.token}',
         },
       );
       if (response.statusCode == 200) {
@@ -160,13 +176,13 @@ class _FeedScreenState extends State<FeedScreen> {
             children: [
               _buildAvatar(item['author_avatar'], item['is_verified']),
               const SizedBox(height: 20),
-              _buildInteractionButton(Icons.favorite, item['likes'].toString()),
+              _buildInteractionButton(Icons.favorite, item['likes'].toString(), 'Đã thích video!'),
               const SizedBox(height: 15),
-              _buildInteractionButton(Icons.comment, item['comments'].toString()),
+              _buildInteractionButton(Icons.comment, item['comments'].toString(), 'Bình luận đang phát triển'),
               const SizedBox(height: 15),
-              _buildInteractionButton(Icons.bookmark, 'Lưu'),
+              _buildInteractionButton(Icons.bookmark, 'Lưu', 'Đã lưu video!'),
               const SizedBox(height: 15),
-              _buildInteractionButton(Icons.share, 'Chia sẻ'),
+              _buildInteractionButton(Icons.share, 'Chia sẻ', 'Chia sẻ đang phát triển'),
             ],
           ),
         ),
@@ -267,13 +283,27 @@ class _FeedScreenState extends State<FeedScreen> {
     );
   }
 
-  Widget _buildInteractionButton(IconData icon, String text) {
-    return Column(
-      children: [
-        Icon(icon, color: Colors.white, size: 35),
-        const SizedBox(height: 4),
-        Text(text, style: const TextStyle(color: Colors.white, fontSize: 12)),
-      ],
+  Widget _buildInteractionButton(IconData icon, String text, String successMessage) {
+    return GestureDetector(
+      onTap: () {
+        final isGuest = Provider.of<AppState>(context, listen: false).isGuest;
+        if (isGuest) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Vui lòng đăng nhập để thực hiện thao tác!')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(successMessage), duration: const Duration(milliseconds: 1000)),
+          );
+        }
+      },
+      child: Column(
+        children: [
+          Icon(icon, color: Colors.white, size: 35),
+          const SizedBox(height: 4),
+          Text(text, style: const TextStyle(color: Colors.white, fontSize: 12)),
+        ],
+      ),
     );
   }
 }

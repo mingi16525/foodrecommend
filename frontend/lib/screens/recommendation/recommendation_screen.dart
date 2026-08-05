@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import '../../providers/app_state.dart';
 import '../../config/api_config.dart';
 import '../../widgets/swipe_card.dart';
 import '../../services/maps_service.dart';
 import '../../services/delivery_link_service.dart';
+import '../../services/location_service.dart';
 class RecommendationScreen extends StatefulWidget {
   const RecommendationScreen({super.key});
 
@@ -24,24 +27,40 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
 
   Future<void> _fetchRecommendations() async {
     setState(() => _isLoading = true);
+    
+    final isGuest = Provider.of<AppState>(context, listen: false).isGuest;
+    String queryParams = '';
+    
+    if (isGuest) {
+      final position = await LocationService.getCurrentPosition();
+      if (position != null) {
+        queryParams = '?guest=true&lat=${position.latitude}&lng=${position.longitude}';
+      } else {
+        queryParams = '?guest=true';
+      }
+    }
+
     try {
       final response = await http.get(
-        Uri.parse('${ApiConfig.baseUrl}/api/recommendation'),
+        Uri.parse('${ApiConfig.baseUrl}/api/recommendation$queryParams'),
         headers: {
-          'Authorization': 'Bearer ${ApiConfig.token}',
+          if (!isGuest) 'Authorization': 'Bearer ${ApiConfig.token}',
         },
       );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        if (!mounted) return;
         setState(() {
           _recommendations = data['data'] ?? [];
           _isLoading = false;
         });
       } else {
+        if (!mounted) return;
         // Mock data fallback
         _loadMockData();
       }
     } catch (e) {
+      if (!mounted) return;
       _loadMockData();
     }
   }
@@ -74,18 +93,30 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     if (_recommendations.isEmpty) return;
     final item = _recommendations.first;
     
-    // Gửi sự kiện quẹt thẻ về backend
-    http.post(
-      Uri.parse('${ApiConfig.baseUrl}/api/recommendation/swipe'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${ApiConfig.token}',
-      },
-      body: json.encode({
-        'dish_id': item['id'],
-        'action': isLiked ? 'LIKE' : 'SKIP'
-      }),
-    ).catchError((_) => http.Response('', 200)); // Ignore errors in mock mode
+    final isGuest = Provider.of<AppState>(context, listen: false).isGuest;
+    
+    if (isGuest) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Vui lòng đăng nhập để lưu thao tác!')),
+      );
+    } else {
+      // Gửi sự kiện quẹt thẻ về backend
+      http.post(
+        Uri.parse('${ApiConfig.baseUrl}/api/recommendation/swipe'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${ApiConfig.token}',
+        },
+        body: json.encode({
+          'dish_id': item['id'],
+          'action': isLiked ? 'LIKE' : 'SKIP'
+        }),
+      ).catchError((_) => http.Response('', 200)); // Ignore errors in mock mode
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(isLiked ? 'Đã thích món ăn!' : 'Đã bỏ qua món ăn.'), duration: const Duration(milliseconds: 500)),
+      );
+    }
     
     setState(() {
       _recommendations.removeAt(0);

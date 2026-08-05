@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import '../../providers/app_state.dart';
+import '../../services/auth_service.dart';
 import '../../services/auth_service.dart';
 import 'register_screen.dart';
 
@@ -24,6 +27,8 @@ class LoginScreenState extends State<LoginScreen> {
       debugPrint('Logged in successfully: ${response['token']}');
 
       if (!mounted) return;
+      
+      Provider.of<AppState>(context, listen: false).login();
       // Navigate to Home or Tab 1 (Main UI) after login
       context.go('/');
     } catch (e) {
@@ -75,6 +80,13 @@ class LoginScreenState extends State<LoginScreen> {
                 Navigator.of(context).push(MaterialPageRoute(builder: (_) => const RegisterScreen()));
               },
               child: const Text('Chưa có tài khoản? Đăng ký ngay'),
+            ),
+            TextButton(
+              onPressed: () {
+                Provider.of<AppState>(context, listen: false).loginAsGuest();
+                context.go('/');
+              },
+              child: const Text('Tiếp tục dưới dạng Khách', style: TextStyle(color: Colors.grey)),
             )
           ],
         ),

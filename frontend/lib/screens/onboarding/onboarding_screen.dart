@@ -17,6 +17,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<String> _allergies = ['Hải sản', 'Đậu phộng', 'Gluten', 'Sữa'];
   final List<String> _selectedAllergies = [];
+  final TextEditingController _customAllergyController = TextEditingController();
 
   final List<String> _diets = ['Bình thường', 'Keto', 'Ăn chay', 'Low-carb'];
   String _selectedDiet = 'Bình thường';
@@ -100,6 +101,35 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   },
                 );
               }).toList(),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _customAllergyController,
+                    decoration: const InputDecoration(
+                      hintText: 'Thêm dị ứng khác...',
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    final newAllergy = _customAllergyController.text.trim();
+                    if (newAllergy.isNotEmpty && !_allergies.contains(newAllergy)) {
+                      setState(() {
+                        _allergies.add(newAllergy);
+                        _selectedAllergies.add(newAllergy);
+                      });
+                      _customAllergyController.clear();
+                    }
+                  },
+                  child: const Text('Thêm'),
+                )
+              ],
             ),
             const Divider(height: 30),
 

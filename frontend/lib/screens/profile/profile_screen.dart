@@ -1,5 +1,7 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import '../../providers/app_state.dart';
 import 'package:http/http.dart' as http;
 import '../../config/api_config.dart';
 import '../auth/login_screen.dart';
@@ -27,6 +29,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _fetchProfile() async {
+    if (Provider.of<AppState>(context, listen: false).isGuest) {
+      if (!mounted) return;
+      setState(() {
+        _userName = 'Khách (Guest)';
+        _avatarUrl = 'https://i.pravatar.cc/150?img=0'; // default guest avatar
+        _reviewsCount = 0;
+        _savedCount = 0;
+        _postsCount = 0;
+        _isVerified = false;
+        _isLoading = false;
+      });
+      return;
+    }
+
     try {
       final response = await http.get(
         Uri.parse('${ApiConfig.baseUrl}/api/users/me'),
@@ -80,10 +96,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title: const Text('Đăng xuất', style: TextStyle(color: Colors.red)),
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  );
+                  Provider.of<AppState>(context, listen: false).logout();
+                  context.go('/login');
                 },
               ),
             ],
@@ -105,12 +119,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: const Text('Tài khoản (Tab 5)'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              _showSettingsDialog();
-            },
-          )
+          if (!Provider.of<AppState>(context).isGuest)
+            IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () {
+                _showSettingsDialog();
+              },
+            )
         ],
       ),
       body: _isLoading 
@@ -143,14 +158,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _buildStatRow(),
                   const Divider(height: 40),
                   
-                  _buildListTile(Icons.favorite, 'Món đã thích', () {}),
-                  _buildListTile(Icons.bookmark, 'Quán đã lưu', () {}),
-                  _buildListTile(Icons.article, 'Bài viết đã đăng', () {}),
-                  _buildListTile(Icons.link, 'Liên kết mạng xã hội', () {}),
-                  
-                  const Divider(height: 40),
-                  _buildListTile(Icons.verified_user, 'Yêu cầu xác thực Reviewer', () {}),
-                  _buildListTile(Icons.settings_system_daydream, 'Cài đặt hệ thống', () {}),
+                  if (Provider.of<AppState>(context).isGuest)
+                    ElevatedButton(
+                      onPressed: () {
+                        context.go('/login');
+                      },
+                      child: const Text('Đăng nhập để xem thêm'),
+                    )
+                  else ...[
+                    _buildListTile(Icons.favorite, 'Món đã thích', () {}),
+                    _buildListTile(Icons.bookmark, 'Quán đã lưu', () {}),
+                    _buildListTile(Icons.article, 'Bài viết đã đăng', () {}),
+                    _buildListTile(Icons.link, 'Liên kết mạng xã hội', () {}),
+                    
+                    const Divider(height: 40),
+                    _buildListTile(Icons.verified_user, 'Yêu cầu xác thực Reviewer', () {}),
+                    _buildListTile(Icons.settings_system_daydream, 'Cài đặt hệ thống', () {}),
+                  ]
                 ],
               ),
             ),

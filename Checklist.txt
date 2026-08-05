@@ -12,6 +12,7 @@ Lưu ý: Thư mục `frontend/android/` hiện tại có thể bị lỗi (chỉ
 
 # CHECKLIST TEST TÍNH NĂNG (E2E):
 [ ] Đăng nhập thành công với tài khoản test@example.com. Fail 
+- Ghi nhận log hiển thị lỗi trên màn hình vào `logfile.txt`
 [ ] Kiểm tra màn hình Feed (dữ liệu mock AI fast tier). 
 [ ] Kiểm tra tính năng Swipe (vuốt món ăn):
   - [ ] Vuốt phải (Like)

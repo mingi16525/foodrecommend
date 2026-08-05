@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import '../providers/app_state.dart';
 import 'feed/feed_screen.dart';
 import 'group/group_list_screen.dart';
 import 'recommendation/recommendation_screen.dart';
@@ -29,13 +32,39 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  Widget _buildBody(bool isGuest) {
+    if (isGuest && (_currentIndex == 1 || _currentIndex == 3)) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.lock, size: 64, color: Colors.grey),
+            const SizedBox(height: 16),
+            const Text('Vui lòng đăng nhập để sử dụng tính năng này', style: TextStyle(fontSize: 16)),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () {
+                context.go('/login');
+              },
+              child: const Text('Đăng nhập'),
+            )
+          ],
+        ),
+      );
+    }
+
+    return IndexedStack(
+      index: _currentIndex,
+      children: _screens,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isGuest = Provider.of<AppState>(context).isGuest;
+
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
+      body: _buildBody(isGuest),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,

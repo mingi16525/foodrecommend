@@ -1,11 +1,28 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../screens/main_screen.dart';
+import '../screens/auth/login_screen.dart';
+import '../providers/app_state.dart';
 
 class AppRoutes {
   static final router = GoRouter(
-    initialLocation: '/',
+    initialLocation: '/login',
+    redirect: (context, state) {
+      final appState = Provider.of<AppState>(context, listen: false);
+      final isLoggingIn = state.matchedLocation == '/login';
+      final isRegistering = state.matchedLocation == '/register';
+
+      if (!appState.isAuthenticated && !appState.isGuest && !isLoggingIn && !isRegistering) {
+        return '/login';
+      }
+      return null;
+    },
     routes: [
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const LoginScreen(),
+      ),
       GoRoute(
         path: '/',
         builder: (context, state) => const MainScreen(),
