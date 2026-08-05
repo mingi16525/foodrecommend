@@ -2,3 +2,30 @@ node_modules/
 dist/
 .env
 log
+*.sql
+
+# Flutter
+**/build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+
+# Android
+**/android/.gradle/
+**/android/local.properties
+
+# APK
+*.apk
+*.aab
+
+# iOS
+Pods/
+DerivedData/
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
