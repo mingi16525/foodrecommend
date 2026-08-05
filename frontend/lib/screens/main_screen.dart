@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'feed/feed_screen.dart';
 import 'group/group_list_screen.dart';
 import 'recommendation/recommendation_screen.dart';
+import 'onboarding/onboarding_screen.dart';
+import 'profile/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -17,6 +19,8 @@ class _MainScreenState extends State<MainScreen> {
     FeedScreen(),
     GroupListScreen(),
     RecommendationScreen(),
+    OnboardingScreen(),
+    ProfileScreen(),
   ];
 
   void _onTabTapped(int index) {
@@ -50,6 +54,14 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.explore),
             label: 'Khám phá',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.restaurant_menu),
+            label: 'Thiết lập',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Tài khoản',
           ),
         ],
       ),

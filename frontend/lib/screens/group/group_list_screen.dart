@@ -36,6 +36,47 @@ class _GroupListScreenState extends State<GroupListScreen> {
     }
   ];
 
+  void _showCreateGroupDialog() {
+    final TextEditingController nameController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Tạo nhóm mới'),
+          content: TextField(
+            controller: nameController,
+            decoration: const InputDecoration(hintText: 'Nhập tên nhóm...'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Hủy'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (nameController.text.isNotEmpty) {
+                  setState(() {
+                    _groups.insert(0, {
+                      'id': DateTime.now().millisecondsSinceEpoch.toString(),
+                      'name': nameController.text,
+                      'members': 1,
+                      'last_message': 'Nhóm vừa được tạo',
+                      'time': 'Vừa xong',
+                      'avatar': 'https://i.pravatar.cc/150?img=1'
+                    });
+                  });
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Tạo'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +86,7 @@ class _GroupListScreenState extends State<GroupListScreen> {
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
-              // TODO: Mở popup tạo nhóm mới
+              _showCreateGroupDialog();
             },
           )
         ],
