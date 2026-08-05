@@ -4,11 +4,16 @@ import 'core/theme.dart';
 import 'routes/app_routes.dart';
 import 'providers/app_state.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  final appState = AppState();
+  await appState.init();
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AppState()),
+        ChangeNotifierProvider.value(value: appState),
       ],
       child: const FoodRecommendApp(),
     ),

@@ -114,7 +114,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     } else {
       // Gửi sự kiện quẹt thẻ về backend
       final requestBody = json.encode({
-        'dish_id': item['id'],
+        'dishId': item['id'],
         'action': isLiked ? 'LIKE' : 'SKIP'
       });
       http.post(

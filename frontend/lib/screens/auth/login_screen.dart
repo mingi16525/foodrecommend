@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import '../../providers/app_state.dart';
 import '../../services/auth_service.dart';
@@ -23,7 +24,10 @@ class LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
     try {
       final response = await _authService.login(_emailController.text, _passwordController.text);
-      // In a real app, save token using flutter_secure_storage or shared_preferences
+      
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('auth_token', response['token']);
+      
       ApiConfig.token = response['token'];
       debugPrint('Logged in successfully: ${response['token']}');
 

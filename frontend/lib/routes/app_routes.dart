@@ -16,6 +16,9 @@ class AppRoutes {
       if (!appState.isAuthenticated && !appState.isGuest && !isLoggingIn && !isRegistering) {
         return '/login';
       }
+      if ((appState.isAuthenticated || appState.isGuest) && (isLoggingIn || isRegistering)) {
+        return '/';
+      }
       return null;
     },
     routes: [

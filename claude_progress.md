@@ -1,26 +1,28 @@
 # Session Progress
 
 ## Last Session Summary
-- Hoàn thành xử lý lỗi 403 API cho Tab 2 (Tạo nhóm), Tab 3 (Like/Skip), và Tab 4 (Lưu thông tin) bằng cách cập nhật `authMiddleware.ts` để map `mock.jwt.token` tới một UUID hợp lệ có sẵn trong CSDL (`3f4d9056-0929-4c6e-9bd4-618bdea0eac4`).
+- Hoàn thành xử lý lỗi 403 API cho Tab 2, Tab 3, Tab 4 bằng cách map `mock.jwt.token` tới UUID thực tế.
 
 ## Current State
-- Backend: Đang chạy ở cổng 3000 (đã khởi động lại).
-- Frontend: Cấu hình `mock.jwt.token` hoạt động bình thường, các thao tác POST/PUT đều trả về 200 OK thay vì 403.
-- Tests (Jest): `npm test` PASS TOÀN BỘ (34 tests).
+- Backend: Đang chạy ở cổng 3000.
+- Frontend: Đã xử lý xong các feature: Tab 3 gửi thiếu dishId (400), Tab 4 không gọi API khi lưu (thiếu Auth token), và lưu Persist Token (SharedPreferences).
+- Tests (Jest): `npm test` PASS TOÀN BỘ (34 tests). Linter và TSC checks pass.
 
 ### Current Session
-- Đọc `features.json`, thêm 3 features (`fix-tab3-403`, `fix-tab4-save`, `fix-tab2-create-group`).
-- Thay đổi `authMiddleware.ts` để tự động gán `userId` = `3f4d9056-0929-4c6e-9bd4-618bdea0eac4` (User 1) khi phát hiện `token === 'mock.jwt.token'`.
-- Khởi động lại background task Backend. Chạy lại `npm test` thành công.
-- Đánh dấu 3 features trên thành `DONE`.
+- Sửa lỗi `dish_id` -> `dishId` ở `recommendation_screen.dart` để fix HTTP 400.
+- Sửa lỗi không đính kèm `Authorization` header và gọi `ApiLogger` tại `onboarding_screen.dart` (Tab 4 lưu thiết lập).
+- Tích hợp package `shared_preferences` vào Flutter.
+- Chỉnh sửa `AppState` và `login_screen.dart` để ghi/đọc `auth_token`. Cập nhật `app_routes.dart` tự động chuyển hướng về `/` nếu đã login.
+- Đánh dấu các features (`fix-tab3-400`, `fix-tab4-save-api`, `feat-persist-auth-token`) thành `DONE`.
 
 ### What Next Session Should Do First
-- Kiểm tra trực tiếp trên app Frontend các tính năng: Vuốt trái/phải (Tab 3), Đổi sở thích (Tab 4), Tạo nhóm (Tab 2).
-- Nếu mọi thứ ổn định, chuẩn bị kiểm tra hoặc triển khai module Kafka do vẫn còn log báo thiếu Kafka.
+- Kiểm tra tính năng Lưu thiết lập trên Tab 4.
+- Kiểm tra lại luồng đăng nhập, tắt/mở app (SharedPreferences) xem có giữ được phiên hay không.
+- Nếu ổn, giải quyết tiếp các TODO tiếp theo trong `features.json` hoặc tập trung vào sửa logic Backend.
 
 ## Known Issues / Blockers
-- Có log báo lỗi `[kafkajs] The group coordinator is not available` ở Backend khi start do chưa thiết lập/khởi động Kafka trên môi trường local.
-- Tính năng AI của Trip Planner và Recommendation vẫn yêu cầu phải cài đặt biến môi trường `GEMINI_API_KEY` ở backend.
+- Log `[kafkajs] The group coordinator is not available` vẫn tồn tại do chưa bật Kafka trên local.
+- Trip Planner & Recommendation AI vẫn cần `GEMINI_API_KEY`.
 
 ## Architectural Decisions This Session
-- Dùng Bypass Auth bằng UUID thật trong database (thay vì string 'user1') để vượt qua Validation UUID của Database trên các endpoints tạo dữ liệu mới.
+- Lưu token người dùng trực tiếp vào bộ nhớ cục bộ bằng `shared_preferences` trên Frontend. Dùng `AppState` để quản lý state xác thực ở mức toàn cục.

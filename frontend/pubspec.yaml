@@ -22,6 +22,7 @@ dependencies:
   url_launcher: ^6.2.5
   video_player: ^2.8.2
   geolocator: ^14.0.3
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:

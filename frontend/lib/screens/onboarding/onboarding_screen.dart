@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../config/api_config.dart';
+import '../../services/api_logger.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -43,20 +44,55 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         }
       };
       
+      final url = '${ApiConfig.baseUrl}/api/users/me/preferences';
       final response = await http.put(
-        Uri.parse('${ApiConfig.baseUrl}/api/users/me/preferences'),
-        headers: {'Content-Type': 'application/json'},
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${ApiConfig.token}',
+        },
         body: json.encode(payload),
       );
       
+      ApiLogger().addLog(
+        method: 'PUT',
+        url: url,
+        requestBody: json.encode(payload),
+        statusCode: response.statusCode,
+        responseBody: response.body,
+      );
+
       if (response.statusCode == 200) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Lưu thiết lập thành công!')),
           );
         }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Lỗi từ máy chủ khi lưu.')),
+          );
+        }
       }
     } catch (e) {
+      ApiLogger().addLog(
+        method: 'PUT',
+        url: '${ApiConfig.baseUrl}/api/users/me/preferences',
+        requestBody: json.encode({
+          'preferences': {
+            'favorite_flavors': [
+              'Cay: ${_spicyLevel.toStringAsFixed(1)}',
+              'Mặn: ${_saltyLevel.toStringAsFixed(1)}',
+              'Ngọt: ${_sweetLevel.toStringAsFixed(1)}'
+            ],
+            'allergies': _selectedAllergies,
+            'dietary_restrictions': [_selectedDiet],
+            'hated_dishes': _dislikes,
+          }
+        }),
+        error: e.toString(),
+      );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Có lỗi xảy ra khi lưu.')),

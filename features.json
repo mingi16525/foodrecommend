@@ -102,6 +102,39 @@
         "frontend/lib/screens/group/create_group_screen.dart",
         "frontend/lib/screens/group/group_list_screen.dart"
       ]
+    },
+    {
+      "name": "fix-tab3-400",
+      "status": "DONE",
+      "description": "API log phần tab3 trả về 400 (có thể do thiếu tham số userId, dishId hoặc action).",
+      "scope": [
+        "src/api/recommendation.routes.ts",
+        "frontend/lib/screens/recommendation/recommendation_screen.dart",
+        "frontend/lib/services/api_service.dart"
+      ]
+    },
+    {
+      "name": "fix-tab4-save-api",
+      "status": "DONE",
+      "description": "Lưu thiết lập chế độ ăn của người dùng tại nút lưu thiết lập không thấy gọi và trả về API.",
+      "scope": [
+        "frontend/lib/screens/onboarding/dietary_restrictions_screen.dart",
+        "frontend/lib/screens/profile/profile_screen.dart",
+        "frontend/lib/services/api_service.dart",
+        "frontend/lib/providers/app_state.dart"
+      ]
+    },
+    {
+      "name": "feat-persist-auth-token",
+      "status": "DONE",
+      "description": "Tạo thêm phần lưu token đăng nhập (SharedPreferences hoặc flutter_secure_storage) để người dùng không phải đăng nhập lại.",
+      "scope": [
+        "frontend/lib/main.dart",
+        "frontend/lib/config/api_config.dart",
+        "frontend/lib/screens/auth/login_screen.dart",
+        "frontend/lib/providers/app_state.dart",
+        "frontend/pubspec.yaml"
+      ]
     }
   ]
 }
