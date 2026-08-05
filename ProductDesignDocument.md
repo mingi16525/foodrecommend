@@ -319,56 +319,44 @@ graph TD
 
 ### 6. KIẾN TRÚC AI & MÔ HÌNH GỢI Ý (AI RECOMMENDATION ARCHITECTURE)
 
-#### 6.1 Tổng quan AI Decision Pipeline
+#### 6.1 Tổng quan kiến trúc đa tầng (Multi-tier AI Routing)
+
+Thay vì đẩy mọi yêu cầu cho LLM, hệ thống sử dụng **Decision Complexity Estimator (Bộ định tuyến)** để phân loại và điều phối:
+- **Fast AI (Tầng 1 - Siêu tốc <100ms):** Dành cho thao tác quẹt Swipe hàng ngày. Sử dụng Rule Engine + ML truyền thống.
+- **Medium AI (Tầng 2 - Trung bình ~300ms):** Dành cho quyết định Nhóm (Group Order), Hẹn hò. Cần phân tích ràng buộc phức tạp.
+- **Deep AI (Tầng 3 - Planning vài giây):** Dành cho Lập kế hoạch du lịch. Dùng LLM Orchestrator + RAG.
 
 ```
   ┌────────────────┐
   │ User Context   │ (Location, Time, Weather, Device, Budget)
   └───────┬────────┘
           │
-  ┌───────▼────────┐
-  │ Candidate Gen  │ (Collaborative Filtering + Content-based + Geohash Filter)
-  │ (10,000 -> 200)│
-  └───────┬────────┘
-          │
-  ┌───────▼────────┐
-  │ Ranking Stage  │ (Deep & Cross Network / XGBoost Ranker based on User-Item Match)
-  │ (200 -> 30)    │
-  └───────┬────────┘
-          │
-  ┌───────▼────────┐
-  │ Re-ranking     │ (Diversity, Allergy Hard-rules, Exploration / Epsilon-Greedy)
-  │ (30 -> 10)     │
-  └───────┬────────┘
-          │
-  ┌───────▼────────┐
-  │ Output API     │ (Displayed to User / Cached in Redis)
-  └────────────────┘
+  ┌───────▼─────────────┐
+  │ Decision Estimator  │ -> Routing dựa trên độ phức tạp
+  └─┬─────────┬─────────┘
+    │         │         │
+┌───▼───┐ ┌───▼───┐ ┌───▼───┐
+│Fast AI│ │Med AI │ │Deep AI│
+└───────┘ └───────┘ └───────┘
 ```
 
 #### 6.2 Biểu diễn dữ liệu (Embeddings)
-* **User Embedding ($E_u \in \mathbb{R}^d$):** Kết hợp các đặc trưng cố định (khẩu vị Tab 4, dị ứng) và vector tương tác lịch sử gần đây.
-* **Restaurant/Dish Embedding ($E_i \in \mathbb{R}^d$):** Được trích xuất từ thông tin thực đơn, danh mục món ăn, vị trí geohash, giá tiền và phân tích ngữ nghĩa (NLP) từ các bài review.
+* **User Embedding ($E_u \in \mathbb{R}^d$):** Kết hợp Static Profile (sở thích cốt lõi, dị ứng) và Dynamic Profile (ngữ cảnh hiện tại: thời tiết, giờ).
+* **Restaurant/Dish Embedding ($E_i \in \mathbb{R}^d$):** Được trích xuất từ thông tin thực đơn, danh mục, vị trí geohash.
 
-#### 6.3 Thuật toán Candidate Generation (Lọc thô)
-* **Spatial Geohash Filtering:** Chỉ giữ lại các quán ăn trong bán kính $R$ (ví dụ: $< 5\text{km}$).
-* **Hard Constraints Rules:** Loại bỏ $100\%$ các món ăn chứa thành phần dị ứng đã đăng ký ở Tab 4 hoặc vi phạm chế độ ăn kiêng (Ăn chay, Keto).
-* **Vector Similarity Search:** Dùng HNSW index trong Vector DB để lấy ra Top 200 món ăn có Cosine Similarity cao nhất giữa $E_u$ và $E_i$.
+#### 6.3 Fast AI Pipeline (Tầng 1 - Cho Swipe Tab 3)
+* **Candidate Retrieval (Lọc thô):** Spatial Geohash Filtering (bán kính <5km) + Hard Constraints (lọc 100% món dị ứng). Số lượng: Hàng trăm nghìn -> 200.
+* **Personal Ranking (Xếp hạng):** Vector Similarity Search (FAISS) kết hợp mô hình ML (LightGBM) dự đoán xác suất Like.
+* **Decision Optimizer (Re-ranking):** Dùng MMR để đa dạng hóa món ăn, $\epsilon$-Greedy (10-20%) để gợi ý món lạ/quán mới nhằm tránh Filter Bubble.
 
-#### 6.4 Thuật toán Ranking & Re-ranking
-* **Ranking Model:** Sử dụng mô hình **LightGBM / DCN (Deep & Cross Network)** dự đoán xác suất $P(\text{Click/Like} \mid \text{User}, \text{Item}, \text{Context})$.
-* **Re-ranking (Đa dạng hóa & Khám phá):**
-  * *Maximal Marginal Relevance (MMR):* Đảm bảo danh sách đề xuất không bị trùng lặp các món cùng loại (ví dụ: Không gợi ý 5 quán phở liên tiếp).
-  * *Exploration Strategy ($\epsilon$-Greedy / Upper Confidence Bound):* Dành $10-20\%$ danh sách để đề xuất các món mới/quán mới nhằm thu thập thêm dữ liệu người dùng và tránh hiện tượng Filter Bubble.
-
-#### 6.5 Group Decision Engine (Gợi ý cho nhóm)
-Cho nhóm $G = \{u_1, u_2, \dots, u_k\}$, vector đại diện nhóm được tính toán bằng phương pháp **Pareto Aggregation** kết hợp **Borda Count Voting**:
+#### 6.4 Medium AI - Group Decision Engine (Tầng 2 - Cho Tab 2)
+Cho nhóm $G = \{u_1, u_2, \dots, u_k\}$, vector đại diện nhóm được tính bằng **Pareto Aggregation** kết hợp **Borda Count Voting**:
 $$\text{Score}(G, i) = \sum_{j=1}^k w_j \cdot \text{Score}(u_j, i) - \lambda \cdot \text{Variance}(\text{Score}(u_1, i), \dots, \text{Score}(u_k, i))$$
-*Trong đó:* $\lambda$ phạt các món/quán mà có ít nhất 1 thành viên cực kỳ ghét (tránh tình trạng 1 người không thể ăn được).
+*Trong đó:* $\lambda$ phạt các quán có món mà ít nhất 1 thành viên cực kỳ ghét/dị ứng.
 
-#### 6.6 Trip Planner AI Engine
-* Sử dụng thuật toán tối ưu hóa tuyến đường (TSP - Travelling Salesperson Problem variant) để sắp xếp thứ tự điểm dừng hợp lý.
-* Gọi **LLM (GPT-4o-mini / Gemini Flash)** chỉ khi người dùng yêu cầu tạo hành trình phức tạp, kèm theo RAG (Retrieval-Augmented Generation) từ cơ sở dữ liệu địa điểm nội bộ để đảm bảo không bị Hallucination.
+#### 6.5 Deep AI - Trip Planner (Tầng 3)
+* Thuật toán tối ưu hóa tuyến đường (TSP variant).
+* LLM Orchestrator (GPT-4o-mini / Gemini Flash) kết hợp Top 20 quán từ Tầng 1 (Fast AI) đóng vai trò là RAG context để đảm bảo LLM không bị ảo giác (Hallucination) khi gợi ý hành trình.
 
 ---
 
@@ -513,9 +501,11 @@ flowchart LR
 * **Offline Training:** Chạy định kỳ hàng tuần trên hạ tầng GPU Cloud (NVIDIA T4/A10G) để huấn luyện lại mô hình Deep Learning & Cập nhật Vector Embeddings cho toàn bộ nhà hàng/món ăn mới.
 * **Online Inference:** Chạy nhẹ nhàng trên hạ tầng CPU (Go/C++ hoặc ONNX Runtime) để đáp ứng Latency $< 100\text{ms}$.
 
-#### 8.3 Feedback Loop & Reinforcement Learning
+#### 8.3 Feedback Loop & Reinforcement Learning (Event-Driven Kafka)
+* **Thu thập Real-time Event:** Sử dụng Kafka để lắng nghe mọi hành vi vuốt/click mà không làm nghẽn API.
 * Phản hồi chủ động (Explicit Feedback): Vuốt Like (+1.0), Vuốt Skip (-0.8), Đánh giá ⭐.
 * Phản hồi thụ động (Implicit Feedback): Thời gian dừng màn hình (Dwell time $> 3\text{s} \Rightarrow +0.3$), Click chuyển link sang Grab/ShopeeFood (+0.9).
+* Trọng số User Embedding được cập nhật trực tiếp vào Redis Feature Store sau mỗi mẻ (5-10 phút) thông qua Kafka stream, không cần chờ model retraining.
 
 #### 8.4 Tối ưu Cold Start (Xử lý người dùng / Quán mới)
 * **New User:** Bắt buộc kinh qua quy trình Onboarding nhanh ở Tab 4 (chọn 3 loại món yêu thích, chọn độ cay, dị ứng) để khởi tạo ngay User Embedding ban đầu.

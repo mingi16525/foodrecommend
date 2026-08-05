@@ -16,9 +16,10 @@ Vui lòng xem chi tiết tại: **[Module_Progress.md](./Module_Progress.md)**.
 ### 2. 🍔 Restaurant & Data Module (Đã dựng MVP - Seed Data)
 - Cơ sở dữ liệu Postgres đã có Schema chuẩn và Seed data. Card món ăn hiển thị mượt mà.
 
-### 3. 🧠 AI Recommendation & Swipe Engine (Đã dựng nền tảng Swipe & Mock Vector)
+### 3. 🧠 AI Recommendation & Multi-tier Routing
 - UI vuốt thẻ (Tinder-style) và Video Feed (TikTok-style) đã hoàn thiện.
-- Kịch bản Python xử lý Vector Embeddings (Qdrant) và Node.js Kafka Producer/Consumer đã có sẵn bộ khung.
+- Kiến trúc AI định tuyến đa tầng (Decision Estimator -> Fast, Medium, Deep AI) đã được quy hoạch rõ.
+- Tích hợp hệ thống Event-driven (Kafka) và Redis Caching để tối ưu tốc độ (<100ms) và tránh lạm dụng LLM.
 
 ### 4. 👥 Group, Trip Order & Split Bill Module (Đã dựng MVP - In-memory)
 - Thuật toán Split Bill hiệu năng cao. API quản lý Nhóm và Trip Planner UI đã hình thành. (Chưa có AI Group Voting).

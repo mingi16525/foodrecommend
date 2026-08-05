@@ -27,19 +27,19 @@ Mục tiêu: Xóa bỏ dữ liệu Seed sơ sài, nạp bộ dữ liệu Beta đ
 ---
 
 ## 3. Phase 3: Triển Khai Thuật Toán AI Thực Tế (AI Pipeline Implementation)
-Mục tiêu: Viết code thực thi logic AI (Candidate Gen -> Ranking -> Re-ranking) như trong ProductDesignDocument, thay thế cho API Mock hiện tại.
+Mục tiêu: Viết code thực thi logic kiến trúc AI đa tầng (Multi-tier AI Routing) như trong Mô tả thuật toán thay thế cho API Mock hiện tại.
 
-- [ ] **Candidate Generation (Lọc thô)**: 
-  - Code API Node.js gọi Qdrant Vector Search để tìm Top 50 món ăn gần giống với User Embedding hoặc Context hiện tại.
-  - Kết hợp lọc Geohash (Ví dụ: Chỉ lấy quán trong bán kính 5km).
-  - Kết hợp lọc Dị ứng (Hard-rules filter): Cắt bỏ các món chứa dị ứng của User.
-- [ ] **Ranking Stage (Xếp hạng)**: 
-  - Thay vì trả nguyên Top 50, áp dụng thuật toán tính điểm kết hợp (Collaborative + Content-based) để chấm điểm (Score) từng món dựa trên lịch sử Swipe.
-- [ ] **Group Decision AI (Gợi ý Nhóm)**: 
-  - Triển khai logic tổng hợp (Pareto Aggregation) để gợi ý danh sách món ăn/quán ăn thỏa mãn cả nhóm dựa trên giao điểm sở thích.
-- [ ] **Trip Planner AI**: 
+- [ ] **AI Decision Routing (Bộ định tuyến)**:
+  - Viết module Decision Complexity Estimator để phân loại request.
+- [ ] **Fast Tier AI (Gợi ý siêu tốc)**:
+  - Code API Node.js gọi Qdrant Vector Search kết hợp Context Engine, lọc Geohash, FAISS Ranking và Optimizer để trả về gợi ý quẹt thẻ Swipe nhanh nhất (<100ms).
+- [ ] **Medium Tier AI (Quyết định Nhóm)**: 
+  - Triển khai logic tổng hợp (Pareto Aggregation) và ràng buộc cứng (ngân sách, dị ứng) để gợi ý danh sách món ăn/quán ăn thỏa mãn cả nhóm.
+- [ ] **Deep Tier AI (Trip Planner AI)**: 
   - Code luồng kết nối Google Maps API để tính lộ trình.
-  - Viết module gọi AI LLM (Gemini/OpenAI) để gợi ý các quán dọc tuyến đường.
+  - Viết module LLM Orchestrator (Gemini/OpenAI) kết hợp RAG để gợi ý các quán dọc tuyến đường.
+- [ ] **AI Infrastructure (Sự kiện & Cache)**:
+  - Tích hợp Kafka để hứng event (Swipe, Like) từ Frontend và cập nhật Feature Store (Redis) realtime.
 
 ---
 
