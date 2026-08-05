@@ -10,7 +10,7 @@
     },
     {
       "name": "ai-fast-tier-recommendation",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Fast AI: Context Engine, Spatial Index, FAISS Ranking, Decision Optimizer cho Swipe",
       "scope": [
         "src/recommendation/fastTier.ts",

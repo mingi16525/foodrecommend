@@ -1,7 +1,9 @@
 import { Router } from 'express';
 import { recommendationEngine } from '../recommendation/engine';
+import { DecisionComplexityEstimator, IntentType, RecommendationRequest } from '../recommendation/routing';
 
 export const recommendationRouter = Router();
+const estimator = new DecisionComplexityEstimator();
 
 recommendationRouter.get('/', async (req, res) => {
   const userId = req.query.userId as string;
@@ -10,7 +12,12 @@ recommendationRouter.get('/', async (req, res) => {
   }
 
   try {
-    const results = await recommendationEngine.getRecommendations(userId);
+    const aiRequest: RecommendationRequest = {
+      userId,
+      intentType: IntentType.SWIPE,
+      contextParams: {}
+    };
+    const results = await estimator.handleRequest(aiRequest);
     res.json({ data: results });
   } catch {
     res.status(500).json({ error: 'Internal server error' });

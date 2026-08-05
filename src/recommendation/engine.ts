@@ -27,58 +27,50 @@ export class RecommendationEngine {
     }
   }
 
-  async getRecommendations(userId: string) {
-    console.log(`Getting Local Beta AI recommendations for ${userId}`);
-    await this.initModel(); // Ensure model is loaded
-
+  async generateEmbedding(text: string): Promise<number[]> {
+    await this.initModel();
     try {
-      // 1. Fetch user preferences
+      const embeddingResult = await this.extractor(text, { pooling: 'mean', normalize: true });
+      return Array.from(embeddingResult.data);
+    } catch (e) {
+      console.error('Error generating embedding', e);
+      return [];
+    }
+  }
+
+  async searchDishes(vector: number[], limit: number = 50, filterCondition?: any) {
+    if (vector.length === 0) return [];
+    try {
+      const qdrantResults = await this.qdrant.search('dishes', {
+        vector: vector as number[],
+        limit: limit,
+        filter: filterCondition,
+        with_payload: true,
+      });
+      return qdrantResults.map(res => ({
+        id: res.id,
+        score: res.score,
+        payload: res.payload
+      }));
+    } catch (e) {
+      console.error('Error in Qdrant search:', e);
+      return [];
+    }
+  }
+
+  async getUserPreferences(userId: string) {
+    try {
       const userPref = await this.db.query(
         'SELECT favorite_flavors, allergies FROM user_preferences WHERE user_id = $1',
         [userId]
       );
-      
-      const flavors = userPref.rows[0]?.favorite_flavors || ['savory'];
-      const allergies = userPref.rows[0]?.allergies || [];
-      
-      // 2. Generate Context Embedding based on user flavors
-      const textToEmbed = `Flavor preferences: ${flavors.join(", ")}`;
-      const embeddingResult = await this.extractor(textToEmbed, { pooling: 'mean', normalize: true });
-      const vector = Array.from(embeddingResult.data);
-
-      // 3. Build Qdrant Filter (Remove allergies)
-      const mustNotConditions = allergies.map((allergy: string) => ({
-        key: 'ingredients',
-        match: { value: allergy }
-      }));
-
-      // 4. Candidate Generation (Vector Search in Qdrant)
-      const qdrantResults = await this.qdrant.search('dishes', {
-        vector: vector as number[],
-        limit: 10,
-        filter: mustNotConditions.length > 0 ? { must_not: mustNotConditions } : undefined,
-      });
-
-      // 5. Ranking Stage (Content-based + Mock Swipe History scoring)
-      // In a full implementation, we'd query Redis for the user's swipe history and boost scores.
-      const rankedResults = qdrantResults.map(res => {
-        // Here we just use the raw cosine similarity score as the ranking score
-        return {
-          id: res.id,
-          name: res.payload?.name || 'Unknown',
-          score: res.score,
-          ingredients: res.payload?.ingredients || []
-        };
-      });
-
-      return rankedResults;
+      return {
+        flavors: userPref.rows[0]?.favorite_flavors || ['savory'],
+        allergies: userPref.rows[0]?.allergies || []
+      };
     } catch (e) {
-      console.error('Error in AI Pipeline getRecommendations:', e);
-      // Fallback
-      return [
-        { id: '1', name: 'Fallback Phở Bò', score: 0.99 },
-        { id: '2', name: 'Fallback Bún Chả', score: 0.95 }
-      ];
+      console.error('Error fetching user preferences:', e);
+      return { flavors: ['savory'], allergies: [] };
     }
   }
 

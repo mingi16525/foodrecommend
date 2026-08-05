@@ -1,3 +1,5 @@
+import { fastTierRecommender } from './fastTier';
+
 export enum IntentType {
   SWIPE = 'swipe',
   FEED = 'feed',
@@ -79,8 +81,7 @@ export class DecisionComplexityEstimator {
 
     switch (decision.tier) {
       case AiTier.FAST:
-        // TODO: Gọi hàm từ fastTier.ts
-        throw new Error(`NotImplementedError: Fast Tier AI pipeline is not yet implemented.`);
+        return await fastTierRecommender.getRecommendations(req.userId, req.contextParams);
       case AiTier.MEDIUM:
         // TODO: Gọi hàm từ mediumTier.ts
         throw new Error(`NotImplementedError: Medium Tier AI pipeline is not yet implemented.`);

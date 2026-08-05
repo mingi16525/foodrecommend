@@ -1,24 +1,25 @@
 # Session Progress
 
-## Last Session Summary (Implement AI Decision Routing - 2026-08-05)
-- Triển khai tính năng `ai-decision-routing` (HOÀN THÀNH).
-- Viết `src/recommendation/routing.ts` đóng vai trò làm *Decision Complexity Estimator*.
-- Định nghĩa các luồng routing chính: Fast AI (Swipe/Feed), Medium AI (Group/Strict Constraints), Deep AI (Trip Planner).
-- Mã nguồn đã vượt qua kiểm tra TypeScript compilation (`tsc`) và Linter (`eslint`).
+## Last Session Summary (Implement AI Fast Tier - 2026-08-05)
+- Triển khai tính năng `ai-fast-tier-recommendation` (HOÀN THÀNH).
+- Cấu trúc lại `engine.ts` để thuần túy xử lý Vector Search và sinh Embeddings.
+- Khởi tạo `fastTier.ts` chứa logic Fast Re-ranking sử dụng thuật toán Haversine cho khoảng cách (distanceScore) và check context giờ giấc (contextScore).
+- Tích hợp `fastTierRecommender` vào `routing.ts` để kích hoạt luồng Fast AI hoàn chỉnh cho các request Swipe.
 
 ## Current State
-- Bộ định tuyến AI đã sẵn sàng để phân phối các request đến các tầng AI cụ thể.
-- Tính năng `ai-decision-routing` trong `features.json` đã được đánh dấu là "DONE".
+- Tầng Fast AI cho Swipe/Feed đã có thuật toán Ranking đầy đủ kết hợp giữa Qdrant Vector và RAM-based Decision Optimizer.
+- Tính năng `ai-fast-tier-recommendation` trong `features.json` đã được đánh dấu là "DONE".
+- Mã nguồn chạy mượt, pass ESLint và TSC.
 - Branch: main
 
 ## What Next Session Should Do First
-Bắt đầu triển khai tính năng `ai-fast-tier-recommendation` (Fast AI: Context Engine, Spatial Index, FAISS Ranking).
+Bắt đầu triển khai tính năng `ai-medium-tier-group` (Medium AI: Group Decision, Pareto Aggregation) cho Tab 2 (Group/Dating).
 
 ## Known Issues / Blockers
-- Hàm `handleRequest` trong `routing.ts` đang throw `NotImplementedError` do các module Fast/Medium/Deep chưa được viết. Điều này là bình thường trong tiến trình hiện tại.
+- Hàm xử lý của Medium và Deep tier trong `routing.ts` vẫn throw NotImplementedError.
 
 ## Observations (Not Fixed — Outside Current Scope)
-- Cần xây dựng mock cho Qdrant/FAISS ở tầng Fast AI trong session tới để test.
+- Tính năng `ai-infrastructure-event-driven` (Kafka/Redis) sẽ được thực hiện sau, hiện tại Swipe vẫn đang ghi trực tiếp vào DB postgres qua hàm `processSwipeEvent`.
 
 ## Architectural Decisions This Session
-- Quyết định sử dụng `IntentType` enum kết hợp phân tích `ContextParams` đơn giản (số lượng member, flag multiDay) để định tuyến. Rất nhẹ nhàng cho CPU thay vì dùng model ML cho việc routing.
+- Áp dụng Re-ranking ngay trên RAM của Node.js đối với Top 50 candidates lấy từ Qdrant thay vì dùng Script hay plugin phức tạp trong Database để tăng tối đa tốc độ phản hồi.
