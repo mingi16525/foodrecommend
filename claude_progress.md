@@ -1,22 +1,23 @@
 # Session Progress
 
-## Last Session Summary (Session Complete Android Deep Linking Features - 2026-08-04)
-- Triển khai tính năng `api-third-party-maps`: Thêm thư viện `url_launcher` để mở Google Maps hoặc Apple Maps từ màn hình Swipe (RecommendationScreen) bằng cách mở Deep link trực tiếp (rất nhẹ nhàng và không cần nhúng SDK Google Maps phức tạp).
-- Triển khai tính năng `api-third-party-delivery`: Tích hợp các nút bấm mở app GrabFood, ShopeeFood, và BeFood bằng URL scheme (`grab://`, `shopeefood://`, `be://`). Fallback về nền tảng Web nếu app chưa được cài đặt.
-- Cập nhật file `features.json`: Đã đổi trạng thái của toàn bộ tính năng Frontend/Android (`api-third-party-maps`, `api-third-party-delivery`, `frontend-local-config`, `app-build-and-run`, `manual-e2e-testing`) sang trạng thái `"DONE"`.
+## Last Session Summary (Session AI Algorithm Planning & Restructure - 2026-08-05)
+- Nghiên cứu và giải thích chi tiết nội dung thuật toán AI đa tầng (Multi-tier AI Routing) dựa trên `MoTaThuatToan.txt`, `ProductDesignDocument.md`, `DevelopmentPlan_Deploy.md`.
+- Hệ thống AI không lạm dụng LLM, thay vào đó phân chia xử lý: Fast AI (Rule Engine, ML, FAISS) cho vuốt thẻ Swipe, Medium AI cho Group Decision, Deep AI (LLM) cho Trip Planner. 
+- Tái cấu trúc lại file `features.json`: Thay thế các tính năng AI chung chung bằng 5 tính năng cốt lõi rõ ràng: `ai-decision-routing`, `ai-fast-tier-recommendation`, `ai-medium-tier-group`, `ai-deep-tier-planner`, và `ai-infrastructure-event-driven`.
 
 ## Current State
-- Phần ứng dụng Flutter (Frontend) cơ bản đã được hoàn thiện các tính năng nền tảng (Routing, UI cấu trúc chính, kết nối Deep link Maps/Delivery).
+- Danh sách các tính năng (roadmap) trong `features.json` đã hoàn toàn khớp với đặc tả kỹ thuật kiến trúc AI.
+- Sẵn sàng tiến hành lập trình backend cho tầng AI đầu tiên.
 - Branch: main
 
 ## What Next Session Should Do First
-Bắt đầu với các task AI trên Backend: Tính năng `ai-pipeline-ranking` (Ranking Stage).
+Bắt đầu triển khai tính năng `ai-decision-routing` hoặc `ai-fast-tier-recommendation` theo thứ tự ưu tiên trên `features.json`.
 
 ## Known Issues / Blockers
 - Không có.
 
 ## Observations (Not Fixed — Outside Current Scope)
-- Toạ độ quán ăn truyền vào `MapsService` hiện đang dùng giá trị giả lập, sẽ được thay thế bằng Data thật khi BE trả về `restaurant_name` và toạ độ hợp lệ.
+- Hệ thống offline pre-compute sẽ cần một Redis instance và cron job (hoặc worker queue) để tính toán ngầm định kỳ.
 
 ## Architectural Decisions This Session
-- Thay vì dùng `google_maps_flutter` để nhúng bản đồ trực tiếp vào App (đòi hỏi cấu hình SDK, API Key phức tạp và tính phí cao), ứng dụng sử dụng `url_launcher` để mở hệ thống dẫn đường mặc định của máy (Apple Maps, Google Maps). Phù hợp với nhu cầu điều hướng thực tế và tối ưu chi phí.
+- Cấu trúc file `features.json` được tinh chỉnh để đội ngũ kỹ sư có thể bóc tách rõ ràng các service AI nhỏ (micro-services / modules) thay vì viết thành 1 monolithic recommendation engine khổng lồ.

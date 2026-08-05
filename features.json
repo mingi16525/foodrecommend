@@ -1,28 +1,46 @@
 {
   "features": [
     {
-      "name": "ai-pipeline-ranking",
+      "name": "ai-decision-routing",
       "status": "TODO",
-      "description": "Triển khai Ranking Stage: tính điểm kết hợp (Collaborative + Content-based) dựa trên lịch sử Swipe",
+      "description": "Triển khai Decision Complexity Estimator để phân loại và điều hướng request",
       "scope": [
+        "src/recommendation/routing.ts"
+      ]
+    },
+    {
+      "name": "ai-fast-tier-recommendation",
+      "status": "TODO",
+      "description": "Fast AI: Context Engine, Spatial Index, FAISS Ranking, Decision Optimizer cho Swipe",
+      "scope": [
+        "src/recommendation/fastTier.ts",
         "src/recommendation/engine.ts"
       ]
     },
     {
-      "name": "ai-group-decision",
+      "name": "ai-medium-tier-group",
       "status": "TODO",
-      "description": "Triển khai Group Decision AI (Pareto Aggregation) gợi ý quán ăn thỏa mãn nhóm",
+      "description": "Medium AI: Gợi ý theo nhóm (Group Decision, Pareto Aggregation) và ràng buộc tĩnh",
       "scope": [
         "src/group/service.ts",
-        "src/recommendation/engine.ts"
+        "src/group/mediumTier.ts"
       ]
     },
     {
-      "name": "ai-trip-planner",
+      "name": "ai-deep-tier-planner",
       "status": "TODO",
-      "description": "Triển khai Trip Planner AI kết nối Google Maps API và gọi LLM",
+      "description": "Deep AI: Trip Planner kết hợp LLM Orchestrator",
       "scope": [
         "src/group/tripPlanner.ts"
+      ]
+    },
+    {
+      "name": "ai-infrastructure-event-driven",
+      "status": "TODO",
+      "description": "Học tăng cường qua Kafka và Caching/Offline Pre-compute qua Redis",
+      "scope": [
+        "src/recommendation/featureStore.ts",
+        "src/recommendation/eventCollector.ts"
       ]
     },
     {
