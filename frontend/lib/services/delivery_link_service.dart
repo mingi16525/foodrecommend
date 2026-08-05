@@ -13,10 +13,9 @@ class DeliveryLinkService {
         await launchUrl(Uri.parse("https://food.grab.com/vn/vi/restaurants?search=$query"));
       }
     } catch (e) {
-      print('Lỗi mở GrabFood: $e');
+      // ignore: avoid_print
+      assert(() { print('Lỗi mở GrabFood: $e'); return true; }());
     }
-    
-    print('Đã mở GrabFood với từ khóa: $restaurantName');
   }
 
   /// Mở ứng dụng ShopeeFood với từ khóa quán ăn
@@ -31,10 +30,9 @@ class DeliveryLinkService {
         await launchUrl(Uri.parse("https://shopeefood.vn/ho-chi-minh/danh-sach-dia-diem-giao-tan-noi?q=$query"));
       }
     } catch (e) {
-      print('Lỗi mở ShopeeFood: $e');
+      // ignore: avoid_print
+      assert(() { print('Lỗi mở ShopeeFood: $e'); return true; }());
     }
-    
-    print('Đã mở ShopeeFood với từ khóa: $restaurantName');
   }
 
   /// Mở ứng dụng BeFood
@@ -49,9 +47,8 @@ class DeliveryLinkService {
         await launchUrl(Uri.parse("https://begroup.vn/"));
       }
     } catch (e) {
-      print('Lỗi mở BeFood: $e');
+      // ignore: avoid_print
+      assert(() { print('Lỗi mở BeFood: $e'); return true; }());
     }
-    
-    print('Đã mở BeFood với từ khóa: $restaurantName');
   }
 }

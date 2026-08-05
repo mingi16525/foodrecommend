@@ -37,7 +37,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
             fit: BoxFit.cover,
           ),
           Container(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 0.3),
           ),
           if (!_isPlaying)
             const Center(

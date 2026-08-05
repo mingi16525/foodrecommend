@@ -3,25 +3,30 @@ import '../../services/auth_service.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  State<LoginScreen> createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   final AuthService _authService = AuthService();
   bool _isLoading = false;
 
   void _login() async {
     setState(() => _isLoading = true);
     try {
-      final response = await _authService.login(_emailController.text);
+      final response = await _authService.login(_emailController.text, _passwordController.text);
       // In a real app, save token using flutter_secure_storage or shared_preferences
-      print('Logged in successfully: ${response['token']}');
-      
+      debugPrint('Logged in successfully: ${response['token']}');
+
+      if (!mounted) return;
       // Navigate to Home or Tab 1 (Main UI) after login
       Navigator.of(context).pushReplacementNamed('/home');
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login failed: $e')));
     } finally {
       setState(() => _isLoading = false);
@@ -31,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Đăng nhập')),
+      appBar: AppBar(title: const Text('Đăng nhập')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -39,27 +44,36 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Email',
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.emailAddress,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _passwordController,
+              decoration: const InputDecoration(
+                labelText: 'Mật khẩu',
+                border: OutlineInputBorder(),
+              ),
+              obscureText: true,
+            ),
+            const SizedBox(height: 20),
             _isLoading
-                ? CircularProgressIndicator()
+                ? const CircularProgressIndicator()
                 : ElevatedButton(
                     onPressed: _login,
-                    child: Text('Đăng nhập'),
                     style: ElevatedButton.styleFrom(
-                      minimumSize: Size(double.infinity, 50),
+                      minimumSize: const Size(double.infinity, 50),
                     ),
+                    child: const Text('Đăng nhập'),
                   ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) => RegisterScreen()));
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) => const RegisterScreen()));
               },
-              child: Text('Chưa có tài khoản? Đăng ký ngay'),
+              child: const Text('Chưa có tài khoản? Đăng ký ngay'),
             )
           ],
         ),

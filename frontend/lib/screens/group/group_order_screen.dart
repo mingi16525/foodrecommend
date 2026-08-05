@@ -53,7 +53,7 @@ class _GroupOrderScreenState extends State<GroupOrderScreen> {
                 ListTile(
                   leading: const Icon(Icons.star, color: Colors.amber),
                   title: const Text('Cơm Tấm Ba Ghi'),
-                  trailing: ElevatedButton(onSelected: true, onPressed: () {}, child: const Text('Bình chọn (3)')),
+                  trailing: ElevatedButton(onPressed: () {}, child: const Text('Bình chọn (3)')),
                 ),
                 ListTile(
                   leading: const Icon(Icons.star_border),
@@ -72,15 +72,15 @@ class _GroupOrderScreenState extends State<GroupOrderScreen> {
               children: [
                 const Text('Quán đã chốt: Cơm Tấm Ba Ghi'),
                 const SizedBox(height: 10),
-                ListTile(
-                  title: const Text('Cơm Sườn Bì (x2)'),
-                  subtitle: const Text('Minh, You'),
-                  trailing: const Text('90.000 đ'),
+                const ListTile(
+                  title: Text('Cơm Sườn Bì (x2)'),
+                  subtitle: Text('Minh, You'),
+                  trailing: Text('90.000 đ'),
                 ),
-                ListTile(
-                  title: const Text('Cơm Sườn Chả (x2)'),
-                  subtitle: const Text('Hoa, Tuấn'),
-                  trailing: const Text('100.000 đ'),
+                const ListTile(
+                  title: Text('Cơm Sườn Chả (x2)'),
+                  subtitle: Text('Hoa, Tuấn'),
+                  trailing: Text('100.000 đ'),
                 ),
                 ElevatedButton.icon(
                   onPressed: () {},
@@ -94,12 +94,12 @@ class _GroupOrderScreenState extends State<GroupOrderScreen> {
           ),
           Step(
             title: const Text('Chốt đơn & Đặt món'),
-            content: Column(
+            content: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Tổng hóa đơn: 190.000 đ', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 10),
-                const Text('Nhấn Tiếp tục để mở app ShopeeFood/GrabFood với đơn hàng đã tạo sẵn.'),
+                Text('Tổng hóa đơn: 190.000 đ', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                SizedBox(height: 10),
+                Text('Nhấn Tiếp tục để mở app ShopeeFood/GrabFood với đơn hàng đã tạo sẵn.'),
               ],
             ),
             isActive: _currentStep >= 3,

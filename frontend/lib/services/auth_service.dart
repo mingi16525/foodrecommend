@@ -5,12 +5,12 @@ import '../config/api_config.dart';
 class AuthService {
   final String baseUrl = ApiConfig.baseUrl;
 
-  Future<Map<String, dynamic>> login(String email) async {
+  Future<Map<String, dynamic>> login(String email, String password) async {
     try {
       final HttpClient client = HttpClient();
       final HttpClientRequest request = await client.postUrl(Uri.parse('$baseUrl/login'));
       request.headers.set('content-type', 'application/json');
-      request.add(utf8.encode(jsonEncode({'email': email})));
+      request.add(utf8.encode(jsonEncode({'email': email, 'password': password})));
       
       final HttpClientResponse response = await request.close();
       final String responseBody = await response.transform(utf8.decoder).join();
@@ -29,7 +29,7 @@ class AuthService {
     }
   }
 
-  Future<Map<String, dynamic>> register(String email, String phone, String fullName) async {
+  Future<Map<String, dynamic>> register(String email, String phone, String fullName, String password) async {
     try {
       final HttpClient client = HttpClient();
       final HttpClientRequest request = await client.postUrl(Uri.parse('$baseUrl/register'));
@@ -37,7 +37,8 @@ class AuthService {
       request.add(utf8.encode(jsonEncode({
         'email': email,
         'phone': phone,
-        'full_name': fullName
+        'full_name': fullName,
+        'password': password
       })));
       
       final HttpClientResponse response = await request.close();

@@ -12,12 +12,12 @@ class SwipeAnimation extends StatelessWidget {
     // In a real application, you would use a package like `flutter_tindercard` 
     // or implement a custom GestureDetector with animated Matrix4 transformations.
     return AnimatedContainer(
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: isLiked ? Colors.green.withOpacity(0.3) : Colors.black12,
+            color: isLiked ? Colors.green.withValues(alpha: 0.3) : Colors.black12,
             blurRadius: 10,
             spreadRadius: 2,
           )

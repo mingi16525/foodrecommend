@@ -14,8 +14,9 @@ router.get('/', async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const groups = await groupService.getUserGroups(userId);
     res.json({ data: groups });
-  } catch (e: any) {
-    res.status(500).json({ error: e.message || 'Internal server error' });
+  } catch (e: unknown) {
+    const error = e as Error;
+    res.status(500).json({ error: error.message || 'Internal server error' });
   }
 });
 
@@ -30,8 +31,9 @@ router.post('/', async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const newGroup = await groupService.createGroup(name, creatorId);
     res.json({ data: newGroup });
-  } catch (e: any) {
-    res.status(500).json({ error: e.message || 'Internal server error' });
+  } catch (e: unknown) {
+    const error = e as Error;
+    res.status(500).json({ error: error.message || 'Internal server error' });
   }
 });
 

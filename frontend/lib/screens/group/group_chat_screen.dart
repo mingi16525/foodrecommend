@@ -98,8 +98,8 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: color.withOpacity(0.5)),
-          boxShadow: [BoxShadow(color: color.withOpacity(0.2), blurRadius: 4)],
+          border: Border.all(color: color.withValues(alpha: 0.5)),
+          boxShadow: [BoxShadow(color: color.withValues(alpha: 0.2), blurRadius: 4)],
         ),
         child: Row(
           children: [

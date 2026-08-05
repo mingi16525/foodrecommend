@@ -85,7 +85,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
         'dish_id': item['id'],
         'action': isLiked ? 'LIKE' : 'SKIP'
       }),
-    ).catchError((_) {}); // Ignore errors in mock mode
+    ).catchError((_) => http.Response('', 200)); // Ignore errors in mock mode
     
     setState(() {
       _recommendations.removeAt(0);
@@ -183,10 +183,10 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
 
   Widget _buildActionButton(IconData icon, Color color, VoidCallback onPressed) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         shape: BoxShape.circle,
         color: Colors.white,
-        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8)],
+        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)],
       ),
       child: IconButton(
         icon: Icon(icon, color: color, size: 30),

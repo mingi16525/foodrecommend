@@ -15,7 +15,7 @@ describe('RecommendationEngine', () => {
   it('should return search results from Qdrant', async () => {
     const results = await engine.searchDishes([0.1, 0.2], 50);
     expect(results).toHaveLength(2);
-    expect((results[0].payload as any).name).toBe('Phở Bò');
+    expect((results[0].payload as Record<string, unknown>).name).toBe('Phở Bò');
   });
 
   it('should process swipe events successfully', async () => {

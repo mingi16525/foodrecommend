@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import { DecisionComplexityEstimator, IntentType, RecommendationRequest } from '../recommendation/routing';
-
+import { AuthRequest } from '../auth/authMiddleware';
 import { eventCollector } from '../recommendation/eventCollector';
 
 export const recommendationRouter = Router();
 const estimator = new DecisionComplexityEstimator();
 
 recommendationRouter.get('/', async (req, res) => {
-  const userId = (req.query.userId as string) || (req as any).user?.userId;
+  const userId = (req.query.userId as string) || (req as AuthRequest).user?.userId;
   if (!userId) {
     return res.status(400).json({ error: 'userId is required' });
   }
@@ -20,15 +20,16 @@ recommendationRouter.get('/', async (req, res) => {
     };
     const results = await estimator.handleRequest(aiRequest);
     res.json({ data: results });
-  } catch (e: any) {
-    console.error('Error in recommendation route:', e);
-    res.status(500).json({ error: e.message || 'Internal server error' });
+  } catch (e: unknown) {
+    const error = e as Error;
+    console.error('Error in recommendation route:', error);
+    res.status(500).json({ error: error.message || 'Internal server error' });
   }
 });
 
 recommendationRouter.post('/swipe', async (req, res) => {
   const { dishId, action } = req.body;
-  const userId = req.body.userId || (req as any).user?.userId;
+  const userId = req.body.userId || (req as AuthRequest).user?.userId;
   
   if (!userId || !dishId || !action) {
     return res.status(400).json({ error: 'userId, dishId, and action are required' });

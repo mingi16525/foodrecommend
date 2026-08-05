@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MapsService {
@@ -23,16 +24,16 @@ class MapsService {
         }
       }
     } catch (e) {
-      print('Lỗi khi mở bản đồ: $e');
+      assert(() { debugPrint('Lỗi khi mở bản đồ: $e'); return true; }());
     }
-    
-    print('Đã mở bản đồ hướng dẫn tới: $label ($lat, $lng)');
+
+    assert(() { debugPrint('Đã mở bản đồ hướng dẫn tới: $label ($lat, $lng)'); return true; }());
   }
 
   /// Khởi tạo Google Maps SDK (Cần API Key)
   static void initializeMapsSdk(String apiKey) {
     // Gọi phương thức khởi tạo của google_maps_flutter hoặc maps_toolkit
-    print('Đã khởi tạo Google Maps SDK với key: $apiKey');
+    assert(() { debugPrint('Đã khởi tạo Google Maps SDK với key: $apiKey'); return true; }());
   }
 
   /// Tính toán khoảng cách giữa 2 điểm (mock)

@@ -127,9 +127,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(height: 4),
                   if (_isVerified)
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
+                      children: [
                         Icon(Icons.verified, color: Colors.blue, size: 16),
                         SizedBox(width: 4),
                         Text('Verified Reviewer', style: TextStyle(color: Colors.grey)),
