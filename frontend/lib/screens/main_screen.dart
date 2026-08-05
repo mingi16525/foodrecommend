@@ -7,6 +7,7 @@ import 'group/group_list_screen.dart';
 import 'recommendation/recommendation_screen.dart';
 import 'onboarding/onboarding_screen.dart';
 import 'profile/profile_screen.dart';
+import 'admin/admin_log_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -65,6 +66,17 @@ class _MainScreenState extends State<MainScreen> {
 
     return Scaffold(
       body: _buildBody(isGuest),
+      floatingActionButton: FloatingActionButton(
+        mini: true,
+        backgroundColor: Colors.red.withValues(alpha: 0.8),
+        child: const Icon(Icons.bug_report, color: Colors.white),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AdminLogScreen()),
+          );
+        },
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,

@@ -12,11 +12,12 @@
 
 ---
 
+Dữ liệu dường như chưa được load...
+
 # CHECKLIST TEST TÍNH NĂNG (E2E) - SAU KHI ĐÃ HOÀN THIỆN CÁC YÊU CẦU MỚI:
 *(Người test vui lòng đánh dấu `[x]` sau khi kiểm tra xong và ghi chú lỗi nếu có)*
 
 ## 1. Chế độ Khách (Guest Mode)
-[x] Mở app không đăng nhập, hệ thống tự vào chế độ Guest. PASS
 [ ] **Tab 1 (Feed)** & **Tab 3 (Khám phá)**: Lấy GPS thực tế và hiển thị danh sách ngẫu nhiên trong bán kính 1KM. Fail
 Dường như app chưa có nhiều dữ liệu thực tế lắm, có thể hỗ trợ lấy dữ liệu có thực trong thành phố Hà Nội, Việt Nam hay không, App vẫn chỉ đề xuất 2 món , Kết quả hiển thị khoảng cách không thay đổi với những các người dùng
 [x] **Tab 1 & 3 (Tương tác)**: Vuốt Trái/Phải hoặc Lưu bài viết -> Ứng dụng phải chặn lại bằng SnackBar yêu cầu Đăng nhập (không lưu data ngầm). PASS

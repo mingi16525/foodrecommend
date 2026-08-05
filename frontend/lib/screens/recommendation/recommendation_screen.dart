@@ -8,6 +8,7 @@ import '../../widgets/swipe_card.dart';
 import '../../services/maps_service.dart';
 import '../../services/delivery_link_service.dart';
 import '../../services/location_service.dart';
+import '../../services/api_logger.dart';
 class RecommendationScreen extends StatefulWidget {
   const RecommendationScreen({super.key});
 
@@ -47,6 +48,12 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
           if (!isGuest) 'Authorization': 'Bearer ${ApiConfig.token}',
         },
       );
+      ApiLogger().addLog(
+        method: 'GET',
+        url: '${ApiConfig.baseUrl}/api/recommendation$queryParams',
+        statusCode: response.statusCode,
+        responseBody: response.body,
+      );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (!mounted) return;
@@ -60,6 +67,11 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
         _loadMockData();
       }
     } catch (e) {
+      ApiLogger().addLog(
+        method: 'GET',
+        url: '${ApiConfig.baseUrl}/api/recommendation$queryParams',
+        error: e.toString(),
+      );
       if (!mounted) return;
       _loadMockData();
     }
@@ -101,17 +113,33 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       );
     } else {
       // Gửi sự kiện quẹt thẻ về backend
+      final requestBody = json.encode({
+        'dish_id': item['id'],
+        'action': isLiked ? 'LIKE' : 'SKIP'
+      });
       http.post(
         Uri.parse('${ApiConfig.baseUrl}/api/recommendation/swipe'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${ApiConfig.token}',
         },
-        body: json.encode({
-          'dish_id': item['id'],
-          'action': isLiked ? 'LIKE' : 'SKIP'
-        }),
-      ).catchError((_) => http.Response('', 200)); // Ignore errors in mock mode
+        body: requestBody,
+      ).then((response) {
+        ApiLogger().addLog(
+          method: 'POST',
+          url: '${ApiConfig.baseUrl}/api/recommendation/swipe',
+          requestBody: requestBody,
+          statusCode: response.statusCode,
+          responseBody: response.body,
+        );
+      }).catchError((e) {
+        ApiLogger().addLog(
+          method: 'POST',
+          url: '${ApiConfig.baseUrl}/api/recommendation/swipe',
+          requestBody: requestBody,
+          error: e.toString(),
+        );
+      });
       
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(isLiked ? 'Đã thích món ăn!' : 'Đã bỏ qua món ăn.'), duration: const Duration(milliseconds: 500)),

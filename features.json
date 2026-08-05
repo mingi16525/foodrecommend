@@ -48,6 +48,19 @@
         "src/api/recommendation.routes.ts",
         "src/social/service.ts"
       ]
+    },
+    {
+      "name": "fix-mock-data-and-admin-log",
+      "status": "DONE",
+      "description": "Sửa lỗi app hiển thị mock data do API url sai, và thêm tính năng Admin Logs để kiểm soát API responses trên thiết bị.",
+      "scope": [
+        "frontend/lib/config/api_config.dart",
+        "frontend/lib/services/api_service.dart",
+        "frontend/lib/screens/admin/",
+        "frontend/lib/main.dart",
+        "frontend/lib/providers/app_state.dart",
+        "frontend/lib/screens/main_screen.dart"
+      ]
     }
   ]
 }

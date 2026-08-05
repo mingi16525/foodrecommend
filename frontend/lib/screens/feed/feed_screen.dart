@@ -6,6 +6,7 @@ import '../../providers/app_state.dart';
 import '../../config/api_config.dart';
 import '../../widgets/video_player.dart';
 import '../../services/location_service.dart';
+import '../../services/api_logger.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
@@ -48,6 +49,12 @@ class _FeedScreenState extends State<FeedScreen> {
           if (!isGuest) 'Authorization': 'Bearer ${ApiConfig.token}',
         },
       );
+      ApiLogger().addLog(
+        method: 'GET',
+        url: '${ApiConfig.baseUrl}/api/social/feed$queryParams',
+        statusCode: response.statusCode,
+        responseBody: response.body,
+      );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (!mounted) return;
@@ -60,6 +67,11 @@ class _FeedScreenState extends State<FeedScreen> {
         _loadMockData();
       }
     } catch (e) {
+      ApiLogger().addLog(
+        method: 'GET',
+        url: '${ApiConfig.baseUrl}/api/social/feed$queryParams',
+        error: e.toString(),
+      );
       if (!mounted) return;
       _loadMockData();
     }
