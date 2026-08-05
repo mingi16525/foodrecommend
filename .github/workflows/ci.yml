@@ -42,13 +42,19 @@ jobs:
         channel: 'stable'
         architecture: x64
     - name: Install Flutter Dependencies
-      run: |
-        flutter create .
-        flutter pub get
+      # NOTE: Do NOT run 'flutter create .' here — it re-generates files and
+      # triggers a file-watcher conflict ("Already watching path") that causes
+      # Flutter to lose track of the APK after Gradle builds it.
+      run: flutter pub get
       working-directory: ./frontend
+    - name: Accept Android SDK licenses
+      run: yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses || true
     - name: Build Android APK
-      run: flutter build apk --release
+      run: flutter build apk --release --no-tree-shake-icons
       working-directory: ./frontend
+    - name: Find generated APK (debug)
+      if: always()
+      run: find frontend/build -name "*.apk" 2>/dev/null || echo "No APK found"
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
