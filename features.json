@@ -69,6 +69,39 @@
       "scope": [
         "features.json"
       ]
+    },
+    {
+      "name": "fix-tab3-403",
+      "status": "DONE",
+      "description": "Sửa lỗi Tab 3 (Khám phá): Thực hiện Like, Skip, gọi API bị trả về 403.",
+      "scope": [
+        "src/api/recommendation.routes.ts",
+        "src/recommendation/service.ts",
+        "src/auth/middleware.ts",
+        "frontend/lib/screens/recommendation/recommendation_screen.dart"
+      ]
+    },
+    {
+      "name": "fix-tab4-save",
+      "status": "DONE",
+      "description": "Sửa lỗi Tab 4: Không thể lưu thông tin (có thể do lỗi auth hoặc API endpoint).",
+      "scope": [
+        "src/api/user.routes.ts",
+        "src/user/service.ts",
+        "frontend/lib/screens/onboarding/",
+        "frontend/lib/screens/profile/"
+      ]
+    },
+    {
+      "name": "fix-tab2-create-group",
+      "status": "DONE",
+      "description": "Sửa lỗi Tab 2 (Cộng đồng): Tạo nhóm mới không thành công.",
+      "scope": [
+        "src/api/group.routes.ts",
+        "src/group/service.ts",
+        "frontend/lib/screens/group/create_group_screen.dart",
+        "frontend/lib/screens/group/group_list_screen.dart"
+      ]
     }
   ]
 }
