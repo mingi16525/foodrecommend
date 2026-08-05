@@ -2,7 +2,7 @@
   "features": [
     {
       "name": "ai-decision-routing",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Triển khai Decision Complexity Estimator để phân loại và điều hướng request",
       "scope": [
         "src/recommendation/routing.ts"
