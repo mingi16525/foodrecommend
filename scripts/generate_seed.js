@@ -44,7 +44,7 @@ const generateSeed = () => {
   // 3. Generate 50 Restaurants
   const restaurants = [];
   const foodTypes = ['Phở', 'Bún', 'Cơm', 'Lẩu', 'Nướng', 'Gà Rán', 'Pizza', 'Sushi', 'Mì', 'Trà Sữa'];
-  sql += `-- Insert 50 Restaurants\nINSERT INTO restaurants (id, name, address, geohash, delivery_links) VALUES\n`;
+  sql += `-- Insert 50 Restaurants\nINSERT INTO restaurants (id, name, address, location, geohash, delivery_links) VALUES\n`;
   for (let i = 0; i < 50; i++) {
     const id = uuidv4();
     restaurants.push(id);
@@ -54,7 +54,7 @@ const generateSeed = () => {
     // Simple mock geohash logic
     const geohash = `w3w${i % 10}`;
     const links = `{"shopeefood": "link_${i}"}`;
-    sql += `('${id}', '${name}', 'Address ${i}', '${geohash}', '${links}')${i === 49 ? ';' : ','}\n`;
+    sql += `('${id}', '${name}', 'Address ${i}', '{"lat": ${lat}, "lng": ${lng}}', '${geohash}', '${links}')${i === 49 ? ';' : ','}\n`;
   }
   sql += '\n';
 
@@ -85,6 +85,18 @@ const generateSeed = () => {
         embedding: Array.from({length: 384}, () => Math.random() * 2 - 1)
       });
     }
+  }
+  sql += '\n';
+
+  // 5. Generate 30 Posts for Feed
+  sql += `-- Insert 30 Posts\nINSERT INTO posts (id, user_id, post_type, video_url, content) VALUES\n`;
+  for (let i = 0; i < 30; i++) {
+    const id = uuidv4();
+    const userId = users[Math.floor(Math.random() * users.length)];
+    const postType = 'video';
+    const videoUrl = `https://example.com/video_${i}.mp4`;
+    const content = `Trải nghiệm món ăn tuyệt vời tại Hà Nội - Video ${i}`;
+    sql += `('${id}', '${userId}', '${postType}', '${videoUrl}', '${content}')${i === 29 ? ';' : ','}\n`;
   }
   sql += '\n';
 

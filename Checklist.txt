@@ -16,30 +16,34 @@
 *(Người test vui lòng đánh dấu `[x]` sau khi kiểm tra xong và ghi chú lỗi nếu có)*
 
 ## 1. Chế độ Khách (Guest Mode)
-[ ] Mở app không đăng nhập, hệ thống tự vào chế độ Guest.
-[ ] **Tab 1 (Feed)** & **Tab 3 (Khám phá)**: Lấy GPS thực tế và hiển thị danh sách ngẫu nhiên trong bán kính 1KM.
-[ ] **Tab 1 & 3 (Tương tác)**: Vuốt Trái/Phải hoặc Lưu bài viết -> Ứng dụng phải chặn lại bằng SnackBar yêu cầu Đăng nhập (không lưu data ngầm).
-[ ] **Tab 2 (Cộng đồng)** & **Tab 4 (Gợi ý)**: Mở lên sẽ thấy giao diện khóa yêu cầu Đăng nhập để sử dụng tính năng.
-[ ] **Tab 5 (Tài khoản)**: Hiện tên là "Guest", chỉ có nút Đăng nhập và các phần thông tin cá nhân khác để trống / bị ẩn.
+[x] Mở app không đăng nhập, hệ thống tự vào chế độ Guest. PASS
+[ ] **Tab 1 (Feed)** & **Tab 3 (Khám phá)**: Lấy GPS thực tế và hiển thị danh sách ngẫu nhiên trong bán kính 1KM. Fail
+Dường như app chưa có nhiều dữ liệu thực tế lắm, có thể hỗ trợ lấy dữ liệu có thực trong thành phố Hà Nội, Việt Nam hay không, App vẫn chỉ đề xuất 2 món , Kết quả hiển thị khoảng cách không thay đổi với những các người dùng
+[x] **Tab 1 & 3 (Tương tác)**: Vuốt Trái/Phải hoặc Lưu bài viết -> Ứng dụng phải chặn lại bằng SnackBar yêu cầu Đăng nhập (không lưu data ngầm). PASS
+[x] **Tab 2 (Cộng đồng)** & **Tab 4 (Gợi ý)**: Mở lên sẽ thấy giao diện khóa yêu cầu Đăng nhập để sử dụng tính năng. PASS
+[x] **Tab 5 (Tài khoản)**: Hiện tên là "Guest", chỉ có nút Đăng nhập và các phần thông tin cá nhân khác để trống / bị ẩn.
 
 ## 2. Tính năng Đăng nhập & Đăng xuất
-[ ] Bấm Đăng nhập (ở Tab 2, 4 hoặc Profile) -> Đăng nhập bằng tài khoản test.
-[ ] Đăng nhập thành công, điều hướng trở về bình thường, các Tab mở khóa.
-[ ] Bấm Đăng xuất từ Profile -> Màn hình phải điều hướng về lại trạng thái Guest và báo Đăng xuất thành công.
+[x] Bấm Đăng nhập (ở Tab 2, 4 hoặc Profile) -> Đăng nhập bằng tài khoản test.PASS
+[x] Đăng nhập thành công, điều hướng trở về bình thường, các Tab mở khóa.PASS
+[x] Bấm Đăng xuất từ Profile -> Màn hình phải điều hướng về lại trạng thái Guest và báo Đăng xuất thành công.
 
 ## 3. Trải nghiệm Feed & Swipe (Đã Đăng Nhập)
-[ ] **Tab 1 (Feed)**: Dữ liệu bài viết/video từ test user load thành công.
-[ ] **Tab 3 (Khám phá)**: Vuốt phải (Like) -> Hiện SnackBar "Đã thích món ăn".
-[ ] **Tab 3 (Khám phá)**: Vuốt trái (Skip) -> Hiện SnackBar "Đã bỏ qua món ăn".
-[ ] AI nhận diện được thao tác vuốt và điều chỉnh gợi ý (Xác thực bằng cách xem nội dung gợi ý có thay đổi không).
+[ ] **Tab 1 (Feed)**: Dữ liệu bài viết/video từ test user load thành công. Fail
+Hiện mới chỉ hiển thị đúng 2 video
+[ ] **Tab 3 (Khám phá)**: Vuốt phải (Like) -> Hiện SnackBar "Đã thích món ăn".Fail
+[ ] **Tab 3 (Khám phá)**: Vuốt trái (Skip) -> Hiện SnackBar "Đã bỏ qua món ăn".Fail
+[ ] AI nhận diện được thao tác vuốt và điều chỉnh gợi ý (Xác thực bằng cách xem nội dung gợi ý có thay đổi không). Fail
 
-## 4. Tính năng Nhóm & Trip Planner
+## 4. Tính năng Nhóm & Trip Planner .Fail All
 [ ] **Tab 2**: Hiển thị được Danh sách nhóm (Group List) mà user test đang tham gia.
 [ ] **Tab 2**: Thêm nhóm mới thành công.
 [ ] **Trip Planner**: Truy cập vào nhóm cá nhân (1 người) đã được setup sẵn -> Tìm và sử dụng tính năng Trip Planner (được tích hợp trong Group).
 
-## 5. Tùy chỉnh Onboarding
+## 5. Tùy chỉnh Onboarding .Fail
 [ ] **Tab 4**: Trong phần thiết lập sở thích/dị ứng, kiểm tra xem đã có ô nhập liệu và nút để người dùng Tự nhập thêm các loại dị ứng khác chưa.
+Phần món ghét chưa thêm được.
+Kết quả không lưu thành công
 
-## 6. Chất lượng Dữ liệu AI (Sau khi chạy script Seeding)
+## 6. Chất lượng Dữ liệu AI (Sau khi chạy script Seeding) Fail all
 [ ] Dữ liệu hiển thị với người dùng `test@example.com` đã được chuẩn bị đầy đủ bài đăng, sở thích, lịch sử. AI Fast/Medium tier đã lọc ra dữ liệu gợi ý phù hợp dựa trên database hiện tại.
