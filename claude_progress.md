@@ -12,8 +12,9 @@
 - Tests (Jest): `npm test` ĐÃ PASS TOÀN BỘ (35/35 tests) sau khi dùng `jest.mock` toàn cầu cho `pg`, `kafkajs`, `ioredis`, `@qdrant/js-client-rest`, và `@xenova/transformers`. Test E2E và API đều vượt qua.
 
 ## What Next Session Should Do First
-Tiếp tục tích hợp API cho các màn hình Frontend khác (Profile Screen với `GET /api/users/me`, Recommendation Screen) để hoàn thiện luồng E2E trên ứng dụng Android thực.
-
+- Tích hợp thêm các API còn thiếu vào Trip Planner screen (nếu backend đã có endpoint).
+- Bổ sung integration test thực tế cho frontend với appium hoặc flutter driver nếu cần.
+- Bắt đầu triển khai tính năng mới hoặc optimize model offline.
 ## Known Issues / Blockers
 - Cần có `GEMINI_API_KEY` trong file `.env` để luồng Trip Planner hoạt động trơn tru.
 

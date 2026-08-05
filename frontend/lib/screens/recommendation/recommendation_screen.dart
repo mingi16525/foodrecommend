@@ -25,7 +25,12 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   Future<void> _fetchRecommendations() async {
     setState(() => _isLoading = true);
     try {
-      final response = await http.get(Uri.parse('${ApiConfig.baseUrl}/api/recommendation'));
+      final response = await http.get(
+        Uri.parse('${ApiConfig.baseUrl}/api/recommendation'),
+        headers: {
+          'Authorization': 'Bearer ${ApiConfig.token}',
+        },
+      );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
@@ -72,7 +77,10 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     // Gửi sự kiện quẹt thẻ về backend
     http.post(
       Uri.parse('${ApiConfig.baseUrl}/api/recommendation/swipe'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${ApiConfig.token}',
+      },
       body: json.encode({
         'dish_id': item['id'],
         'action': isLiked ? 'LIKE' : 'SKIP'

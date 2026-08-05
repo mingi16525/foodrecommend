@@ -26,7 +26,12 @@ class _FeedScreenState extends State<FeedScreen> {
   Future<void> _fetchFeed() async {
     setState(() => _isLoading = true);
     try {
-      final response = await http.get(Uri.parse('${ApiConfig.baseUrl}/api/social/feed'));
+      final response = await http.get(
+        Uri.parse('${ApiConfig.baseUrl}/api/social/feed'),
+        headers: {
+          'Authorization': 'Bearer ${ApiConfig.token}',
+        },
+      );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {

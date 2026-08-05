@@ -28,7 +28,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _fetchProfile() async {
     try {
-      final response = await http.get(Uri.parse('${ApiConfig.baseUrl}/api/users/me'));
+      final response = await http.get(
+        Uri.parse('${ApiConfig.baseUrl}/api/users/me'),
+        headers: {
+          'Authorization': 'Bearer ${ApiConfig.token}',
+        },
+      );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {

@@ -7,7 +7,7 @@ export const recommendationRouter = Router();
 const estimator = new DecisionComplexityEstimator();
 
 recommendationRouter.get('/', async (req, res) => {
-  const userId = req.query.userId as string;
+  const userId = (req.query.userId as string) || (req as any).user?.userId;
   if (!userId) {
     return res.status(400).json({ error: 'userId is required' });
   }
@@ -27,7 +27,8 @@ recommendationRouter.get('/', async (req, res) => {
 });
 
 recommendationRouter.post('/swipe', async (req, res) => {
-  const { userId, dishId, action } = req.body;
+  const { dishId, action } = req.body;
+  const userId = req.body.userId || (req as any).user?.userId;
   
   if (!userId || !dishId || !action) {
     return res.status(400).json({ error: 'userId, dishId, and action are required' });

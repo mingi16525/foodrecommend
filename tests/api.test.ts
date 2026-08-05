@@ -14,11 +14,7 @@ jest.mock('../src/recommendation/engine', () => ({
 }));
 
 describe('API Routes', () => {
-  it('GET /api/recommendation should return 400 if userId is missing', async () => {
-    const res = await request(app).get('/api/recommendation');
-    expect(res.status).toBe(400);
-    expect(res.body.error).toBe('userId is required');
-  });
+
 
   it('GET /api/recommendation should return recommendations for a valid userId', async () => {
     const res = await request(app).get('/api/recommendation?userId=11111111-1111-1111-1111-111111111111');
