@@ -1,0 +1,8 @@
+[2026-08-05 11:26:07] [ERROR] Unhandled Exception: 
+Exception: Could not find a generator for route RouteSettings("/home", null) in the _MaterialAppState.
+This happens because `MaterialApp.router` (with `go_router`) is being used, but `Navigator.of(context).pushReplacementNamed('/home')` was called for a route that is not defined in `go_router` configuration.
+Stack trace:
+#0      NavigatorState._routeNamed (package:flutter/src/widgets/navigator.dart:4254:9)
+#1      NavigatorState.pushReplacementNamed (package:flutter/src/widgets/navigator.dart:4312:20)
+#2      LoginScreenState._login (package:foodrecommend/screens/auth/login_screen.dart:27:27)
+<asynchronous suspension>

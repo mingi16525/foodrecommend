@@ -5,6 +5,8 @@
 - Cập nhật `auth_service.dart` để gửi kèm `password` khi gọi API `/login` và `/register`.
 - Sửa lỗi crash `setState() called after dispose()` trong `profile_screen.dart` khi vừa đăng nhập xong.
 - Sửa lỗi crash `setState() called after dispose()` trong `feed_screen.dart` do fetch data sau khi user điều hướng.
+- Sửa lỗi `NavigationRoute` khi Đăng nhập xong (sửa từ `Navigator.pushReplacementNamed` thành `context.go('/')`).
+- Đã ghi mock log lỗi Navigation vào `logfile.txt` theo yêu cầu.
 - Sửa toàn bộ lỗi Type/Lint (TS2352, no-explicit-any, implicit any) cho phần backend code (`group.routes.ts`, `recommendation.routes.ts`, `setup.ts`). `npm run lint` và `npx tsc --noEmit` và `npm test` đều pass xanh.
 - Trả lại quyền điền `[x] Pass` trong `Checklist.txt` cho User.
 

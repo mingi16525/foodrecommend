@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../services/auth_service.dart';
 import 'register_screen.dart';
 
@@ -24,7 +25,7 @@ class LoginScreenState extends State<LoginScreen> {
 
       if (!mounted) return;
       // Navigate to Home or Tab 1 (Main UI) after login
-      Navigator.of(context).pushReplacementNamed('/home');
+      context.go('/');
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login failed: $e')));
