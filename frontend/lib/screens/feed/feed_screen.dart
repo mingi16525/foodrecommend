@@ -163,8 +163,8 @@ class _FeedScreenState extends State<FeedScreen> {
       fit: StackFit.expand,
       children: [
         CustomVideoPlayer(
-          videoUrl: item['video_url'],
-          placeholderImage: item['placeholder_url'],
+          videoUrl: item['video_url'] ?? '',
+          placeholderImage: item['placeholder_url'] ?? 'https://images.unsplash.com/photo-1547496502-affa22d38842',
         ),
         
         // Right side interaction buttons
@@ -174,11 +174,11 @@ class _FeedScreenState extends State<FeedScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildAvatar(item['author_avatar'], item['is_verified']),
+              _buildAvatar(item['author_avatar'] ?? 'https://i.pravatar.cc/150', item['is_verified'] ?? false),
               const SizedBox(height: 20),
-              _buildInteractionButton(Icons.favorite, item['likes'].toString(), 'Đã thích video!'),
+              _buildInteractionButton(Icons.favorite, (item['likes'] ?? 0).toString(), 'Đã thích video!'),
               const SizedBox(height: 15),
-              _buildInteractionButton(Icons.comment, item['comments'].toString(), 'Bình luận đang phát triển'),
+              _buildInteractionButton(Icons.comment, (item['comments'] ?? 0).toString(), 'Bình luận đang phát triển'),
               const SizedBox(height: 15),
               _buildInteractionButton(Icons.bookmark, 'Lưu', 'Đã lưu video!'),
               const SizedBox(height: 15),
@@ -196,12 +196,12 @@ class _FeedScreenState extends State<FeedScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '@${item['author_name']}',
+                '@${item['author_name'] ?? 'Unknown'}',
                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 8),
               Text(
-                item['caption'],
+                item['content'] ?? item['caption'] ?? 'Chưa có nội dung',
                 style: const TextStyle(color: Colors.white, fontSize: 14),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -222,8 +222,8 @@ class _FeedScreenState extends State<FeedScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(item['dish_name'], style: const TextStyle(fontWeight: FontWeight.bold)),
-                          Text('${item['price']} đ • ${item['distance']}', style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                          Text(item['dish_name'] ?? 'Món ăn đề xuất', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          Text('${item['price'] ?? 'Liên hệ'} đ • ${item['distance'] ?? ''}', style: const TextStyle(fontSize: 12, color: Colors.grey)),
                         ],
                       ),
                     ),

@@ -12,7 +12,7 @@
     },
     {
       "name": "fix-feed-and-swipe",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "description": "Sửa lỗi Tab 1 (Feed) chỉ hiện 2 video; Sửa lỗi Tab 3 (Khám phá) vuốt không báo SnackBar và AI không thay đổi gợi ý.",
       "scope": [
         "frontend/lib/screens/feed/",

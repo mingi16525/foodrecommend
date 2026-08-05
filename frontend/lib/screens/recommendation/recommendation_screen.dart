@@ -120,6 +120,9 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     
     setState(() {
       _recommendations.removeAt(0);
+      if (_recommendations.isEmpty) {
+        _fetchRecommendations(); // Tải thêm dữ liệu mới khi hết
+      }
     });
   }
 
@@ -157,33 +160,39 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                   child: Column(
                     children: [
                       Expanded(
-                        child: Draggable<int>(
-                          data: 1,
-                          feedback: Material(
-                            color: Colors.transparent,
-                            child: SizedBox(
-                              width: MediaQuery.of(context).size.width - 32,
-                              height: MediaQuery.of(context).size.height * 0.6,
-                              child: Opacity(
-                                opacity: 0.8,
-                                child: SwipeCard(dish: _recommendations.first),
-                              ),
-                            ),
-                          ),
-                          childWhenDragging: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey[300],
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
-                          onDragEnd: (details) {
-                            if (details.offset.dx > 100) {
-                              _onSwipe(true); // Vuốt phải
-                            } else if (details.offset.dx < -100) {
-                              _onSwipe(false); // Vuốt trái
+                        child: Dismissible(
+                          key: Key(_recommendations.first['id'].toString()),
+                          direction: DismissDirection.horizontal,
+                          onDismissed: (direction) {
+                            if (direction == DismissDirection.endToStart) {
+                              _onSwipe(false); // Vuốt trái (Skip)
+                            } else if (direction == DismissDirection.startToEnd) {
+                              _onSwipe(true); // Vuốt phải (Like)
                             }
                           },
-                          child: SwipeCard(dish: _recommendations.first),
+                          background: Container(
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.only(left: 20.0),
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Icon(Icons.favorite, color: Colors.white, size: 40),
+                          ),
+                          secondaryBackground: Container(
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.only(right: 20.0),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Icon(Icons.close, color: Colors.white, size: 40),
+                          ),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width - 32,
+                            height: MediaQuery.of(context).size.height * 0.6,
+                            child: SwipeCard(dish: _recommendations.first),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 20),
