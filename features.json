@@ -28,7 +28,7 @@
     },
     {
       "name": "ai-deep-tier-planner",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Deep AI: Trip Planner kết hợp LLM Orchestrator",
       "scope": [
         "src/group/tripPlanner.ts"

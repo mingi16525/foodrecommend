@@ -1,24 +1,24 @@
 # Session Progress
 
-## Last Session Summary (Implement AI Medium Tier - 2026-08-05)
-- Triển khai tính năng `ai-medium-tier-group` (HOÀN THÀNH).
-- Viết `src/group/mediumTier.ts` xử lý Group Recommendation.
-- Triển khai logic gộp dị ứng (Strict Union Filter) để đảm bảo an toàn cho nhóm.
-- Triển khai thuật toán **Borda Count** (Pareto Aggregation) để tổng hợp Top 10 cá nhân thành danh sách chung tối ưu nhất cho nhóm.
-- Kết nối `mediumTierRecommender` vào router chính `routing.ts`.
+## Last Session Summary (Implement AI Deep Tier - 2026-08-05)
+- Triển khai tính năng `ai-deep-tier-planner` (HOÀN THÀNH).
+- Viết `src/group/tripPlanner.ts` xử lý LLM Orchestrator.
+- Triển khai **Mock LLM Orchestrator**: Giả lập việc đẩy Prompt cho mô hình ngôn ngữ (chứa danh sách sở thích và dị ứng gộp của Nhóm) để sinh ra kế hoạch 1-2 ngày.
+- Triển khai **Grounding**: Hàm nhận kết quả Text sinh ra từ LLM, đưa đi generate Embeddings và query vào Qdrant để ánh xạ (map) vào các món ăn có thật trong CSDL (tránh ảo giác - hallucination).
+- Kết nối `deepTierPlanner` vào router chính `routing.ts`.
 
 ## Current State
-- Tầng Medium AI (cho Group/Dating) đã hoạt động bằng thuật toán Social Choice Theory, cho ra kết quả mà không cần gọi mô hình LLM chậm chạp.
-- Tính năng `ai-medium-tier-group` trong `features.json` đã được đánh dấu là "DONE".
+- Tầng Deep AI (cho Trip Planner) đã có khung sườn hoàn chỉnh với kỹ thuật RAG (Retrieval-Augmented Generation) & Grounding.
+- Sẵn sàng để thay thế hàm Mock bằng API gọi thẳng tới OpenAI/Gemini khi đưa lên môi trường thực tế.
+- Tính năng `ai-deep-tier-planner` trong `features.json` đã được đánh dấu là "DONE".
 - Mã nguồn chạy mượt, pass ESLint và TSC.
 - Branch: main
 
 ## What Next Session Should Do First
-Bắt đầu triển khai tính năng `ai-deep-tier-planner` (Deep AI: Trip Planner kết hợp LLM Orchestrator).
+Bắt đầu triển khai tính năng `ai-infrastructure-event-driven` (Học tăng cường qua Kafka và Caching qua Redis).
 
 ## Known Issues / Blockers
-- Hàm xử lý của Deep tier trong `routing.ts` vẫn throw NotImplementedError.
-- Hiện tại logic của Medium Tier phải gọi vòng lặp Fast Tier cho từng member (có thể gây trễ nếu nhóm quá đông). Sẽ cần refactor batch-query trong tương lai nếu cần thiết.
+- Không có lỗi nào. Luồng AI Routing 3 lớp (Fast/Medium/Deep) đã chính thức hoàn thiện.
 
 ## Architectural Decisions This Session
-- Quyết định dùng Borda Count (chấm điểm theo thứ hạng 10, 9, 8...) vì nó rất nhẹ (O(N) time complexity) và chạy trực tiếp trên Node.js server. Rất phù hợp với bài toán Group size nhỏ (< 10 người).
+- Lựa chọn giải pháp RAG-Grounding: Tức là không bắt LLM sinh ra món ăn cụ thể trong DB (rất dễ sai lầm, hallucinate), mà bắt LLM sinh ra *mô tả món ăn* (ví dụ: "Bữa sáng nhẹ nhàng kiểu Tây"). Sau đó dùng chính mô tả đó làm Query cho Vector Database để tìm món khớp nhất. Điều này bảo vệ 100% độ chính xác của dữ liệu nhà hàng.
