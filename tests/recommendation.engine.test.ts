@@ -5,17 +5,17 @@ describe('RecommendationEngine', () => {
 
   beforeEach(() => {
     engine = new RecommendationEngine();
-    jest.spyOn(engine, 'getRecommendations').mockResolvedValue([
-      { id: '1', name: 'Phở Bò', score: 0.99 },
-      { id: '2', name: 'Bún Chả', score: 0.85 }
+    jest.spyOn(engine, 'searchDishes').mockResolvedValue([
+      { id: '1', score: 0.99, payload: { name: 'Phở Bò' } },
+      { id: '2', score: 0.85, payload: { name: 'Bún Chả' } }
     ]);
     jest.spyOn(engine, 'processSwipeEvent').mockResolvedValue({ success: true });
   });
 
-  it('should return mock recommendations', async () => {
-    const results = await engine.getRecommendations('user123');
+  it('should return search results from Qdrant', async () => {
+    const results = await engine.searchDishes([0.1, 0.2], 50);
     expect(results).toHaveLength(2);
-    expect(results[0].name).toBe('Phở Bò');
+    expect((results[0].payload as any).name).toBe('Phở Bò');
   });
 
   it('should process swipe events successfully', async () => {

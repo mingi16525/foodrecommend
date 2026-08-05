@@ -1,6 +1,7 @@
 import { recommendationEngine } from '../recommendation/engine';
 import { groupService } from './service';
 import { ContextParams } from '../recommendation/routing';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Data types
 export interface MealPlan {
@@ -24,36 +25,51 @@ export interface TripPlan {
 export class DeepTierPlanner {
   
   /**
-   * Mock LLM call. Nhận prompt và sinh ra các yêu cầu tìm kiếm món ăn.
+   * Real LLM call using Google Gemini API
    */
-  private async callMockLLM(prompt: string): Promise<Array<{day: number, session: 'breakfast' | 'lunch' | 'dinner', searchString: string, reasoning: string}>> {
-    console.log(`[LLM Orchestrator] Generating plan for prompt length: ${prompt.length}`);
-    
-    // Giả lập LLM cần 500ms để "suy nghĩ"
-    await new Promise(resolve => setTimeout(resolve, 500));
+  private async callLLM(prompt: string): Promise<Array<{day: number, session: 'breakfast' | 'lunch' | 'dinner', searchString: string, reasoning: string}>> {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      console.warn('[LLM Orchestrator] No GEMINI_API_KEY found, falling back to basic mock response.');
+      return [
+        { day: 1, session: 'breakfast', searchString: 'healthy breakfast with coffee', reasoning: 'Bữa sáng nhẹ nhàng.' },
+        { day: 1, session: 'lunch', searchString: 'local traditional savory dish', reasoning: 'Bữa trưa đặc sản địa phương.' },
+        { day: 1, session: 'dinner', searchString: 'fine dining steak or seafood', reasoning: 'Bữa tối sang trọng.' }
+      ];
+    }
 
-    // Giả lập output của LLM dựa trên logic
-    // Vì đây là mock, ta trả về 1 ngày 3 bữa cố định.
-    return [
-      {
-        day: 1,
-        session: 'breakfast',
-        searchString: 'healthy breakfast with coffee',
-        reasoning: 'Bắt đầu ngày mới với một bữa sáng nhẹ nhàng và cà phê để tỉnh táo.'
-      },
-      {
-        day: 1,
-        session: 'lunch',
-        searchString: 'local traditional savory dish',
-        reasoning: 'Thưởng thức hương vị địa phương đặc sắc cho bữa trưa đầy năng lượng.'
-      },
-      {
-        day: 1,
-        session: 'dinner',
-        searchString: 'fine dining steak or seafood',
-        reasoning: 'Bữa tối sang trọng để thư giãn và tận hưởng buổi tối.'
-      }
-    ];
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+    const systemPrompt = `
+      Bạn là một chuyên gia ẩm thực và chuyên gia lên lịch trình (Trip Planner). 
+      Dựa trên thông tin được cung cấp, hãy tạo ra một lịch trình ăn uống. 
+      Lịch trình phải bao gồm 3 bữa (breakfast, lunch, dinner) cho mỗi ngày.
+      Bạn BẮT BUỘC trả về dữ liệu thuần định dạng JSON Array chứa các object với cấu trúc chính xác như sau:
+      [
+        { "day": 1, "session": "breakfast", "searchString": "từ khóa mô tả món ăn bằng tiếng anh", "reasoning": "giải thích tiếng việt" }
+      ]
+      Tuyệt đối KHÔNG trả về markdown block (như \`\`\`json) hay bất kỳ văn bản nào khác ngoài JSON Array.
+    `;
+
+    const fullPrompt = systemPrompt + "\n\n" + prompt;
+    
+    try {
+      console.log('[LLM Orchestrator] Calling Gemini API...');
+      const result = await model.generateContent(fullPrompt);
+      const text = result.response.text().trim();
+      
+      // Attempt to clean markdown if LLM still includes it
+      let cleanText = text;
+      if (cleanText.startsWith('```json')) cleanText = cleanText.substring(7);
+      if (cleanText.startsWith('```')) cleanText = cleanText.substring(3);
+      if (cleanText.endsWith('```')) cleanText = cleanText.substring(0, cleanText.length - 3);
+
+      return JSON.parse(cleanText.trim());
+    } catch (e) {
+      console.error('[LLM Orchestrator] LLM parsing/API error:', e);
+      throw new Error('Failed to generate trip plan using LLM', { cause: e });
+    }
   }
 
   public async generateTripPlan(groupId: string | undefined, contextParams: ContextParams): Promise<TripPlan> {
@@ -88,7 +104,7 @@ export class DeepTierPlanner {
     `;
 
     // 4. Gọi LLM Orchestrator
-    const llmOutput = await this.callMockLLM(prompt);
+    const llmOutput = await this.callLLM(prompt);
 
     // 5. Query Qdrant (Grounding) để map từ Text sang Dish thực tế
     const finalPlan: MealPlan[] = [];

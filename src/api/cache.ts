@@ -1,37 +1,70 @@
-/* eslint-disable */
-// Mock Redis Client for Caching Layer
-class MockRedisClient {
-  private cache: Map<string, { value: string, expiry: number }> = new Map();
+import Redis from 'ioredis';
 
-  async connect() {
-    console.log('[Redis] Mock connection established.');
+class CacheClient {
+  private redis: Redis | null = null;
+  private memoryFallback: Map<string, { value: string; expiry: number }> = new Map();
+  private isConnected = false;
+
+  constructor() {
+    this.redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
+      maxRetriesPerRequest: 1,
+      retryStrategy(times) {
+        if (times > 3) return null; // stop retrying after 3 times
+        return Math.min(times * 50, 2000);
+      }
+    });
+
+    this.redis.on('connect', () => {
+      console.log('[Cache] Redis connected.');
+      this.isConnected = true;
+    });
+
+    this.redis.on('error', (err) => {
+      console.warn('[Cache] Redis error:', err.message);
+      this.isConnected = false;
+    });
   }
 
   async get(key: string): Promise<string | null> {
-    const data = this.cache.get(key);
+    if (this.isConnected && this.redis) {
+      try {
+        return await this.redis.get(key);
+      } catch {
+        // fallback
+      }
+    }
+    const data = this.memoryFallback.get(key);
     if (!data) return null;
-    
     if (Date.now() > data.expiry) {
-      this.cache.delete(key);
+      this.memoryFallback.delete(key);
       return null;
     }
-    
     return data.value;
   }
 
   async setEx(key: string, seconds: number, value: string): Promise<void> {
-    const expiry = Date.now() + (seconds * 1000);
-    this.cache.set(key, { value, expiry });
+    if (this.isConnected && this.redis) {
+      try {
+        await this.redis.setex(key, seconds, value);
+        return;
+      } catch {
+        // fallback
+      }
+    }
+    const expiry = Date.now() + seconds * 1000;
+    this.memoryFallback.set(key, { value, expiry });
   }
 
   async quit() {
-    console.log('[Redis] Mock connection closed.');
+    if (this.redis) {
+      await this.redis.quit();
+    }
   }
 }
 
-export const redisCache = new MockRedisClient();
+export const redisCache = new CacheClient();
 
-export const withCache = async (key: string, ttlSeconds: number, fetcher: () => Promise<any>) => {
+export const withCache = async <T>(key: string, ttlSeconds: number, fetcher: () => Promise<T>): Promise<T> => {
   try {
     const cachedData = await redisCache.get(key);
     if (cachedData) {

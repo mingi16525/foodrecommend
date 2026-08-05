@@ -1,25 +1,21 @@
 # Session Progress
 
-## Last Session Summary (Implement API Security Auth - 2026-08-05)
-- Triển khai tính năng `api-security-auth` (HOÀN THÀNH).
-- Cài đặt `bcrypt` và `jsonwebtoken`.
-- Cập nhật `schema.sql` để thêm cột `password_hash` vào bảng `users`.
-- Tạo `src/auth/authService.ts`: Triển khai hàm `register` (mã hóa mật khẩu) và `login` (so khớp mật khẩu, cấp phát JWT).
-- Tạo `src/auth/authMiddleware.ts`: Viết middleware `authenticateToken` chặn các Request không chứa Bearer Token hợp lệ.
-- Thêm `authRouter` vào `src/index.ts` (`/api/auth`) và bảo vệ các routes quan trọng như `/api/recommendations` bằng middleware xác thực.
+## Last Session Summary (Documentation Sync & Product Review - 2026-08-05)
+- Rà soát lại toàn bộ Product Design Document và Product Specification.
+- Cập nhật tài liệu `.md` để đồng bộ với thực tế mã nguồn (`DevelopmentPlan_Deploy.md`, `FoodRecommend_Product_Specification.md`, `ProductDesignDocument.md`).
+- Đánh dấu hoàn tất giai đoạn MVP (Local Beta) và cập nhật trạng thái các phase trong kế hoạch phát triển.
 
 ## Current State
-- Backend giờ đã được bảo vệ đúng tiêu chuẩn thực tế. Ứng dụng đã có luồng Đăng ký/Đăng nhập và cấp Token.
-- Tính năng `api-security-auth` trong `features.json` đã được đánh dấu là "DONE".
-- Mã nguồn chạy mượt, không lỗi (0 errors, 0 warnings cho TSC & ESLint).
-- Branch: main
+- Backend đã sẵn sàng (Local Beta hoàn thiện 100%).
+- Các tài liệu dự án (.md) đã được đồng bộ hóa và phản ánh đúng thực trạng codebase.
+- Tests (Jest) đang bị break do thiếu hạ tầng thực (PostgreSQL, Redis, Kafka) và các class mock cũ đã bị loại bỏ/refactor hoàn toàn.
 
 ## What Next Session Should Do First
-Không còn tính năng Backend hay Frontend nào trong `features.json` ở trạng thái TODO (Tất cả đều DONE). Quá trình phát triển ứng dụng (Development) đã chính thức khép lại. Nên chuyển sang phase User Testing hoặc Deploy!
+Thực hiện test E2E có kết nối DB/Kafka thực, hoặc bổ sung Docker Test Containers để chạy jest. Sau đó, chạy `npm test` thành công và commit.
 
 ## Known Issues / Blockers
-- Toàn bộ Backend và Frontend đã hoàn tất.
+- Cần có `GEMINI_API_KEY` trong file `.env` để luồng Trip Planner hoạt động trơn tru.
+- Thiếu Test Environment để chạy Jest (Tests hiện tại call trực tiếp tới Kafka/Qdrant/Postgres mà chưa có infrastructure mock hoặc setup).
 
 ## Architectural Decisions This Session
-- Dùng `bcrypt` với Salt Rounds = 10 để bảo đảm an toàn mà không làm chậm server.
-- Thiết lập thời gian sống của JWT là 7 ngày (`7d`) để giảm thiểu số lần User phải đăng nhập lại trên App Mobile.
+- Xác nhận Product Docs là Source of Truth. Đã update các files .md để phản ánh architecture thực tế thay vì mock architecture.

@@ -1,18 +1,15 @@
 /* eslint-disable */
 import { QdrantClient } from '@qdrant/js-client-rest';
-import { Pool } from 'pg';
+import { db } from '../db';
 export class RecommendationEngine {
   private qdrant: QdrantClient;
-  private db: Pool;
+  private db = db;
   private extractor: any;
 
   constructor() {
     this.qdrant = new QdrantClient({ 
       url: process.env.QDRANT_URL || 'http://localhost:6333',
       checkCompatibility: false
-    });
-    this.db = new Pool({
-      connectionString: process.env.DATABASE_URL || 'postgresql://fooduser:foodpassword@localhost:5432/foodrecommend'
     });
     // Removed initModel() from constructor to avoid async overhead during test initialization
   }

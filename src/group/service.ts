@@ -1,4 +1,4 @@
-import { Pool } from 'pg';
+import { db } from '../db';
 
 export interface Group {
   id: string;
@@ -12,13 +12,7 @@ export interface GroupMember {
 }
 
 export class GroupService {
-  private db: Pool;
-
-  constructor() {
-    this.db = new Pool({
-      connectionString: process.env.DATABASE_URL || 'postgresql://fooduser:foodpassword@localhost:5432/foodrecommend'
-    });
-  }
+  private db = db;
 
   async createGroup(name: string, creatorId: string) {
     try {
@@ -33,8 +27,8 @@ export class GroupService {
 
       return newGroup;
     } catch (e) {
-      console.warn('DB error in createGroup', e);
-      return { id: 'mock_group_id', name, creator_id: creatorId };
+      console.error('DB error in createGroup', e);
+      throw e;
     }
   }
 
@@ -53,8 +47,8 @@ export class GroupService {
         members: membersResult.rows
       };
     } catch (e) {
-      console.warn('DB error in getGroupDetails', e);
-      return { id, name: 'Mock Group', members: [{ id: 'mock_user_id', full_name: 'Mock Member' }] };
+      console.error('DB error in getGroupDetails', e);
+      throw e;
     }
   }
 
@@ -66,8 +60,8 @@ export class GroupService {
       );
       return true;
     } catch (e) {
-      console.warn('DB error in addMember', e);
-      return true;
+      console.error('DB error in addMember', e);
+      throw e;
     }
   }
 }

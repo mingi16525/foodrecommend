@@ -120,16 +120,17 @@ Recommendation API
 
 ## 10. Lộ trình
 
-### MVP (3--6 tháng)
+### MVP (3--6 tháng) - **ĐÃ HOÀN THÀNH (Local Beta)**
 
--   Recommendation cá nhân.
--   Review.
--   Điều hướng.
+-   Recommendation cá nhân (Fast Tier, Qdrant).
+-   Review & Feed TikTok style.
+-   Điều hướng (Mô phỏng Deep link).
+-   Kết nối hạ tầng Database & Message Queue thực tế (PostgreSQL, Redis, Kafka).
 
-### Beta (6--12 tháng)
+### Beta (6--12 tháng) - **ĐANG THỰC HIỆN**
 
--   Group recommendation.
--   Trip planner.
+-   Group recommendation (Pareto Aggregation).
+-   Trip planner (Gemini LLM / GPT-4o-mini).
 -   AI Summary.
 
 ### Scale (12--24 tháng)

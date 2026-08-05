@@ -12,7 +12,7 @@ CREATE TABLE users (
 
 CREATE TABLE user_preferences (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    user_id UUID UNIQUE REFERENCES users(id) ON DELETE CASCADE,
     favorite_flavors JSONB,
     allergies JSONB,
     dietary_restrictions JSONB,
@@ -53,4 +53,10 @@ CREATE TABLE groups (
     name VARCHAR(255),
     creator_id UUID REFERENCES users(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE group_members (
+    group_id UUID REFERENCES groups(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    PRIMARY KEY (group_id, user_id)
 );

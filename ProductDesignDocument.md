@@ -534,15 +534,16 @@ gantt
     B2B Merchant SaaS & API Monetization :c3, after c2, 4m
 ```
 
-#### 9.1 Giai đoạn MVP (Tháng 1 - 6): Nền tảng Ra quyết định Cá nhân
-* Hoàn thiện 5 Tab màn hình cơ bản.
+#### 9.1 Giai đoạn MVP (Tháng 1 - 6): Nền tảng Ra quyết định Cá nhân (Đã hoàn thành - Local Beta)
+* Đã hoàn thiện Kiến trúc Core & DB Setup.
 * Ra mắt tính năng Swipe chọn món cá nhân (Tab 3), Feed TikTok-style (Tab 1), Cấu hình khẩu vị (Tab 4).
+* Kết nối hạ tầng Database thực tế (PostgreSQL, Redis, Qdrant) và Event Bus (Kafka).
 * Tích hợp điều hướng Google Maps và Deep-link sang ShopeeFood / BeFood.
-* Thu thập dữ liệu hành vi người dùng ban đầu.
 
-#### 9.2 Giai đoạn Beta / V1 (Tháng 7 - 12): Ra quyết định Nhóm & Trip Planner
-* Ra mắt tính năng Đặt đơn nhóm (Group Order) và Bình chọn quán AI (Tab 2).
-* Ra mắt tính năng Lên kế hoạch Food Tour / Trip Planner theo tuyến đường.
+#### 9.2 Giai đoạn Beta / V1 (Tháng 7 - 12): Ra quyết định Nhóm & Trip Planner (Đang thực hiện)
+* Đã hoàn thiện Backend cho Đặt đơn nhóm (Group Order) và Bình chọn quán AI bằng Pareto Aggregation (Tab 2).
+* Đã hoàn thiện Backend Lên kế hoạch Food Tour / Trip Planner (Dùng Gemini LLM).
+* Cần tích hợp UI/UX Frontend cho các tính năng Tab 2.
 * Tích hợp AI Summary tổng hợp đánh giá quán ăn từ nhiều nguồn.
 * Triển khai chương trình Verified Reviewer.
 

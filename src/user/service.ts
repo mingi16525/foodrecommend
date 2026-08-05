@@ -1,4 +1,4 @@
-import { Pool } from 'pg';
+import { db } from '../db';
 
 export interface UserPreferences {
   favorite_flavors?: string[];
@@ -8,13 +8,7 @@ export interface UserPreferences {
 }
 
 export class UserService {
-  private db: Pool;
-
-  constructor() {
-    this.db = new Pool({
-      connectionString: process.env.DATABASE_URL || 'postgresql://fooduser:foodpassword@localhost:5432/foodrecommend'
-    });
-  }
+  private db = db;
 
   async getUserProfile(userId: string) {
     try {
@@ -28,9 +22,8 @@ export class UserService {
         preferences: prefResult.rows[0] || null
       };
     } catch (e) {
-      console.warn('DB error in getUserProfile', e);
-      // Fallback mock
-      return { id: userId, email: 'mock@example.com', full_name: 'Mock User', preferences: null };
+      console.error('DB error in getUserProfile', e);
+      throw e;
     }
   }
 
@@ -59,8 +52,8 @@ export class UserService {
       
       return res.rows[0];
     } catch (e) {
-      console.warn('DB error in updatePreferences', e);
-      return { user_id: userId, ...preferences };
+      console.error('DB error in updatePreferences', e);
+      throw e;
     }
   }
 }

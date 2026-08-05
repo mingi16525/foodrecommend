@@ -7,20 +7,20 @@ Tài liệu này vạch ra lộ trình để chuyển đổi dự án từ giai 
 ## 1. Phase 1: Chuẩn Bị Hạ Tầng Local (Local Infrastructure Readiness)
 Mục tiêu: Đảm bảo toàn bộ backend, database và message queue chạy trơn tru trên Docker của máy cá nhân.
 
-- [ ] **Khởi động Local Docker Compose**: Chạy toàn bộ PostgreSQL, Redis, Qdrant (Vector DB) và Kafka bằng Docker trên máy cá nhân (`docker-compose up -d`).
-- [ ] **Kiểm tra kết nối DB**: Xác nhận Backend Node.js kết nối thành công tới tất cả các services ở `localhost` (Bỏ qua cơ chế fallback Mock Data).
-- [ ] **Cấu hình môi trường**: Cập nhật file `.env` trỏ toàn bộ URL về `localhost` (ví dụ: `DB_HOST=localhost`, `QDRANT_URL=http://localhost:6333`).
+- [x] **Khởi động Local Docker Compose**: Chạy toàn bộ PostgreSQL, Redis, Qdrant (Vector DB) và Kafka bằng Docker trên máy cá nhân (`docker-compose up -d`).
+- [x] **Kiểm tra kết nối DB**: Xác nhận Backend Node.js kết nối thành công tới tất cả các services ở `localhost` (Bỏ qua cơ chế fallback Mock Data).
+- [x] **Cấu hình môi trường**: Cập nhật file `.env` trỏ toàn bộ URL về `localhost` (ví dụ: `DB_HOST=localhost`, `QDRANT_URL=http://localhost:6333`).
 
 ---
 
 ## 2. Phase 2: Chuẩn Bị Dữ Liệu Thực Tế (Data Preparation)
 Mục tiêu: Xóa bỏ dữ liệu Seed sơ sài, nạp bộ dữ liệu Beta đủ lớn và sát với thực tế để thuật toán AI có thể học và phân tích.
 
-- [ ] **Nạp Database PostgreSQL**: 
+- [x] **Nạp Database PostgreSQL**: 
   - Sinh ít nhất 50 Quán ăn (Restaurants) thực tế (kèm tọa độ địa lý, Geohash).
   - Sinh ít nhất 500 Món ăn (Dishes) phân loại theo các tags: Cay, Không cay, Chay, Mặn, Hải sản.
   - Tạo 20 User giả lập có các `user_preferences` (Khẩu vị, Dị ứng) phong phú khác nhau.
-- [ ] **Nạp Dữ liệu Vector (Qdrant)**:
+- [x] **Nạp Dữ liệu Vector (Qdrant)**:
   - Chạy script Python để sinh Vector Embeddings cho 500 món ăn bằng model `all-MiniLM-L6-v2` (HuggingFace) dựa trên Tên món, Thành phần, Tags.
   - Đẩy 500 vectors này vào collection `dishes` trên Qdrant local.
 
@@ -29,24 +29,24 @@ Mục tiêu: Xóa bỏ dữ liệu Seed sơ sài, nạp bộ dữ liệu Beta đ
 ## 3. Phase 3: Triển Khai Thuật Toán AI Thực Tế (AI Pipeline Implementation)
 Mục tiêu: Viết code thực thi logic kiến trúc AI đa tầng (Multi-tier AI Routing) như trong Mô tả thuật toán thay thế cho API Mock hiện tại.
 
-- [ ] **AI Decision Routing (Bộ định tuyến)**:
+- [x] **AI Decision Routing (Bộ định tuyến)**:
   - Viết module Decision Complexity Estimator để phân loại request.
-- [ ] **Fast Tier AI (Gợi ý siêu tốc)**:
+- [x] **Fast Tier AI (Gợi ý siêu tốc)**:
   - Code API Node.js gọi Qdrant Vector Search kết hợp Context Engine, lọc Geohash, FAISS Ranking và Optimizer để trả về gợi ý quẹt thẻ Swipe nhanh nhất (<100ms).
-- [ ] **Medium Tier AI (Quyết định Nhóm)**: 
+- [x] **Medium Tier AI (Quyết định Nhóm)**: 
   - Triển khai logic tổng hợp (Pareto Aggregation) và ràng buộc cứng (ngân sách, dị ứng) để gợi ý danh sách món ăn/quán ăn thỏa mãn cả nhóm.
-- [ ] **Deep Tier AI (Trip Planner AI)**: 
+- [x] **Deep Tier AI (Trip Planner AI)**: 
   - Code luồng kết nối Google Maps API để tính lộ trình.
   - Viết module LLM Orchestrator (Gemini/OpenAI) kết hợp RAG để gợi ý các quán dọc tuyến đường.
-- [ ] **AI Infrastructure (Sự kiện & Cache)**:
+- [x] **AI Infrastructure (Sự kiện & Cache)**:
   - Tích hợp Kafka để hứng event (Swipe, Like) từ Frontend và cập nhật Feature Store (Redis) realtime.
 
 ---
 
 ## 4. Phase 4: Tích Hợp API Bên Thứ Ba (Third-party APIs)
-- [ ] **Google Maps SDK**: Thêm API Key thực tế để hiển thị bản đồ và tính toán khoảng cách quán ăn.
-- [ ] **Giao hàng (Deep-linking)**: Thêm các URL Scheme mở app thật (ShopeeFood, Grab) truyền tham số tên quán.
-- [ ] **Bảo mật Auth**: Code JWT thực tế, kết nối Database kiểm tra Hash Password thay vì bỏ qua bước check.
+- [x] **Google Maps SDK**: Thêm API Key thực tế để hiển thị bản đồ và tính toán khoảng cách quán ăn.
+- [x] **Giao hàng (Deep-linking)**: Thêm các URL Scheme mở app thật (ShopeeFood, Grab) truyền tham số tên quán.
+- [x] **Bảo mật Auth**: Code JWT thực tế, kết nối Database kiểm tra Hash Password thay vì bỏ qua bước check.
 
 ---
 

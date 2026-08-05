@@ -1,4 +1,4 @@
-import { Pool } from 'pg';
+import { db } from '../db';
 
 export interface Restaurant {
   id: string;
@@ -16,13 +16,7 @@ export interface Dish {
 }
 
 export class RestaurantService {
-  private db: Pool;
-
-  constructor() {
-    this.db = new Pool({
-      connectionString: process.env.DATABASE_URL || 'postgresql://fooduser:foodpassword@localhost:5432/foodrecommend'
-    });
-  }
+  private db = db;
 
   async getRestaurantById(id: string) {
     try {
@@ -36,22 +30,21 @@ export class RestaurantService {
         dishes: dishesResult.rows
       };
     } catch (e) {
-      console.warn('DB error in getRestaurantById', e);
-      // Fallback mock
-      return { id, name: 'Mock Restaurant', dishes: [{ id: 'd1', name: 'Mock Dish' }] };
+      console.error('DB error in getRestaurantById', e);
+      throw e;
     }
   }
 
   async searchRestaurants(query: string) {
     try {
       const result = await this.db.query(
-        'SELECT * FROM restaurants WHERE name ILIKE $1 OR tags::text ILIKE $1 LIMIT 10',
+        'SELECT * FROM restaurants WHERE name ILIKE $1 LIMIT 10',
         [`%${query}%`]
       );
       return result.rows;
     } catch (e) {
-      console.warn('DB error in searchRestaurants', e);
-      return [{ id: 'r1', name: 'Mock Search Result' }];
+      console.error('DB error in searchRestaurants', e);
+      throw e;
     }
   }
 }
