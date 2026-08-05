@@ -1,0 +1,61 @@
+Chào bạn, dựa trên các nội dung hệ thống hóa mà chúng ta đã trao đổi về dự án **"Tinder for Food"**, mình đã tổng hợp và bóc tách riêng phần **Lõi Thuật toán & Kiến trúc AI (AI Recommendation & Processing)**.
+
+Điểm sáng lớn nhất của hệ thống này là **không lạm dụng LLM**, mà sử dụng chiến lược định tuyến thông minh để cân bằng giữa trải nghiệm cá nhân hóa sâu sắc và chi phí vận hành. Dưới đây là chi tiết tổng hợp:
+
+---
+
+## 1. Phân tầng AI & Định tuyến thông minh (AI Routing)
+
+Thay vì đẩy mọi yêu cầu qua mô hình ngôn ngữ lớn (LLM) đắt đỏ, thuật toán sử dụng **Decision Complexity Estimator (Bộ ước lượng độ phức tạp)** để phân loại và điều hướng request đến tầng AI phù hợp:
+
+| Tầng AI | Nhiệm vụ chính | Ngữ cảnh sử dụng | Công nghệ / Thời gian phản hồi |
+| --- | --- | --- | --- |
+| **Fast AI (Tầng 1)** | Gợi ý nhanh, thói quen hàng ngày | "Hôm nay ăn gì?", lướt thẻ Tinder | Rule Engine + ML truyền thống (LightGBM/XGBoost) *~50-100ms (Xử lý 90-95% request)* |
+| **Medium AI (Tầng 2)** | Lọc theo nhóm ràng buộc cụ thể | Hẹn hò, nhóm 4 người, ngân sách 150k, không cay | ML Optimizer + Phân tích vector *~300ms (Xử lý 4-9% request)* |
+| **Deep AI (Tầng 3)** | Lập kế hoạch phức tạp (Planning) | Du lịch ẩm thực Đà Nẵng 4 ngày, tổng budget 6 triệu | LLM Orchestrator (GPT/Claude) kết hợp Top 20 từ Fast AI *Vài giây (Xử lý ~1% request)* |
+
+---
+
+## 2. Luồng thuật toán xử lý một truy vấn
+
+Khi người dùng phát sinh nhu cầu tìm quán (ví dụ: đang đi du lịch sang khu vực mới), thuật toán sẽ không tính toán lại toàn bộ dữ liệu 250,000 quán ăn. Nó hoạt động theo chuỗi tinh gọn sau:
+
+1. **Context Engine (Phân tích ngữ cảnh realtime):**
+Thu thập các biến số động ngay tại thời điểm gọi: Vị trí hiện tại (GPS/Geohash), thời gian (trưa/tối), thời tiết (mưa/lạnh), đi một mình hay đi nhóm.
+
+
+2. **Candidate Retrieval (Trích xuất ứng viên):**
+Sử dụng **Spatial Index (Chỉ mục không gian)** để khoanh vùng bán kính (VD: 3km). Lọc thô bằng các quy tắc cứng: Đang mở cửa, nằm trong ngân sách cơ bản, loại trừ các quán vi phạm yêu cầu bắt buộc. *Từ hàng trăm nghìn quán, rút gọn xuống còn vài trăm quán.*
+
+
+3. **Personal Ranking (Chấm điểm cá nhân hóa):**
+Chuyển đổi dữ liệu nhà hàng thành vector (Restaurant Embeddings) và so khớp với vector sở thích của người dùng (User Embeddings) bằng **FAISS**. Tính toán điểm phù hợp dựa trên thuật toán Content-based & Collaborative Filtering.
+
+
+4. **Decision Optimizer (Tối ưu kết quả cuối):**
+Sắp xếp lại (Re-ranking) để đảm bảo tính đa dạng (không đề xuất 20 quán bún bò liên tiếp) và chốt ra **Top 20** xuất sắc nhất để hiển thị hoặc đẩy sang cho LLM lập kế hoạch.
+
+
+---
+
+## 3. Công thức Trọng số: Static (Tĩnh) + Dynamic (Động)
+
+Thuật toán giải quyết bài toán "hôm nay tôi đổi vị trí/thời tiết" bằng cách tách biệt hai nhóm trọng số:
+
+* **Static Profile (Hồ sơ dài hạn):** Sở thích cốt lõi (Thích bún bò, đồ ăn cay, ghét ăn hành, ngân sách trung bình <100k). Phần này được lưu dưới dạng **User Embeddings**, ít thay đổi và cập nhật theo mẻ (batch) định kỳ.
+* **Dynamic Profile (Hồ sơ ngữ cảnh):** Thay đổi liên tục (Đang mưa -> thèm đồ nước; 20h tối -> muốn ăn lẩu; Đang ở Hoàn Kiếm -> cần ưu tiên quán khu vực này).
+
+**Cách hoạt động:** Khi có request, hệ thống lấy *Điểm Static (0.95 cho bún bò)* cộng với *Trọng số Dynamic (Trời mưa + Đang ở gần Hoàn Kiếm)* để ra bảng xếp hạng (Ranking) mới nhất. Nếu người dùng bay vào Đà Nẵng, AI không cần học lại từ đầu, nó chỉ lấy User Vector hiện tại so khớp với Restaurant Vector của Đà Nẵng.
+
+---
+
+## 4. Tối ưu hóa hệ thống (Cost & Performance)
+
+Để gánh được hàng triệu request mà không làm "cháy" server hay sụp đổ chi phí cloud, thuật toán ứng dụng các chiến lược:
+
+1. **Offline Training & Pre-compute (Tính toán ngoại tuyến):**
+Vào ban đêm, AI sẽ chạy ngầm để tính toán trước *Top 100 quán* cho từng khu vực bản đồ (Geohash) hoặc cho các nhóm người dùng cụ thể.
+2. **Caching đa tầng (Redis):**
+Sử dụng Redis để trả kết quả ngay lập tức cho các truy vấn phổ biến không mang tính cá nhân hóa cao (VD: "Top Sushi Hà Nội" hoặc "Các quán đang hot ở Cầu Giấy").
+3. **Học tăng cường theo sự kiện (Event-driven bằng Kafka):**
+Khi người dùng "Swipe Right" (Like) một món ăn, sự kiện được bắn vào Kafka -> Feature Store -> Cập nhật trọng số của người dùng (Batch update sau mỗi 5-10 phút). Không cần phải train lại toàn bộ model (Model Retraining) đắt đỏ, hệ thống vẫn hiểu được sự thay đổi khẩu vị gần thời gian thực.
