@@ -11,18 +11,30 @@ Lưu ý: Thư mục `frontend/android/` hiện tại có thể bị lỗi (chỉ
 5. Đợi Android Studio Index và tải các thư viện. Sau đó cắm máy thật hoặc bật Emulator và ấn nút "Run" (hoặc `Shift + F10`).
 
 # CHECKLIST TEST TÍNH NĂNG (E2E):
-[ ] Đăng nhập thành công với tài khoản test@example.com. Fail 
+[ ] Đăng nhập thành công với tài khoản test@example.com. Fail
 - Ghi nhận log hiển thị lỗi trên màn hình vào `logfile.txt`
-[ ] Kiểm tra màn hình Feed (dữ liệu mock AI fast tier). 
-[ ] Kiểm tra tính năng Swipe (vuốt món ăn):
-  - [ ] Vuốt phải (Like)
-  - [ ] Vuốt trái (Skip)
-[ ] Kiểm tra màn hình Recommendation (đề xuất món).
-[ ] Kiểm tra Group:
-  - [ ] Danh sách nhóm (Group List).
-  - [ ] Thêm nhóm mới.
-[ ] Kiểm tra Profile (Đăng xuất).
+[ ] Kiểm tra màn hình Feed (dữ liệu mock AI fast tier). Đã có xuất hiện dữ liệu nhưng chưa xác thực là phù hợp hay chưa phù hợp 
+[ ] Kiểm tra tính năng Swipe (vuốt món ăn): Fail
+  - [ ] Vuốt phải (Like) đã có thể thao tác nhưng chưa xác thực là đã ghi nhận thao tác hay chưa
+  - [ ] Vuốt trái (Skip) đã có thể thao tác nhưng chưa xác thực là đã ghi nhận thao tác hay chưa
+[ ] Kiểm tra màn hình Recommendation (đề xuất món). Fail
+[ ] Kiểm tra Group: Fail
+  - [ ] Danh sách nhóm (Group List). Fail
+  - [ ] Thêm nhóm mới. Fail
+[ ] Kiểm tra Profile (Đăng xuất). Bấm đăng xuất nhưng chưa biết là đã đăng xuất hay chưa
 
-# LƯU Ý HỆ THỐNG (Backend):
-- Đảm bảo Backend (Node.js) và các services (PostgreSQL, Qdrant, Redis) đang chạy bình thường.
-- Dữ liệu (50 nhà hàng, 500 món ăn, thông tin user) đã được đổ (seed) vào Postgres và Qdrant đầy đủ.
+Yêu cầu thêm mới: Khi chưa đăng nhập, tài khoản ở chế độ Guest, chỉ có thể sử dụng tính năng lướt Feed và Khám phá ở tab 3.
+Nhưng với Guest, không thể Thích hoặc Bỏ qua, không thể thao tác với bài viết, chỉ có thể xem, không lưu bất kỳ thông tin gì cả.
+Các thông tin hiển thị với Guest chỉ cần hiện ngẫu nhiên với các món ăn ở trong khoảng cách 1KM. Tạo tính năng mới này.
+Các tab 2,4 khi mở lên thì Hiển thị đăng nhập để sử dụng tính năng này
+Tab 5, đối với tài khoản Guest, cho hiện thông tin mặc định với tên Guest, còn các phần khác để trống.
+
+Yêu cầu setup một số thông tin cho tài khoản - Email: test@example.com, Pass: password123
+- Set up thông tin cơ bản, cho tài khoản này một vài bài đăng, ..., các thông tin về sở thích, món ăn đã Thích
+- Tạo nhóm cho người dùng này và 1,2 người dùng khác, Chuẩn bị bổ sung và kiểm tra tính năng của nhóm
+- Tôi chưa thấy phần Trip planner ở đâu cả. Hãy kiểm tra và bổ sung vào giao diện hoặc thông báo lại cho tôi nếu phần này đã được loại bỏ.
+
+
+Về giao diện và tính năng, ở tab 4 cần có nút bổ sung thêm các loại dị ứng khác để người dùng tự nhập thêm
+Các thành phần khác, tạm coi là đáp ứng đủ nhưng về dữ liệu hiển thị với dữ liệu trong database, chưa được xác thực là chính xác hay khi người dùng thao tác đã có sự thay đổi đúng hay chưa
+Setup thông tin dữ liệu cho đầy đủ sản phẩm, đủ kiểm tra xem dữ liệu hiển thị với người dùng test@example.com, AI có lọc ra được dữ liệu phù hợp hay không
