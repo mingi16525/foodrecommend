@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { recommendationEngine } from '../recommendation/engine';
 import { DecisionComplexityEstimator, IntentType, RecommendationRequest } from '../recommendation/routing';
+
+import { eventCollector } from '../recommendation/eventCollector';
 
 export const recommendationRouter = Router();
 const estimator = new DecisionComplexityEstimator();
@@ -32,8 +33,9 @@ recommendationRouter.post('/swipe', async (req, res) => {
   }
 
   try {
-    const result = await recommendationEngine.processSwipeEvent(userId, dishId, action);
-    res.json(result);
+    // Gọi EventCollector (Kafka) thay vì ghi Database trực tiếp
+    await eventCollector.trackSwipe(userId, dishId, action);
+    res.json({ success: true, message: 'Event accepted' });
   } catch {
     res.status(500).json({ error: 'Internal server error' });
   }

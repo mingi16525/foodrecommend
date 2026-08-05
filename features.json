@@ -36,7 +36,7 @@
     },
     {
       "name": "ai-infrastructure-event-driven",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Học tăng cường qua Kafka và Caching/Offline Pre-compute qua Redis",
       "scope": [
         "src/recommendation/featureStore.ts",
