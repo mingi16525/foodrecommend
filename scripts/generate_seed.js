@@ -1,5 +1,6 @@
 const fs = require('fs');
 const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 const uuidv4 = crypto.randomUUID;
 
 const generateSeed = () => {
@@ -7,14 +8,22 @@ const generateSeed = () => {
   sql += `-- Xóa dữ liệu cũ (tuân thủ foreign keys)\n`;
   sql += `TRUNCATE TABLE groups, posts, dishes, restaurants, user_preferences, users CASCADE;\n\n`;
 
-  // 1. Generate 20 Users
+  // 1. Generate 20 Users + 1 Test User
   const users = [];
-  sql += `-- Insert 20 Users\nINSERT INTO users (id, email, full_name, is_reviewer) VALUES\n`;
+  sql += `-- Insert 21 Users\nINSERT INTO users (id, email, password_hash, full_name, is_reviewer) VALUES\n`;
+  
+  // Test User
+  const testUserId = uuidv4();
+  users.push(testUserId);
+  const testHash = bcrypt.hashSync('password123', 10);
+  sql += `('${testUserId}', 'test@example.com', '${testHash}', 'Test User', true),\n`;
+
   for (let i = 0; i < 20; i++) {
     const id = uuidv4();
     users.push(id);
     const isReviewer = i < 5;
-    sql += `('${id}', 'user${i}@example.com', 'User ${i}', ${isReviewer})${i === 19 ? ';' : ','}\n`;
+    const hash = bcrypt.hashSync('password123', 10);
+    sql += `('${id}', 'user${i}@example.com', '${hash}', 'User ${i}', ${isReviewer})${i === 19 ? ';' : ','}\n`;
   }
   sql += '\n';
 
@@ -53,6 +62,7 @@ const generateSeed = () => {
   const ingredientsList = ['beef', 'chicken', 'pork', 'fish', 'shrimp', 'noodles', 'rice', 'vegetables', 'chili', 'peanuts', 'milk', 'egg'];
   sql += `-- Insert 500 Dishes\nINSERT INTO dishes (id, restaurant_id, name, price, ingredients) VALUES\n`;
   let dishCount = 0;
+  const allDishes = [];
   for (let r = 0; r < 50; r++) {
     const restId = restaurants[r];
     for (let d = 0; d < 10; d++) {
@@ -66,12 +76,21 @@ const generateSeed = () => {
       
       sql += `('${id}', '${restId}', '${name}', ${price}, '${ingredients}')${dishCount === 499 ? ';' : ','}\n`;
       dishCount++;
+      
+      // Keep track for embeddings
+      allDishes.push({
+        id: id,
+        name: name,
+        ingredients: [ing1, ing2],
+        embedding: Array.from({length: 384}, () => Math.random() * 2 - 1)
+      });
     }
   }
   sql += '\n';
 
   fs.writeFileSync('seed.sql', sql);
-  console.log('Successfully generated seed.sql with 20 users, 50 restaurants, and 500 dishes.');
+  fs.writeFileSync('dish_embeddings.json', JSON.stringify(allDishes, null, 2));
+  console.log('Successfully generated seed.sql and dish_embeddings.json with 21 users, 50 restaurants, and 500 dishes.');
 };
 
 generateSeed();

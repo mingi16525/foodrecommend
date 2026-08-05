@@ -1,0 +1,27 @@
+# TÀI KHOẢN TEST:
+- Email: test@example.com
+- Password: password123
+
+# HƯỚNG DẪN MỞ APP TRÊN ANDROID STUDIO:
+Lưu ý: Thư mục `frontend/android/` hiện tại có thể bị lỗi (chỉ có thư mục `build`, thiếu `src`). Để chạy ứng dụng Flutter trên Android Studio, bạn cần tạo lại thư mục android:
+1. Mở Terminal / Command Prompt.
+2. Di chuyển vào thư mục `frontend`: `cd d:\FoodRecommend\frontend`
+3. Chạy lệnh: `flutter create .` (Lệnh này sẽ tạo lại thư mục `android/` với cấu trúc chuẩn cho Android Studio).
+4. Mở Android Studio, chọn "Open" và trỏ đến thư mục `d:\FoodRecommend\frontend`.
+5. Đợi Android Studio Index và tải các thư viện. Sau đó cắm máy thật hoặc bật Emulator và ấn nút "Run" (hoặc `Shift + F10`).
+
+# CHECKLIST TEST TÍNH NĂNG (E2E):
+[ ] Đăng nhập thành công với tài khoản test@example.com.
+[ ] Kiểm tra màn hình Feed (dữ liệu mock AI fast tier).
+[ ] Kiểm tra tính năng Swipe (vuốt món ăn):
+  - [ ] Vuốt phải (Like)
+  - [ ] Vuốt trái (Skip)
+[ ] Kiểm tra màn hình Recommendation (đề xuất món).
+[ ] Kiểm tra Group:
+  - [ ] Danh sách nhóm (Group List).
+  - [ ] Thêm nhóm mới.
+[ ] Kiểm tra Profile (Đăng xuất).
+
+# LƯU Ý HỆ THỐNG (Backend):
+- Đảm bảo Backend (Node.js) và các services (PostgreSQL, Qdrant, Redis) đang chạy bình thường.
+- Dữ liệu (50 nhà hàng, 500 món ăn, thông tin user) đã được đổ (seed) vào Postgres và Qdrant đầy đủ.

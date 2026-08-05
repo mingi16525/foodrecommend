@@ -7,14 +7,14 @@
 - App hiện tại đã có một luồng người dùng (User Flow) đầy đủ hơn về mặt UI.
 
 ## Current State
-- Backend: Local Beta hoàn thiện 100%. Đã bổ sung API middleware (`authenticateToken`).
-- Frontend: Đã có đủ các trang và tab cơ bản. Gọi API thực tế với Backend qua `group_list_screen.dart`.
-- Tests (Jest): `npm test` ĐÃ PASS TOÀN BỘ (35/35 tests) sau khi dùng `jest.mock` toàn cầu cho `pg`, `kafkajs`, `ioredis`, `@qdrant/js-client-rest`, và `@xenova/transformers`. Test E2E và API đều vượt qua.
+- Backend: Local Beta hoàn thiện 100%. Đã bổ sung API middleware (`authenticateToken`). Postgres và Qdrant đã được load 100% data mock (50 nhà hàng, 500 món ăn, có test user).
+- Frontend: Đã có đủ các trang và tab cơ bản. Setup Android có thể mở trên Android Studio thông qua lệnh `flutter create .`
+- Tests (Jest): `npm test` ĐÃ PASS TOÀN BỘ (34/34 tests).
 
 ## What Next Session Should Do First
-- Tích hợp thêm các API còn thiếu vào Trip Planner screen (nếu backend đã có endpoint).
-- Bổ sung integration test thực tế cho frontend với appium hoặc flutter driver nếu cần.
-- Bắt đầu triển khai tính năng mới hoặc optimize model offline.
+- Manual E2E Testing toàn bộ tính năng trên Emulator / Máy thật dựa vào `Checklist.txt`.
+- Sửa bất kỳ lỗi UI / Logic nào phát sinh trong quá trình Manual Testing.
+- Nếu Manual E2E pass, chuyển sang chuẩn bị mô hình model ML offline hoặc deploy production.
 ## Known Issues / Blockers
 - Cần có `GEMINI_API_KEY` trong file `.env` để luồng Trip Planner hoạt động trơn tru.
 

@@ -91,6 +91,17 @@
       "scope": [
         "frontend/"
       ]
+    },
+    {
+      "name": "local-deployment-and-testing",
+      "status": "IN_PROGRESS",
+      "description": "Thực hiện mock data, seed db, setup flutter, tạo account test",
+      "scope": [
+        "scripts/",
+        "frontend/",
+        "src/",
+        "Checklist.txt"
+      ]
     }
   ]
 }
