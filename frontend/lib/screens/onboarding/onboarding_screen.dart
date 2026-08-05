@@ -44,7 +44,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         }
       };
       
-      final url = '${ApiConfig.baseUrl}/api/users/me/preferences';
+      const url = '${ApiConfig.baseUrl}/api/users/me/preferences';
       final response = await http.put(
         Uri.parse(url),
         headers: {
