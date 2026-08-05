@@ -81,7 +81,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const TripPlannerScreen()),
+                MaterialPageRoute(builder: (context) => TripPlannerScreen(groupName: widget.groupName)),
               );
             },
           ),

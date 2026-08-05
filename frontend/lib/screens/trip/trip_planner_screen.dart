@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class TripPlannerScreen extends StatefulWidget {
-  const TripPlannerScreen({super.key});
+  final String groupName;
+
+  const TripPlannerScreen({super.key, required this.groupName});
 
   @override
   State<TripPlannerScreen> createState() => _TripPlannerScreenState();
@@ -39,7 +41,7 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Trip Planner (Lịch Trình)'),
+        title: Text('Lịch Trình - ${widget.groupName}'),
         actions: [
           IconButton(icon: const Icon(Icons.share), onPressed: () {}),
         ],

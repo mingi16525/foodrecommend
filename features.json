@@ -22,7 +22,7 @@
     },
     {
       "name": "fix-group-and-planner",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Sửa lỗi Tab 2 (Cộng đồng): Fix hiển thị danh sách nhóm, thêm nhóm mới và kết nối UI Trip Planner.",
       "scope": [
         "frontend/lib/screens/group/",
@@ -31,11 +31,22 @@
     },
     {
       "name": "fix-onboarding-dislikes",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Sửa lỗi Tab 4 (Onboarding) không thể thêm và lưu danh sách 'Món ghét' tự nhập.",
       "scope": [
         "frontend/lib/screens/onboarding/",
         "frontend/lib/providers/app_state.dart"
+      ]
+    },
+    {
+      "name": "load-real-hanoi-data",
+      "status": "DONE",
+      "description": "Cập nhật dữ liệu thực tế tại Hà Nội, thêm dữ liệu Posts cho Feed, và sửa lỗi AI khoảng cách không đổi.",
+      "scope": [
+        "schema.sql",
+        "scripts/generate_seed.js",
+        "src/api/recommendation.routes.ts",
+        "src/social/service.ts"
       ]
     }
   ]

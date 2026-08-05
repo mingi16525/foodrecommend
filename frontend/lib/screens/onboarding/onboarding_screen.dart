@@ -22,6 +22,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final List<String> _diets = ['Bình thường', 'Keto', 'Ăn chay', 'Low-carb'];
   String _selectedDiet = 'Bình thường';
   
+  final List<String> _dislikes = [];
+  final TextEditingController _dislikeController = TextEditingController();
+
   bool _isSaving = false;
 
   Future<void> _savePreferences() async {
@@ -29,11 +32,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     try {
       final payload = {
         'preferences': {
-          'spicy_level': _spicyLevel,
-          'salty_level': _saltyLevel,
-          'sweet_level': _sweetLevel,
+          'favorite_flavors': [
+            'Cay: ${_spicyLevel.toStringAsFixed(1)}',
+            'Mặn: ${_saltyLevel.toStringAsFixed(1)}',
+            'Ngọt: ${_sweetLevel.toStringAsFixed(1)}'
+          ],
           'allergies': _selectedAllergies,
-          'diet': _selectedDiet,
+          'dietary_restrictions': [_selectedDiet],
+          'hated_dishes': _dislikes,
         }
       };
       
@@ -154,12 +160,47 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             
             const Text('Món kỵ/ghét', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
-            const TextField(
+            Wrap(
+              spacing: 8.0,
+              children: _dislikes.map((item) {
+                return Chip(
+                  label: Text(item),
+                  onDeleted: () {
+                    setState(() {
+                      _dislikes.remove(item);
+                    });
+                  },
+                );
+              }).toList(),
+            ),
+            if (_dislikes.isNotEmpty) const SizedBox(height: 10),
+            TextField(
+              controller: _dislikeController,
               decoration: InputDecoration(
                 hintText: 'Thêm món ăn bạn không thích...',
-                border: OutlineInputBorder(),
-                suffixIcon: Icon(Icons.add),
+                border: const OutlineInputBorder(),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: () {
+                    final newDislike = _dislikeController.text.trim();
+                    if (newDislike.isNotEmpty && !_dislikes.contains(newDislike)) {
+                      setState(() {
+                        _dislikes.add(newDislike);
+                      });
+                      _dislikeController.clear();
+                    }
+                  },
+                ),
               ),
+              onSubmitted: (value) {
+                final newDislike = value.trim();
+                if (newDislike.isNotEmpty && !_dislikes.contains(newDislike)) {
+                  setState(() {
+                    _dislikes.add(newDislike);
+                  });
+                  _dislikeController.clear();
+                }
+              },
             ),
             const SizedBox(height: 30),
             

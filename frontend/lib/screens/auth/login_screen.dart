@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../providers/app_state.dart';
 import '../../services/auth_service.dart';
+import '../../config/api_config.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,6 +24,7 @@ class LoginScreenState extends State<LoginScreen> {
     try {
       final response = await _authService.login(_emailController.text, _passwordController.text);
       // In a real app, save token using flutter_secure_storage or shared_preferences
+      ApiConfig.token = response['token'];
       debugPrint('Logged in successfully: ${response['token']}');
 
       if (!mounted) return;

@@ -14,7 +14,17 @@ router.post('/posts', async (req: Request, res: Response): Promise<void> => {
 });
 
 router.get('/feed', async (req: Request, res: Response): Promise<void> => {
-  const feed = await socialService.getFeed();
+  const latStr = req.query.lat as string;
+  const lngStr = req.query.lng as string;
+  let lat: number | undefined;
+  let lng: number | undefined;
+  
+  if (latStr && lngStr) {
+    lat = parseFloat(latStr);
+    lng = parseFloat(lngStr);
+  }
+
+  const feed = await socialService.getFeed(lat, lng);
   res.json({ data: feed });
 });
 

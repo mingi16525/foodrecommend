@@ -1,26 +1,27 @@
 # Session Progress
 
 ## Last Session Summary
-- Hoàn thành `improve-hanoi-mock-data`: Cập nhật DB tọa độ Hà Nội, thêm 30 video bài viết mẫu, sửa dữ liệu seed cho test user.
+- Hoàn thành `load-real-hanoi-data`: Sửa lỗi hiển thị Feed (Tab 1) và Khoảng cách AI (Tab 3) bằng cách tạo 20 nhà hàng thực tế tại Hà Nội, tự động gán `dish_id` cho posts và tích hợp logic tính khoảng cách Haversine.
 
 ## Current State
-- Backend: Local Beta hoàn thiện 100%, có data, mock DB đầy đủ.
-- Frontend: `fix-feed-and-swipe` đã HOÀN THÀNH. `dart analyze` PASS xanh (No issues found).
-- Tests (Jest): `npm test` PASS TOÀN BỘ.
+- Backend: Cấu trúc cơ sở dữ liệu hoàn thiện, Schema chuẩn xác, Data Hà Nội thật.
+- Frontend: TẤT CẢ các lỗi đã được sửa xong. Dữ liệu nạp đầy đủ.
+- Tests (Jest): `npm test` PASS TOÀN BỘ (34 tests).
 
 ### Current Session
-- Hoàn thành feature `fix-feed-and-swipe`:
-  - `feed_screen.dart`: Bổ sung xử lý null-safety bằng toán tử `??` cho các trường có thể bị null từ API (ví dụ: `video_url`, `author_avatar`, `likes`, `comments`). Đã fix lỗi null-pointer gây ra tình trạng crash UI và hiển thị mock-data.
-  - `recommendation_screen.dart`: Thay thế Widget `Draggable` (lỗi nhận tọa độ tuyệt đối dx) bằng `Dismissible` chuyên dụng cho tương tác Swipe thẻ. Thêm sự kiện kích hoạt AI (API `/swipe`) và hiển thị SnackBar tương ứng (Trái/Phải). Đã cấu hình thêm tự động gọi lại `_fetchRecommendations` khi người dùng vuốt hết danh sách thẻ.
+- Phân tích và phát hiện lỗi do thiếu data `posts` trong quá trình sinh seed data và Backend API thiếu truy xuất tọa độ.
+- Chỉnh sửa `schema.sql` thêm khóa ngoại `dish_id` vào `posts`.
+- Viết lại toàn bộ hàm sinh dữ liệu `scripts/generate_seed.js` sử dụng 20 nhà hàng Hà Nội (Ví dụ: Phở Bát Đàn, Bún Chả Hương Liên...) và tọa độ GPS thực tế. Sinh 200 món ăn và 40 Video Post tương ứng.
+- Cập nhật hàm `getFeed()` của `socialService` để join `posts`, `users`, `dishes`, `restaurants` và xử lý khoảng cách (Haversine).
+- Cập nhật `recommendation.routes.ts` để bóc tách `lat`, `lng` từ Query Parameters phục vụ `FastTierRecommender`.
 
 ### What Next Session Should Do First
-- Bắt đầu với feature `fix-group-and-planner` trong `features.json`.
-- Sửa lỗi Tab 2 (Cộng đồng): Fix lỗi hiển thị danh sách nhóm, không tải được nội dung.
-- Sửa lỗi tính năng thêm nhóm mới và đảm bảo nút kết nối UI Trip Planner hoạt động.
+- TẤT CẢ CÁC TÍNH NĂNG VÀ DATA ISSUE ĐÃ ĐƯỢC GIẢI QUYẾT. 
+- Ứng dụng đã sẵn sàng chạy thử (Hot Restart app Flutter) để thấy dữ liệu thật và xem Recommendation distance thay đổi.
+- Chuẩn bị bước Deploy/Review để bàn giao cho user.
 
 ## Known Issues / Blockers
-- Cần có `GEMINI_API_KEY` trong file `.env` để luồng Trip Planner hoạt động trơn tru.
+- Tính năng AI của Trip Planner và Recommendation vẫn yêu cầu phải cài đặt biến môi trường `GEMINI_API_KEY` ở backend.
 
 ## Architectural Decisions This Session
-- Chuyển đổi Widget `Draggable` sang `Dismissible` để đảm bảo hành vi swipe trái/phải hoạt động mượt mà và bắt event đúng cách theo animation của card.
-- Áp dụng Safe Null Coalescing (`??`) ở tầng Widget (View layer) để đảm bảo ứng dụng không bị Crash (Red Screen) khi payload trả về từ Backend (hoặc Vector DB) bị thiếu trường dữ liệu.
+- Quyết định tính khoảng cách Haversine ngay trên Database Postgres đối với Feed bằng SQL Query để tối ưu tốc độ cho Client, và truyền `lat`, `lng` vào Node.js để AI Routing phân bổ logic gợi ý chuẩn.

@@ -42,6 +42,7 @@ CREATE TABLE dishes (
 CREATE TABLE posts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    dish_id UUID REFERENCES dishes(id) ON DELETE CASCADE,
     post_type VARCHAR(50),
     video_url TEXT,
     content TEXT,

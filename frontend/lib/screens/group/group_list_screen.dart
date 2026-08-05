@@ -32,7 +32,12 @@ class _GroupListScreenState extends State<GroupListScreen> {
       if (response.statusCode == 200) {
         final Map<String, dynamic> body = json.decode(response.body);
         setState(() {
-          _groups = List<Map<String, dynamic>>.from(body['data']);
+          try {
+            _groups = (body['data'] as List).map((e) => e as Map<String, dynamic>).toList();
+          } catch (e) {
+            debugPrint('Parse error: $e');
+            _groups = [];
+          }
           _isLoading = false;
         });
       } else {
@@ -56,9 +61,14 @@ class _GroupListScreenState extends State<GroupListScreen> {
       
       if (response.statusCode == 200) {
         _fetchGroups(); // reload
+      } else {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Tạo nhóm thất bại! Vui lòng thử lại.')));
       }
     } catch (e) {
       debugPrint('Error creating group: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Lỗi: $e')));
     }
   }
 

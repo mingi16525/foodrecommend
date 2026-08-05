@@ -12,11 +12,25 @@ recommendationRouter.get('/', async (req, res) => {
     return res.status(400).json({ error: 'userId is required' });
   }
 
+  const latStr = req.query.lat as string;
+  const lngStr = req.query.lng as string;
+  let location: { lat: number; lng: number } | undefined;
+  
+  if (latStr && lngStr) {
+    const lat = parseFloat(latStr);
+    const lng = parseFloat(lngStr);
+    if (!isNaN(lat) && !isNaN(lng)) {
+      location = { lat, lng };
+    }
+  }
+
   try {
     const aiRequest: RecommendationRequest = {
       userId,
       intentType: IntentType.SWIPE,
-      contextParams: {}
+      contextParams: {
+        location: location
+      }
     };
     const results = await estimator.handleRequest(aiRequest);
     res.json({ data: results });

@@ -12,7 +12,6 @@ const generateSeed = () => {
   const users = [];
   sql += `-- Insert 21 Users\nINSERT INTO users (id, email, password_hash, full_name, is_reviewer) VALUES\n`;
   
-  // Test User
   const testUserId = uuidv4();
   users.push(testUserId);
   const testHash = bcrypt.hashSync('password123', 10);
@@ -41,68 +40,110 @@ const generateSeed = () => {
   });
   sql += '\n';
 
-  // 3. Generate 50 Restaurants
+  // 3. Realistic Hanoi Restaurants
+  const hanoiRestaurants = [
+    { name: "Phở Bát Đàn", lat: 21.0319, lng: 105.8465, food: "Phở bò truyền thống" },
+    { name: "Bún Chả Hương Liên", lat: 21.0163, lng: 105.8524, food: "Bún chả Obama" },
+    { name: "Chả Cá Lã Vọng", lat: 21.0336, lng: 105.8496, food: "Chả cá Hà Nội" },
+    { name: "Phở Thìn Lò Đúc", lat: 21.0152, lng: 105.8552, food: "Phở bò tái lăn" },
+    { name: "Bánh Mì Phố Cổ", lat: 21.0330, lng: 105.8500, food: "Bánh mì Hội An" },
+    { name: "Xôi Yến", lat: 21.0321, lng: 105.8546, food: "Xôi xéo thập cẩm" },
+    { name: "Bún Ốc Bà Lương", lat: 21.0028, lng: 105.8239, food: "Bún ốc chuối đậu" },
+    { name: "Nem Chua Rán Ngõ Tạm Thương", lat: 21.0315, lng: 105.8490, food: "Nem chua rán" },
+    { name: "Cà Phê Giảng", lat: 21.0310, lng: 105.8540, food: "Cà phê trứng" },
+    { name: "Bún Bò Huế O Xuân", lat: 21.0190, lng: 105.8480, food: "Bún bò Huế" },
+    { name: "Pizza 4P''s Tràng Tiền", lat: 21.0250, lng: 105.8560, food: "Pizza Burrata" },
+    { name: "KFC Thái Hà", lat: 21.0110, lng: 105.8190, food: "Gà rán" },
+    { name: "Nét Huế", lat: 21.0050, lng: 105.8450, food: "Bún hến, bánh nậm" },
+    { name: "Manwah Lẩu Đài Loan", lat: 21.0150, lng: 105.8150, food: "Lẩu mala" },
+    { name: "Gogi House", lat: 21.0200, lng: 105.8100, food: "Thịt nướng Hàn Quốc" },
+    { name: "Bánh Cuốn Bà Hoành", lat: 21.0185, lng: 105.8525, food: "Bánh cuốn chả" },
+    { name: "Phở Lý Quốc Sư", lat: 21.0287, lng: 105.8492, food: "Phở tái chín" },
+    { name: "Bún Đậu Ngõ Hàng Khay", lat: 21.0264, lng: 105.8521, food: "Bún đậu mắm tôm" },
+    { name: "Haidilao Vincom Center", lat: 21.0105, lng: 105.8505, food: "Lẩu Tứ Xuyên" },
+    { name: "Highlands Coffee Hồ Gươm", lat: 21.0311, lng: 105.8522, food: "Trà sen vàng" }
+  ];
+
   const restaurants = [];
-  const foodTypes = ['Phở', 'Bún', 'Cơm', 'Lẩu', 'Nướng', 'Gà Rán', 'Pizza', 'Sushi', 'Mì', 'Trà Sữa'];
-  sql += `-- Insert 50 Restaurants\nINSERT INTO restaurants (id, name, address, location, geohash, delivery_links) VALUES\n`;
-  for (let i = 0; i < 50; i++) {
+  sql += `-- Insert 20 Realistic Hanoi Restaurants\nINSERT INTO restaurants (id, name, address, location, geohash, delivery_links) VALUES\n`;
+  hanoiRestaurants.forEach((r, i) => {
     const id = uuidv4();
     restaurants.push(id);
-    const name = `${foodTypes[i % foodTypes.length]} Quán ${i}`;
-    const lat = 21.0285 + (Math.random() - 0.5) * 0.1; // Hanoi approx
-    const lng = 105.8542 + (Math.random() - 0.5) * 0.1;
-    // Simple mock geohash logic
     const geohash = `w3w${i % 10}`;
     const links = `{"shopeefood": "link_${i}"}`;
-    sql += `('${id}', '${name}', 'Address ${i}', '{"lat": ${lat}, "lng": ${lng}}', '${geohash}', '${links}')${i === 49 ? ';' : ','}\n`;
-  }
+    sql += `('${id}', '${r.name}', 'Hà Nội', '{"lat": ${r.lat}, "lng": ${r.lng}}', '${geohash}', '${links}')${i === hanoiRestaurants.length - 1 ? ';' : ','}\n`;
+  });
   sql += '\n';
 
-  // 4. Generate 500 Dishes (10 per restaurant)
+  // 4. Generate 200 Dishes (10 per restaurant)
   const ingredientsList = ['beef', 'chicken', 'pork', 'fish', 'shrimp', 'noodles', 'rice', 'vegetables', 'chili', 'peanuts', 'milk', 'egg'];
-  sql += `-- Insert 500 Dishes\nINSERT INTO dishes (id, restaurant_id, name, price, ingredients) VALUES\n`;
+  sql += `-- Insert 200 Dishes\nINSERT INTO dishes (id, restaurant_id, name, price, image_url, ingredients) VALUES\n`;
   let dishCount = 0;
   const allDishes = [];
-  for (let r = 0; r < 50; r++) {
+  const dishIdsForPosts = [];
+  
+  for (let r = 0; r < hanoiRestaurants.length; r++) {
     const restId = restaurants[r];
     for (let d = 0; d < 10; d++) {
       const id = uuidv4();
-      const name = `${foodTypes[r % foodTypes.length]} Món ${d}`;
-      const price = Math.floor(Math.random() * 100) * 1000 + 20000;
+      dishIdsForPosts.push(id);
+      
+      const isSignature = d === 0;
+      const dishName = isSignature ? hanoiRestaurants[r].food : `Món phụ ${d} của ${hanoiRestaurants[r].name}`;
+      const price = Math.floor(Math.random() * 10) * 10000 + 40000;
       
       const ing1 = ingredientsList[Math.floor(Math.random() * ingredientsList.length)];
       const ing2 = ingredientsList[Math.floor(Math.random() * ingredientsList.length)];
       const ingredients = `["${ing1}", "${ing2}"]`;
+      const imageUrl = `https://images.unsplash.com/photo-${1500000000000 + r * 100 + d}`;
       
-      sql += `('${id}', '${restId}', '${name}', ${price}, '${ingredients}')${dishCount === 499 ? ';' : ','}\n`;
+      sql += `('${id}', '${restId}', '${dishName}', ${price}, '${imageUrl}', '${ingredients}')${dishCount === 199 ? ';' : ','}\n`;
       dishCount++;
       
-      // Keep track for embeddings
       allDishes.push({
         id: id,
-        name: name,
+        name: dishName,
         ingredients: [ing1, ing2],
-        embedding: Array.from({length: 384}, () => Math.random() * 2 - 1)
+        embedding: Array.from({length: 384}, () => Math.random() * 2 - 1),
+        payload: {
+          name: dishName,
+          lat: hanoiRestaurants[r].lat,
+          lng: hanoiRestaurants[r].lng
+        }
       });
     }
   }
   sql += '\n';
 
-  // 5. Generate 30 Posts for Feed
-  sql += `-- Insert 30 Posts\nINSERT INTO posts (id, user_id, post_type, video_url, content) VALUES\n`;
-  for (let i = 0; i < 30; i++) {
+  // 5. Generate 40 Posts for Feed with dish_id!
+  sql += `-- Insert 40 Posts\nINSERT INTO posts (id, user_id, post_type, video_url, content, dish_id) VALUES\n`;
+  for (let i = 0; i < 40; i++) {
     const id = uuidv4();
     const userId = users[Math.floor(Math.random() * users.length)];
+    const dishId = dishIdsForPosts[Math.floor(Math.random() * dishIdsForPosts.length)];
     const postType = 'video';
-    const videoUrl = `https://example.com/video_${i}.mp4`;
-    const content = `Trải nghiệm món ăn tuyệt vời tại Hà Nội - Video ${i}`;
-    sql += `('${id}', '${userId}', '${postType}', '${videoUrl}', '${content}')${i === 29 ? ';' : ','}\n`;
+    const videoUrls = [
+      'https://www.w3schools.com/html/mov_bbb.mp4',
+      'https://www.w3schools.com/html/mov_bbb.mp4'
+    ];
+    const videoUrl = videoUrls[i % videoUrls.length];
+    
+    const captions = [
+      'Trải nghiệm quá đỉnh tại nhà hàng này!',
+      'Ngon nhức nách luôn các bạn ơi.',
+      'Sẽ quay lại lần sau, không gian tuyệt vời.',
+      'Đồ ăn ngon nhưng phục vụ hơi chậm xíu.',
+      'Rất đáng tiền, mọi người nên thử nha!'
+    ];
+    const content = captions[i % captions.length];
+    
+    sql += `('${id}', '${userId}', '${postType}', '${videoUrl}', '${content}', '${dishId}')${i === 39 ? ';' : ','}\n`;
   }
   sql += '\n';
 
   fs.writeFileSync('seed.sql', sql);
   fs.writeFileSync('dish_embeddings.json', JSON.stringify(allDishes, null, 2));
-  console.log('Successfully generated seed.sql and dish_embeddings.json with 21 users, 50 restaurants, and 500 dishes.');
+  console.log('Successfully generated seed.sql and dish_embeddings.json with 21 users, 20 real restaurants, 200 dishes, and 40 posts.');
 };
 
 generateSeed();
