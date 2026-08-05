@@ -34,19 +34,23 @@ class _FeedScreenState extends State<FeedScreen> {
       );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        if (!mounted) return;
         setState(() {
           _feedItems = data['data'] ?? [];
           _isLoading = false;
         });
       } else {
+        if (!mounted) return;
         _loadMockData();
       }
     } catch (e) {
+      if (!mounted) return;
       _loadMockData();
     }
   }
 
   void _loadMockData() {
+    if (!mounted) return;
     setState(() {
       _feedItems = [
         {
