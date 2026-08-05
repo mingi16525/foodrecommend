@@ -19,7 +19,7 @@
     },
     {
       "name": "ai-medium-tier-group",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Medium AI: Gợi ý theo nhóm (Group Decision, Pareto Aggregation) và ràng buộc tĩnh",
       "scope": [
         "src/group/service.ts",

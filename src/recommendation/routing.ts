@@ -1,4 +1,5 @@
 import { fastTierRecommender } from './fastTier';
+import { mediumTierRecommender } from '../group/mediumTier';
 
 export enum IntentType {
   SWIPE = 'swipe',
@@ -83,8 +84,7 @@ export class DecisionComplexityEstimator {
       case AiTier.FAST:
         return await fastTierRecommender.getRecommendations(req.userId, req.contextParams);
       case AiTier.MEDIUM:
-        // TODO: Gọi hàm từ mediumTier.ts
-        throw new Error(`NotImplementedError: Medium Tier AI pipeline is not yet implemented.`);
+        return await mediumTierRecommender.getGroupRecommendations(req.groupId, req.contextParams);
       case AiTier.DEEP:
         // TODO: Gọi hàm từ tripPlanner.ts
         throw new Error(`NotImplementedError: Deep Tier AI pipeline is not yet implemented.`);
