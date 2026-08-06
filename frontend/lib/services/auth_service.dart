@@ -16,7 +16,8 @@ class AuthService {
       final String responseBody = await response.transform(utf8.decoder).join();
       
       if (response.statusCode == 200) {
-        return jsonDecode(responseBody);
+        final Map<String, dynamic> body = jsonDecode(responseBody);
+        return body.containsKey('data') ? body['data'] : body;
       } else {
         throw Exception('Failed to login: $responseBody');
       }
@@ -45,7 +46,8 @@ class AuthService {
       final String responseBody = await response.transform(utf8.decoder).join();
       
       if (response.statusCode == 201) {
-        return jsonDecode(responseBody);
+        final Map<String, dynamic> body = jsonDecode(responseBody);
+        return body.containsKey('data') ? body['data'] : body;
       } else {
         throw Exception('Failed to register: $responseBody');
       }
