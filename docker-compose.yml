@@ -51,7 +51,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   backend:
-    image: node:20-alpine
+    image: node:20
     working_dir: /app
     volumes:
       - .:/app

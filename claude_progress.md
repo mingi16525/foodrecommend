@@ -10,14 +10,12 @@
 - Tests (Jest): `npm test` PASS TOÀN BỘ (34 tests).
 
 ### Current Session
-- Xóa các tính năng đã hoàn thành khỏi `features.json` và thêm mới 2 features: `fix-tab4-save-logout`, `fix-backend-502-restart`.
-- Sửa lỗi Tab 4 không lưu được sau khi đăng xuất/đăng nhập lại: API backend trả về token trong field `data` (`{ success: true, data: { token: ... } }`) nên `auth_service.dart` parse bị thiếu (lấy null), dẫn đến token gửi đi bị null. Đã thêm logic unwrap `data` field trong hàm `login` và `register` của `auth_service.dart`.
-- Sửa lỗi 502 (Backend phải start thủ công): Đã thêm service `backend` vào `docker-compose.yml` để khi chạy docker-compose, backend NodeJS sẽ được chạy tự động cùng với DB, Redis, Kafka, ngăn chặn lỗi 502.
+- Sửa lỗi `ld-linux-x86-64.so.2` (lỗi 500/502 khi backend chạy native module của ONNX hoặc bcrypt) bằng cách đổi image backend trong `docker-compose.yml` từ `node:20-alpine` sang `node:20` (Debian-based có sẵn glibc).
+- Khởi động lại backend bằng `docker-compose up -d` và xác nhận backend đã hoạt động ổn định trên cổng 3000 không còn lỗi.
 
 ### What Next Session Should Do First
-- Chạy lại dự án bằng `docker-compose up -d` và xác nhận backend khởi chạy bình thường.
-- Kiểm tra tính năng Lưu thiết lập trên Tab 4 sau khi đăng nhập và đăng xuất lại trên app.
-- Xóa status `IN_PROGRESS` thành `DONE` trong `features.json` nếu chạy ổn thỏa, và thực hiện feature/TODO tiếp theo.
+- Xóa status `IN_PROGRESS` thành `DONE` đối với `fix-backend-502-restart` và `fix-tab4-save-logout` trong `features.json`.
+- Kiểm tra lại toàn bộ luồng chức năng Tab 4 và quá trình khởi động ứng dụng để đảm bảo tính ổn định.
 
 ## Known Issues / Blockers
 - Log `[kafkajs] The group coordinator is not available` vẫn tồn tại do chưa bật Kafka trên local.
