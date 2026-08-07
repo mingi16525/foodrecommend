@@ -9,6 +9,7 @@ async function runEvaluation() {
   let totalUsers = usersRes.rows.length;
   let totalRecommendations = 0;
   let validRecommendations = 0;
+  let totalVectorScore = 0;
 
   console.log(`Found ${totalUsers} users for testing.`);
 
@@ -49,7 +50,8 @@ async function runEvaluation() {
         // Add more checks if needed, like diet checking
         if (isValid) {
           validRecommendations++;
-          console.log(`  [PASS] Dish "${rec.name}" (Ingredients: ${dishAllergies.join(', ')}) - Score: ${rec.finalScore.toFixed(3)}`);
+          totalVectorScore += rec.vectorScore;
+          console.log(`  [PASS] Dish "${rec.name}" (Ingredients: ${dishAllergies.join(', ')}) - FlavorMatch (Vector): ${(rec.vectorScore * 100).toFixed(1)}% | FinalScore: ${rec.finalScore.toFixed(3)}`);
         }
       }
     } catch (error) {
@@ -57,12 +59,16 @@ async function runEvaluation() {
     }
   }
 
-  const score = totalRecommendations > 0 ? (validRecommendations / totalRecommendations) * 100 : 0;
+  const allergyAccuracy = totalRecommendations > 0 ? (validRecommendations / totalRecommendations) * 100 : 0;
+  const avgFlavorMatch = validRecommendations > 0 ? (totalVectorScore / validRecommendations) * 100 : 0;
+
   console.log(`\n=== EVALUATION REPORT ===`);
   console.log(`Total Users Evaluated: ${totalUsers}`);
   console.log(`Total Recommendations: ${totalRecommendations}`);
   console.log(`Valid Recommendations (No Allergies): ${validRecommendations}`);
-  console.log(`Accuracy Score: ${score.toFixed(2)}%`);
+  console.log(`Allergy Avoidance Accuracy: ${allergyAccuracy.toFixed(2)}%`);
+  console.log(`Average Flavor Match (AI Vector Similarity): ${avgFlavorMatch.toFixed(2)}%`);
+
 
   await db.end();
   // also close the global db pool used by fastTierRecommender if needed

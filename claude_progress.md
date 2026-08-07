@@ -11,7 +11,9 @@
 
 ### Current Session
 - Viết kịch bản test `scripts/evaluate.ts` chạy thực tế trên DB để kiểm tra mức độ đáp ứng yêu cầu thuật toán gợi ý của AI.
-- Đánh giá tự động cho ra điểm số 100.00% (Không đề xuất món dị ứng cho người dùng).
+- Đánh giá tự động cho ra điểm số:
+  - 100.00% Độ chính xác tránh món dị ứng (Không đề xuất món dị ứng cho người dùng).
+  - 35.17% Độ phù hợp với sở thích trung bình (AI Vector Similarity Score). Mức điểm này thể hiện sự tương đồng vector giữa món ăn và sở thích cá nhân.
 
 ### What Next Session Should Do First
 - Bổ sung các tính năng/todo mới vào `features.json` nếu có, vì hiện tại toàn bộ các tính năng đã đánh dấu DONE.
