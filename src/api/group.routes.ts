@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { groupService } from '../group/service';
 import { AuthRequest } from '../auth/authMiddleware';
 import { splitBillService, BillItem } from '../group/splitBill';
+import { mediumTierRecommender } from '../group/mediumTier';
 
 const router = Router();
 
@@ -117,7 +118,6 @@ router.get('/:id/orders/active', async (req: Request, res: Response): Promise<vo
     
     // Nếu đang ở trạng thái VOTING, gọi MediumTierRecommender để lấy danh sách gợi ý
     if (order.status === 'VOTING') {
-      const { mediumTierRecommender } = require('../group/mediumTier');
       order.recommendations = await mediumTierRecommender.getGroupRecommendations(id, {
         location: { lat: 21.0319, lng: 105.8465 }, time: new Date()
       });

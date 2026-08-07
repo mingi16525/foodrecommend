@@ -25,14 +25,14 @@ export class UserService {
         const postsRes = await this.db.query('SELECT count(*) FROM posts WHERE user_id = $1', [userId]);
         postsCount = parseInt(postsRes.rows[0]?.count || '0', 10);
         reviewsCount = postsCount; // Assuming posts are reviews for MVP
-      } catch (e) {
+      } catch {
         // posts table might be empty or missing
       }
 
       try {
         const swipesRes = await this.db.query("SELECT count(*) FROM user_swipes WHERE user_id = $1 AND action = 'LIKE'", [userId]);
         savedCount = parseInt(swipesRes.rows[0]?.count || '0', 10);
-      } catch (e) {
+      } catch {
         // user_swipes table might not exist yet
       }
 

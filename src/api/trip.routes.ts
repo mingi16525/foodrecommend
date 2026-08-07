@@ -1,7 +1,5 @@
 import { Router } from 'express';
-import { AuthRequest } from '../auth/authMiddleware';
 import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
-import { db } from '../db';
 
 export const tripRouter = Router();
 
@@ -28,7 +26,6 @@ const model = genAI.getGenerativeModel({
 });
 
 tripRouter.post('/plan', async (req, res) => {
-  const userId = (req as AuthRequest).user?.userId;
   const { groupName, preferences } = req.body;
 
   if (!process.env.GEMINI_API_KEY) {

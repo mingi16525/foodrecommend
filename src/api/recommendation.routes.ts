@@ -4,6 +4,12 @@ import { AuthRequest } from '../auth/authMiddleware';
 import { eventCollector } from '../recommendation/eventCollector';
 import { db } from '../db';
 
+type RecommendationResult = {
+  id: string;
+  distanceScore: number;
+  [key: string]: unknown;
+};
+
 export const recommendationRouter = Router();
 const estimator = new DecisionComplexityEstimator();
 
@@ -33,10 +39,10 @@ recommendationRouter.get('/', async (req, res) => {
         location: location
       }
     };
-    const results = await estimator.handleRequest(aiRequest) as any[];
+    const results = await estimator.handleRequest(aiRequest) as RecommendationResult[];
 
     // Enrich with Postgres data (price, image_url, restaurant_name)
-    const dishIds = results.map((r: any) => r.id);
+    const dishIds = results.map((r: RecommendationResult) => r.id);
     if (dishIds.length > 0) {
       const dbRes = await db.query(`
         SELECT d.id, d.price, d.image_url, r.name as restaurant_name
@@ -45,7 +51,7 @@ recommendationRouter.get('/', async (req, res) => {
         WHERE d.id = ANY($1)
       `, [dishIds]);
 
-      const enrichedResults = results.map((r: any) => {
+      const enrichedResults = results.map((r: RecommendationResult) => {
         const dbDish = dbRes.rows.find(d => d.id === r.id);
         return {
           ...r,

@@ -4,6 +4,10 @@ import { db } from '../db';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
+interface AuthenticatedSocket extends Socket {
+  user?: { userId: string; [key: string]: unknown };
+}
+
 export function setupSocket(io: Server) {
   // Middleware xác thực token
   io.use((socket: Socket, next) => {
@@ -11,15 +15,15 @@ export function setupSocket(io: Server) {
     if (!token) {
       return next(new Error('Authentication error: Token missing'));
     }
-    jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
+    jwt.verify(token, JWT_SECRET, (err: Error | null, decoded: unknown) => {
       if (err) return next(new Error('Authentication error: Invalid token'));
-      (socket as any).user = decoded;
+      (socket as AuthenticatedSocket).user = decoded as { userId: string };
       next();
     });
   });
 
   io.on('connection', (socket: Socket) => {
-    const userId = (socket as any).user.userId;
+    const userId = (socket as AuthenticatedSocket).user?.userId;
     console.log(`User connected to socket: ${userId}`);
 
     // Tham gia phòng chat của nhóm
