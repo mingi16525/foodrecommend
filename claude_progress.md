@@ -1,27 +1,25 @@
 # Session Progress
 
 ## Last Session Summary
-- Sửa lỗi không hiển thị dữ liệu Tab 4 (thiết lập khẩu vị) sau khi người dùng đăng nhập lại, bằng cách thêm state loader và fetch API để bind vào UI.
-- `npm test` PASS TOÀN BỘ (34 tests).
+- Hoàn thiện UI và Backend API cho Tab 2 (Đơn nhóm/Group Order).
+- Tích hợp Socket.io để xử lý real-time chat cho nhóm.
+- Tạo và kết nối DB schema mới cho chat và orders (`group_messages`, `group_orders`, v.v.).
+- Chạy npm test PASS toàn bộ backend API.
 
 ## Current State
-- Đã chạy test script mô phỏng gọi `FastTierRecommender` cho tất cả 21 users trong cơ sở dữ liệu.
-- Hệ thống Recommendation (Fast Tier) lọc thành công 100% các món ăn chứa thành phần dị ứng (`allergies`) theo yêu cầu tại `MoTaThuatToan.txt`.
-- Tests (Jest): `npm test` PASS TOÀN BỘ (34 tests).
-
-### Current Session
-- Viết kịch bản test `scripts/evaluate.ts` chạy thực tế trên DB để kiểm tra mức độ đáp ứng yêu cầu thuật toán gợi ý của AI.
-- Đánh giá tự động cho ra điểm số:
-  - 100.00% Độ chính xác tránh món dị ứng (Không đề xuất món dị ứng cho người dùng).
-  - 35.17% Độ phù hợp với sở thích trung bình (AI Vector Similarity Score). Mức điểm này thể hiện sự tương đồng vector giữa món ăn và sở thích cá nhân.
+- Tab 2 đã có API thực tế với Socket.io và DB lưu trữ thay vì mock data.
+- Người dùng có thể nhắn tin real-time.
+- Chủ nhóm (Creator) có thể quản lý các bước tạo đơn nhóm: Tập hợp -> Bình chọn quán -> Đặt món cá nhân -> Chốt đơn.
+- Các API endpoints cho Group Order hoạt động trơn tru với PostgreSQL.
 
 ### What Next Session Should Do First
-- Bổ sung các tính năng/todo mới vào `features.json` nếu có, vì hiện tại toàn bộ các tính năng đã đánh dấu DONE.
-- Bắt đầu triển khai hoặc tích hợp `GEMINI_API_KEY` cho tính năng Trip Planner & Recommendation AI (Deep AI).
+- Chuyển sang xử lý Tab 3 và Tab 5 (thay thế mock data bằng API kết nối dữ liệu thực tế).
+- Đọc `features.json` để kiểm tra task `implement-tab3-and-tab5-real-data` (đang ở trạng thái TODO).
 
 ## Known Issues / Blockers
-- Log `[kafkajs] The group coordinator is not available` vẫn tồn tại do chưa bật Kafka hoàn chỉnh trên local hoặc cần config thêm.
-- Trip Planner & Recommendation AI vẫn cần `GEMINI_API_KEY`.
+- Cần có `GEMINI_API_KEY` cho tính năng Trip Planner (Tab 5).
 
 ## Architectural Decisions This Session
-- Viết kịch bản đánh giá (`scripts/evaluate.ts`) chạy riêng biệt trên môi trường Node qua Docker để tận dụng trực tiếp module `fastTierRecommender`.
+- Sử dụng Socket.io để truyền/nhận chat thay vì API HTTP polling giúp tiết kiệm resource.
+- Dùng Borda Count để tính toán gợi ý của AI ở bước Bình chọn quán chung.
+- Schema được thiết kế chuẩn xác để lưu lịch sử đơn hàng nhóm sau khi chốt.

@@ -19,6 +19,29 @@
         "package.json",
         "docker-compose.yml"
       ]
+    },
+    {
+      "name": "implement-tab2-groups",
+      "status": "IN_PROGRESS",
+      "description": "Xử lý hoàn thiện phần Tab 2 (Cộng đồng/Nhóm), bao gồm Chat nhóm, Tạo Đơn Nhóm (bình chọn quán, gợi ý AI cho nhóm) và tạo mock data theo MoTaThuatToan và Product Specification.",
+      "scope": [
+        "schema.sql",
+        "seed.sql",
+        "src/group/*",
+        "src/api/group.routes.ts",
+        "frontend/lib/screens/group/*"
+      ]
+    },
+    {
+      "name": "implement-tab3-and-tab5-real-data",
+      "status": "TODO",
+      "description": "Xử lý ở phần tab 3, Tab 5, hiển thị dữ liệu thực tế thay vì mock data.",
+      "scope": [
+        "frontend/lib/screens/recommendation/*",
+        "frontend/lib/screens/profile/*",
+        "src/api/*",
+        "src/recommendation/*"
+      ]
     }
   ]
 }

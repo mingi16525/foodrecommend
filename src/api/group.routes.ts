@@ -80,4 +80,86 @@ router.post('/:id/split-items', (req: Request, res: Response): void => {
   res.json({ data: results });
 });
 
+router.get('/:id/messages', async (req: AuthRequest, res: Response): Promise<void> => {
+  const id = req.params.id as string;
+  try {
+    const messages = await groupService.getMessages(id);
+    res.json({ data: messages });
+  } catch (e: unknown) {
+    const error = e as Error;
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/:id/orders', async (req: AuthRequest, res: Response): Promise<void> => {
+  const id = req.params.id as string;
+  const creatorId = req.user?.userId;
+  if (!creatorId) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+  try {
+    const order = await groupService.createOrder(id, creatorId);
+    res.json({ data: order });
+  } catch (e: unknown) {
+    res.status(500).json({ error: (e as Error).message });
+  }
+});
+
+router.get('/:id/orders/active', async (req: Request, res: Response): Promise<void> => {
+  const id = req.params.id as string;
+  try {
+    const order = await groupService.getActiveOrder(id);
+    if (!order) {
+      res.json({ data: null });
+      return;
+    }
+    
+    // Nếu đang ở trạng thái VOTING, gọi MediumTierRecommender để lấy danh sách gợi ý
+    if (order.status === 'VOTING') {
+      const { mediumTierRecommender } = require('../group/mediumTier');
+      order.recommendations = await mediumTierRecommender.getGroupRecommendations(id, {
+        location: { lat: 21.0319, lng: 105.8465 }, time: new Date()
+      });
+    }
+    
+    res.json({ data: order });
+  } catch (e: unknown) {
+    res.status(500).json({ error: (e as Error).message });
+  }
+});
+
+router.post('/:id/orders/:orderId/join', async (req: AuthRequest, res: Response): Promise<void> => {
+  const orderId = req.params.orderId as string;
+  const userId = req.user?.userId;
+  if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
+  await groupService.joinOrder(orderId, userId);
+  res.json({ success: true });
+});
+
+router.post('/:id/orders/:orderId/status', async (req: Request, res: Response): Promise<void> => {
+  const orderId = req.params.orderId as string;
+  const { status, restaurantId } = req.body;
+  await groupService.updateOrderStatus(orderId, status, restaurantId);
+  res.json({ success: true });
+});
+
+router.post('/:id/orders/:orderId/vote', async (req: AuthRequest, res: Response): Promise<void> => {
+  const orderId = req.params.orderId as string;
+  const { restaurantId } = req.body;
+  const userId = req.user?.userId;
+  if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
+  await groupService.voteRestaurant(orderId, userId, restaurantId);
+  res.json({ success: true });
+});
+
+router.post('/:id/orders/:orderId/items', async (req: AuthRequest, res: Response): Promise<void> => {
+  const orderId = req.params.orderId as string;
+  const { dishId, quantity, price } = req.body;
+  const userId = req.user?.userId;
+  if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
+  await groupService.addItemToOrder(orderId, userId, dishId, quantity, price);
+  res.json({ success: true });
+});
+
 export const groupRouter = router;

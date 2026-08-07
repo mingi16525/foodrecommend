@@ -73,8 +73,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               for (var a in allergiesList) {
                 final allergy = a.toString();
                 if (!_allergies.contains(allergy)) _allergies.add(allergy);
-                if (!_selectedAllergies.contains(allergy))
+                if (!_selectedAllergies.contains(allergy)) {
                   _selectedAllergies.add(allergy);
+                }
               }
             }
 

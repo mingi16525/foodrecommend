@@ -61,3 +61,44 @@ CREATE TABLE group_members (
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     PRIMARY KEY (group_id, user_id)
 );
+
+CREATE TABLE group_messages (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    group_id UUID REFERENCES groups(id) ON DELETE CASCADE,
+    sender_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    message TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE group_orders (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    group_id UUID REFERENCES groups(id) ON DELETE CASCADE,
+    creator_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    status VARCHAR(50) DEFAULT 'PENDING', -- PENDING, VOTING, ORDERING, CLOSED
+    selected_restaurant_id UUID REFERENCES restaurants(id) ON DELETE SET NULL,
+    total_amount DECIMAL(10,2) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE group_order_participants (
+    order_id UUID REFERENCES group_orders(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    PRIMARY KEY (order_id, user_id)
+);
+
+CREATE TABLE group_order_votes (
+    order_id UUID REFERENCES group_orders(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    restaurant_id UUID REFERENCES restaurants(id) ON DELETE CASCADE,
+    PRIMARY KEY (order_id, user_id)
+);
+
+CREATE TABLE group_order_items (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    order_id UUID REFERENCES group_orders(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    dish_id UUID REFERENCES dishes(id) ON DELETE CASCADE,
+    quantity INT DEFAULT 1,
+    price DECIMAL(10,2)
+);
+
