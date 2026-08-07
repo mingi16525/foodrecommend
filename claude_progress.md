@@ -2,25 +2,24 @@
 
 ## Last Session Summary
 - Xóa status `IN_PROGRESS` thành `DONE` đối với `fix-backend-502-restart` và `fix-tab4-save-logout` trong `features.json`.
-- Fix lỗi crash 500/502 liên quan đến `sharp` và `node_modules` bằng cách sử dụng Docker anonymous volume cho thư mục `/app/node_modules`. Điều này tránh xung đột hệ điều hành host (Windows) và container (Debian).
+- Fix lỗi crash 500/502 liên quan đến `sharp` và `node_modules` bằng cách sử dụng Docker anonymous volume cho thư mục `/app/node_modules`.
 
 ## Current State
-- Backend: Chạy thành công thông qua `docker-compose up -d backend` với image `node:20` và cài đặt dependencies tự động.
-- Frontend: Đã sửa lỗi lưu dữ liệu trên Tab 4 thất bại sau khi logout và login lại từ session trước.
-- Tests (Jest): `npm test` PASS TOÀN BỘ (34 tests, 11 test suites passed. Thời gian: ~12s). Lint và TSC đều pass.
+- Backend: Chạy thành công qua Docker.
+- Frontend: Đã khắc phục triệt để lỗi Tab 4. Ứng dụng giờ đây gọi `GET /api/users/me` trong `initState` của `onboarding_screen.dart` để tự động load lại dữ liệu (Mức độ Cay/Mặn/Ngọt, Dị ứng, Chế độ ăn, Món kỵ) thay vì reset về mặc định sau mỗi lần đăng nhập.
+- Tests (Jest): `npm test` PASS TOÀN BỘ (34 tests).
 - Các tính năng trong `features.json` hiện tại đều đã ở trạng thái `DONE`.
 
 ### Current Session
-- Đã sửa lỗi "Cannot find module '../build/Release/sharp-linux-x64.node'" thông qua cấu hình anonymous volume `docker-compose.yml` (`- /app/node_modules`).
-- Đã xác nhận hệ thống test, lint và build chạy thành công bên trong container Linux thay vì trên host.
+- Sửa lỗi không hiển thị dữ liệu Tab 4 (thiết lập khẩu vị) sau khi người dùng đăng nhập lại, bằng cách thêm state loader và fetch API để bind vào UI.
 
 ### What Next Session Should Do First
 - Bổ sung các tính năng/todo mới vào `features.json` nếu có, vì hiện tại toàn bộ các tính năng đã đánh dấu DONE.
-- Kiểm tra lại toàn bộ luồng chức năng Tab 4 và quá trình khởi động ứng dụng để đảm bảo tính ổn định trên app thực tế.
+- Bắt đầu triển khai hoặc tích hợp `GEMINI_API_KEY` cho tính năng Trip Planner & Recommendation AI.
 
 ## Known Issues / Blockers
 - Log `[kafkajs] The group coordinator is not available` vẫn tồn tại do chưa bật Kafka hoàn chỉnh trên local hoặc cần config thêm.
 - Trip Planner & Recommendation AI vẫn cần `GEMINI_API_KEY`.
 
 ## Architectural Decisions This Session
-- Quản lý `node_modules` của container độc lập với host bằng Docker anonymous volume để tránh lỗi binary mismatch (sharp, bcrypt) khi phát triển trên Windows.
+- Xử lý việc parse JSONB trả về từ PostgreSQL ở phía Frontend thay vì format lại ở Backend để giữ nguyên schema đơn giản của Backend.

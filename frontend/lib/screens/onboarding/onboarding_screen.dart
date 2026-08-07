@@ -27,6 +27,77 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final TextEditingController _dislikeController = TextEditingController();
 
   bool _isSaving = false;
+  bool _isLoadingPrefs = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPreferences();
+  }
+
+  Future<void> _loadPreferences() async {
+    try {
+      final url = '${ApiConfig.baseUrl}/api/users/me';
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer ${ApiConfig.token}',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final prefs = data['preferences'];
+        if (prefs != null && mounted) {
+          setState(() {
+            final flavors = prefs['favorite_flavors'] as List<dynamic>?;
+            if (flavors != null) {
+              for (final flavor in flavors) {
+                final str = flavor.toString();
+                if (str.startsWith('Cay:')) {
+                  _spicyLevel = double.tryParse(str.split(':')[1].trim()) ?? 0.5;
+                } else if (str.startsWith('Mặn:')) {
+                  _saltyLevel = double.tryParse(str.split(':')[1].trim()) ?? 0.5;
+                } else if (str.startsWith('Ngọt:')) {
+                  _sweetLevel = double.tryParse(str.split(':')[1].trim()) ?? 0.5;
+                }
+              }
+            }
+
+            final allergiesList = prefs['allergies'] as List<dynamic>?;
+            if (allergiesList != null) {
+              for (var a in allergiesList) {
+                final allergy = a.toString();
+                if (!_allergies.contains(allergy)) _allergies.add(allergy);
+                if (!_selectedAllergies.contains(allergy)) _selectedAllergies.add(allergy);
+              }
+            }
+
+            final diets = prefs['dietary_restrictions'] as List<dynamic>?;
+            if (diets != null && diets.isNotEmpty) {
+              final diet = diets.first.toString();
+              if (!_diets.contains(diet)) _diets.add(diet);
+              _selectedDiet = diet;
+            }
+
+            final hated = prefs['hated_dishes'] as List<dynamic>?;
+            if (hated != null) {
+              for (var d in hated) {
+                final dish = d.toString();
+                if (!_dislikes.contains(dish)) _dislikes.add(dish);
+              }
+            }
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint('Error loading preferences: $e');
+    } finally {
+      if (mounted) {
+        setState(() => _isLoadingPrefs = false);
+      }
+    }
+  }
 
   Future<void> _savePreferences() async {
     setState(() => _isSaving = true);
@@ -111,8 +182,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       appBar: AppBar(
         title: const Text('Thiết lập Khẩu vị (Tab 4)'),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+      body: _isLoadingPrefs 
+        ? const Center(child: CircularProgressIndicator())
+        : SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
