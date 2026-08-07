@@ -18,11 +18,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<String> _allergies = ['Hải sản', 'Đậu phộng', 'Gluten', 'Sữa'];
   final List<String> _selectedAllergies = [];
-  final TextEditingController _customAllergyController = TextEditingController();
+  final TextEditingController _customAllergyController =
+      TextEditingController();
 
   final List<String> _diets = ['Bình thường', 'Keto', 'Ăn chay', 'Low-carb'];
   String _selectedDiet = 'Bình thường';
-  
+
   final List<String> _dislikes = [];
   final TextEditingController _dislikeController = TextEditingController();
 
@@ -37,7 +38,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Future<void> _loadPreferences() async {
     try {
-      final url = '${ApiConfig.baseUrl}/api/users/me';
+      const url = '${ApiConfig.baseUrl}/api/users/me';
       final response = await http.get(
         Uri.parse(url),
         headers: {
@@ -55,11 +56,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               for (final flavor in flavors) {
                 final str = flavor.toString();
                 if (str.startsWith('Cay:')) {
-                  _spicyLevel = double.tryParse(str.split(':')[1].trim()) ?? 0.5;
+                  _spicyLevel =
+                      double.tryParse(str.split(':')[1].trim()) ?? 0.5;
                 } else if (str.startsWith('Mặn:')) {
-                  _saltyLevel = double.tryParse(str.split(':')[1].trim()) ?? 0.5;
+                  _saltyLevel =
+                      double.tryParse(str.split(':')[1].trim()) ?? 0.5;
                 } else if (str.startsWith('Ngọt:')) {
-                  _sweetLevel = double.tryParse(str.split(':')[1].trim()) ?? 0.5;
+                  _sweetLevel =
+                      double.tryParse(str.split(':')[1].trim()) ?? 0.5;
                 }
               }
             }
@@ -69,7 +73,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               for (var a in allergiesList) {
                 final allergy = a.toString();
                 if (!_allergies.contains(allergy)) _allergies.add(allergy);
-                if (!_selectedAllergies.contains(allergy)) _selectedAllergies.add(allergy);
+                if (!_selectedAllergies.contains(allergy))
+                  _selectedAllergies.add(allergy);
               }
             }
 
@@ -114,7 +119,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           'hated_dishes': _dislikes,
         }
       };
-      
+
       const url = '${ApiConfig.baseUrl}/api/users/me/preferences';
       final response = await http.put(
         Uri.parse(url),
@@ -124,7 +129,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         },
         body: json.encode(payload),
       );
-      
+
       ApiLogger().addLog(
         method: 'PUT',
         url: url,
@@ -182,154 +187,170 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       appBar: AppBar(
         title: const Text('Thiết lập Khẩu vị (Tab 4)'),
       ),
-      body: _isLoadingPrefs 
-        ? const Center(child: CircularProgressIndicator())
-        : SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Mức độ Cay, Mặn, Ngọt', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            _buildSlider('Độ Cay', _spicyLevel, (val) => setState(() => _spicyLevel = val)),
-            _buildSlider('Độ Mặn', _saltyLevel, (val) => setState(() => _saltyLevel = val)),
-            _buildSlider('Độ Ngọt', _sweetLevel, (val) => setState(() => _sweetLevel = val)),
-            const Divider(height: 30),
-
-            const Text('Dị ứng', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 8.0,
-              children: _allergies.map((allergy) {
-                final isSelected = _selectedAllergies.contains(allergy);
-                return FilterChip(
-                  label: Text(allergy),
-                  selected: isSelected,
-                  onSelected: (selected) {
-                    setState(() {
-                      if (selected) {
-                        _selectedAllergies.add(allergy);
-                      } else {
-                        _selectedAllergies.remove(allergy);
+      body: _isLoadingPrefs
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Mức độ Cay, Mặn, Ngọt',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  _buildSlider('Độ Cay', _spicyLevel,
+                      (val) => setState(() => _spicyLevel = val)),
+                  _buildSlider('Độ Mặn', _saltyLevel,
+                      (val) => setState(() => _saltyLevel = val)),
+                  _buildSlider('Độ Ngọt', _sweetLevel,
+                      (val) => setState(() => _sweetLevel = val)),
+                  const Divider(height: 30),
+                  const Text('Dị ứng',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 8.0,
+                    children: _allergies.map((allergy) {
+                      final isSelected = _selectedAllergies.contains(allergy);
+                      return FilterChip(
+                        label: Text(allergy),
+                        selected: isSelected,
+                        onSelected: (selected) {
+                          setState(() {
+                            if (selected) {
+                              _selectedAllergies.add(allergy);
+                            } else {
+                              _selectedAllergies.remove(allergy);
+                            }
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _customAllergyController,
+                          decoration: const InputDecoration(
+                            hintText: 'Thêm dị ứng khác...',
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 0),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          final newAllergy =
+                              _customAllergyController.text.trim();
+                          if (newAllergy.isNotEmpty &&
+                              !_allergies.contains(newAllergy)) {
+                            setState(() {
+                              _allergies.add(newAllergy);
+                              _selectedAllergies.add(newAllergy);
+                            });
+                            _customAllergyController.clear();
+                          }
+                        },
+                        child: const Text('Thêm'),
+                      )
+                    ],
+                  ),
+                  const Divider(height: 30),
+                  const Text('Chế độ ăn',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 8.0,
+                    children: _diets.map((diet) {
+                      final isSelected = _selectedDiet == diet;
+                      return ChoiceChip(
+                        label: Text(diet),
+                        selected: isSelected,
+                        onSelected: (selected) {
+                          if (selected) {
+                            setState(() => _selectedDiet = diet);
+                          }
+                        },
+                      );
+                    }).toList(),
+                  ),
+                  const Divider(height: 30),
+                  const Text('Món kỵ/ghét',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 8.0,
+                    children: _dislikes.map((item) {
+                      return Chip(
+                        label: Text(item),
+                        onDeleted: () {
+                          setState(() {
+                            _dislikes.remove(item);
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+                  if (_dislikes.isNotEmpty) const SizedBox(height: 10),
+                  TextField(
+                    controller: _dislikeController,
+                    decoration: InputDecoration(
+                      hintText: 'Thêm món ăn bạn không thích...',
+                      border: const OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.add),
+                        onPressed: () {
+                          final newDislike = _dislikeController.text.trim();
+                          if (newDislike.isNotEmpty &&
+                              !_dislikes.contains(newDislike)) {
+                            setState(() {
+                              _dislikes.add(newDislike);
+                            });
+                            _dislikeController.clear();
+                          }
+                        },
+                      ),
+                    ),
+                    onSubmitted: (value) {
+                      final newDislike = value.trim();
+                      if (newDislike.isNotEmpty &&
+                          !_dislikes.contains(newDislike)) {
+                        setState(() {
+                          _dislikes.add(newDislike);
+                        });
+                        _dislikeController.clear();
                       }
-                    });
-                  },
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _customAllergyController,
-                    decoration: const InputDecoration(
-                      hintText: 'Thêm dị ứng khác...',
-                      border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                    },
+                  ),
+                  const SizedBox(height: 30),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: _isSaving ? null : _savePreferences,
+                      child: _isSaving
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2))
+                          : const Text('Lưu Thiết Lập'),
                     ),
                   ),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    final newAllergy = _customAllergyController.text.trim();
-                    if (newAllergy.isNotEmpty && !_allergies.contains(newAllergy)) {
-                      setState(() {
-                        _allergies.add(newAllergy);
-                        _selectedAllergies.add(newAllergy);
-                      });
-                      _customAllergyController.clear();
-                    }
-                  },
-                  child: const Text('Thêm'),
-                )
-              ],
-            ),
-            const Divider(height: 30),
-
-            const Text('Chế độ ăn', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 8.0,
-              children: _diets.map((diet) {
-                final isSelected = _selectedDiet == diet;
-                return ChoiceChip(
-                  label: Text(diet),
-                  selected: isSelected,
-                  onSelected: (selected) {
-                    if (selected) {
-                      setState(() => _selectedDiet = diet);
-                    }
-                  },
-                );
-              }).toList(),
-            ),
-            const Divider(height: 30),
-            
-            const Text('Món kỵ/ghét', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 8.0,
-              children: _dislikes.map((item) {
-                return Chip(
-                  label: Text(item),
-                  onDeleted: () {
-                    setState(() {
-                      _dislikes.remove(item);
-                    });
-                  },
-                );
-              }).toList(),
-            ),
-            if (_dislikes.isNotEmpty) const SizedBox(height: 10),
-            TextField(
-              controller: _dislikeController,
-              decoration: InputDecoration(
-                hintText: 'Thêm món ăn bạn không thích...',
-                border: const OutlineInputBorder(),
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () {
-                    final newDislike = _dislikeController.text.trim();
-                    if (newDislike.isNotEmpty && !_dislikes.contains(newDislike)) {
-                      setState(() {
-                        _dislikes.add(newDislike);
-                      });
-                      _dislikeController.clear();
-                    }
-                  },
-                ),
-              ),
-              onSubmitted: (value) {
-                final newDislike = value.trim();
-                if (newDislike.isNotEmpty && !_dislikes.contains(newDislike)) {
-                  setState(() {
-                    _dislikes.add(newDislike);
-                  });
-                  _dislikeController.clear();
-                }
-              },
-            ),
-            const SizedBox(height: 30),
-            
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: _isSaving ? null : _savePreferences,
-                child: _isSaving 
-                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                  : const Text('Lưu Thiết Lập'),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 
-  Widget _buildSlider(String label, double value, ValueChanged<double> onChanged) {
+  Widget _buildSlider(
+      String label, double value, ValueChanged<double> onChanged) {
     return Row(
       children: [
         SizedBox(width: 80, child: Text(label)),
