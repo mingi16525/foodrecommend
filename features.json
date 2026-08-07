@@ -22,7 +22,7 @@
     },
     {
       "name": "implement-tab2-groups",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "description": "Xử lý hoàn thiện phần Tab 2 (Cộng đồng/Nhóm), bao gồm Chat nhóm, Tạo Đơn Nhóm (bình chọn quán, gợi ý AI cho nhóm) và tạo mock data theo MoTaThuatToan và Product Specification.",
       "scope": [
         "schema.sql",
@@ -34,7 +34,7 @@
     },
     {
       "name": "implement-tab3-and-tab5-real-data",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "description": "Xử lý ở phần tab 3, Tab 5, hiển thị dữ liệu thực tế thay vì mock data.",
       "scope": [
         "frontend/lib/screens/recommendation/*",

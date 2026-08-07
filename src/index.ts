@@ -8,6 +8,7 @@ import { restaurantRouter } from './api/restaurant.routes';
 import { socialRouter } from './api/social.routes';
 import { groupRouter } from './api/group.routes';
 import { authRouter } from './api/auth.routes';
+import { tripRouter } from './api/trip.routes';
 import { authenticateToken } from './auth/authMiddleware';
 import { setupSocket } from './socket';
 
@@ -24,6 +25,7 @@ app.use('/api/users', authenticateToken as express.RequestHandler, userRouter);
 app.use('/api/restaurants', restaurantRouter);
 app.use('/api/social', socialRouter);
 app.use('/api/groups', authenticateToken as express.RequestHandler, groupRouter);
+app.use('/api/trip', authenticateToken as express.RequestHandler, tripRouter);
 
 app.get('/', (req, res) => {
   res.send('FoodRecommend API is running');

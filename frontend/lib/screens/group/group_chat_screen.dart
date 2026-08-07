@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart' as socket_io;
 import '../../config/api_config.dart';
 import 'group_order_screen.dart';
 import '../trip/trip_planner_screen.dart';
@@ -20,7 +20,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   List<Map<String, dynamic>> _messages = [];
   final TextEditingController _msgController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  IO.Socket? _socket;
+  socket_io.Socket? _socket;
   String _myUserId = '';
 
   @override
@@ -64,7 +64,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   }
 
   void _connectSocket() {
-    _socket = IO.io(ApiConfig.baseUrl, <String, dynamic>{
+    _socket = socket_io.io(ApiConfig.baseUrl, <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
       'auth': {'token': ApiConfig.token}

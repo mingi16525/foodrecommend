@@ -1,4 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import '../../config/api_config.dart';
 
 class TripPlannerScreen extends StatefulWidget {
   final String groupName;
@@ -10,32 +13,44 @@ class TripPlannerScreen extends StatefulWidget {
 }
 
 class _TripPlannerScreenState extends State<TripPlannerScreen> {
-  final List<Map<String, dynamic>> _itinerary = [
-    {
-      'time': '08:00 AM',
-      'title': 'Điểm tập kết',
-      'location': 'Nhà Văn Hóa Thanh Niên',
-      'type': 'meetup',
-    },
-    {
-      'time': '09:30 AM',
-      'title': 'Ăn sáng: Phở Chú Long',
-      'location': 'Quận 1',
-      'type': 'food',
-    },
-    {
-      'time': '12:00 PM',
-      'title': 'Ăn trưa: Lẩu Hải Sản Dì Năm',
-      'location': 'Vũng Tàu',
-      'type': 'food',
-    },
-    {
-      'time': '15:00 PM',
-      'title': 'Tham quan',
-      'location': 'Ngọn Hải Đăng',
-      'type': 'activity',
-    },
-  ];
+  List<Map<String, dynamic>> _itinerary = [];
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchItinerary();
+  }
+
+  Future<void> _fetchItinerary() async {
+    setState(() => _isLoading = true);
+    try {
+      final response = await http.post(
+        Uri.parse('${ApiConfig.baseUrl}/api/trip/plan'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${ApiConfig.token}',
+        },
+        body: json.encode({
+          'groupName': widget.groupName,
+          'preferences': 'Thích hải sản, không ăn cay' // Example preferences
+        }),
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (mounted) {
+          setState(() {
+            _itinerary = (data['data'] as List).map((e) => e as Map<String, dynamic>).toList();
+            _isLoading = false;
+          });
+        }
+      } else {
+        if (mounted) setState(() => _isLoading = false);
+      }
+    } catch (_) {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +89,11 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> {
           ),
           
           Expanded(
-            child: ListView.builder(
+            child: _isLoading 
+                ? const Center(child: CircularProgressIndicator())
+                : _itinerary.isEmpty
+                    ? const Center(child: Text('Chưa có lịch trình. Hãy thử tạo mới!'))
+                    : ListView.builder(
               itemCount: _itinerary.length,
               itemBuilder: (context, index) {
                 final item = _itinerary[index];

@@ -81,9 +81,11 @@ class _GroupOrderScreenState extends State<GroupOrderScreen> {
       final res = await http.get(Uri.parse('${ApiConfig.baseUrl}/api/restaurants/$restaurantId/dishes'));
       if (res.statusCode == 200) {
         final data = json.decode(res.body)['data'] as List;
-        if (mounted) setState(() {
-          _dishes = data.map((e) => e as Map<String, dynamic>).toList();
-        });
+        if (mounted) {
+          setState(() {
+            _dishes = data.map((e) => e as Map<String, dynamic>).toList();
+          });
+        }
       }
     } catch (_) {}
   }

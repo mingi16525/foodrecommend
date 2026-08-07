@@ -63,8 +63,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
         });
       } else {
         if (!mounted) return;
-        // Mock data fallback
-        _loadMockData();
+        setState(() => _isLoading = false);
       }
     } catch (e) {
       ApiLogger().addLog(
@@ -73,33 +72,10 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
         error: e.toString(),
       );
       if (!mounted) return;
-      _loadMockData();
+      setState(() => _isLoading = false);
     }
   }
 
-  void _loadMockData() {
-    setState(() {
-      _recommendations = [
-        {
-          'id': 1,
-          'name': 'Phở Bò Kobe',
-          'restaurant_name': 'Phở Chú Long',
-          'price': 85000,
-          'image_url': 'https://images.unsplash.com/photo-1582878826629-29b7ad1cb438',
-          'distance': '0.8km'
-        },
-        {
-          'id': 2,
-          'name': 'Cơm Tấm Sườn Bì',
-          'restaurant_name': 'Cơm Tấm Ba Ghi',
-          'price': 45000,
-          'image_url': 'https://images.unsplash.com/photo-1626804475297-41609ea0ebb4',
-          'distance': '1.5km'
-        },
-      ];
-      _isLoading = false;
-    });
-  }
 
   void _onSwipe(bool isLiked) {
     if (_recommendations.isEmpty) return;

@@ -17,9 +17,31 @@ export class UserService {
 
       if (userResult.rows.length === 0) return null;
 
+      let postsCount = 0;
+      let reviewsCount = 0;
+      let savedCount = 0;
+
+      try {
+        const postsRes = await this.db.query('SELECT count(*) FROM posts WHERE user_id = $1', [userId]);
+        postsCount = parseInt(postsRes.rows[0]?.count || '0', 10);
+        reviewsCount = postsCount; // Assuming posts are reviews for MVP
+      } catch (e) {
+        // posts table might be empty or missing
+      }
+
+      try {
+        const swipesRes = await this.db.query("SELECT count(*) FROM user_swipes WHERE user_id = $1 AND action = 'LIKE'", [userId]);
+        savedCount = parseInt(swipesRes.rows[0]?.count || '0', 10);
+      } catch (e) {
+        // user_swipes table might not exist yet
+      }
+
       return {
         ...userResult.rows[0],
-        preferences: prefResult.rows[0] || null
+        preferences: prefResult.rows[0] || null,
+        posts_count: postsCount,
+        reviews_count: reviewsCount,
+        saved_count: savedCount
       };
     } catch (e) {
       console.error('DB error in getUserProfile', e);

@@ -55,12 +55,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         final data = json.decode(response.body);
         if (!mounted) return;
         setState(() {
-          _userName = data['name'] ?? 'Nguyễn Văn A';
+          _userName = data['full_name'] ?? data['name'] ?? 'Khách';
           _avatarUrl = data['avatar'] ?? 'https://i.pravatar.cc/150?img=32';
-          _reviewsCount = data['reviews_count'] ?? 120;
-          _savedCount = data['saved_count'] ?? 45;
-          _postsCount = data['posts_count'] ?? 8;
-          _isVerified = data['role'] == 'verified_reviewer';
+          _reviewsCount = data['reviews_count'] ?? 0;
+          _savedCount = data['saved_count'] ?? 0;
+          _postsCount = data['posts_count'] ?? 0;
+          _isVerified = data['is_reviewer'] == true || data['role'] == 'verified_reviewer';
           _isLoading = false;
         });
       } else {
