@@ -2,7 +2,7 @@
   "features": [
     {
       "name": "fix-tab4-save-logout",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "description": "Sau khi đăng xuất và đăng nhập lại, dữ liệu khi bấm lưu ở tab 4 không được lưu thành công. Thực hiện hoàn thiện phần lưu trữ thực tế cho tab 4.",
       "scope": [
         "frontend/lib/screens/onboarding/",
@@ -13,7 +13,7 @@
     },
     {
       "name": "fix-backend-502-restart",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Xử lý vấn đề của backend: mỗi lần chạy đều gặp lỗi 502, phải chạy npm run dev mới load được backend thành công.",
       "scope": [
         "package.json",
