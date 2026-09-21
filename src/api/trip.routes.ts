@@ -27,7 +27,9 @@ const model = genAI.getGenerativeModel({
   }
 });
 
-tripRouter.post('/plan', validate(tripPlanSchema), async (req, res) => {
+import { requirePremium } from '../middleware/premium';
+
+tripRouter.post('/plan', requirePremium, validate(tripPlanSchema), async (req, res) => {
   const { groupName, preferences } = req.body;
 
   if (!process.env.GEMINI_API_KEY) {

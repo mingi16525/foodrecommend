@@ -56,6 +56,60 @@
       ]
     },
     {
+      "name": "phase2-feature-completion",
+      "status": "DONE",
+      "description": "Thực hiện Phase 2 (Feature Completion) cho Backend API.",
+      "scope": [
+        "migrations/002_phase2_features.ts",
+        "src/group/service.ts",
+        "src/api/group.routes.ts",
+        "src/socket/index.ts",
+        "src/social/service.ts",
+        "src/api/social.routes.ts",
+        "src/api/user.routes.ts",
+        "src/utils/abTesting.ts",
+        "src/recommendation/engine.ts",
+        "src/api/recommendation.routes.ts",
+        "claude-progress.md"
+      ]
+    },
+    {
+      "name": "phase3-scale-growth",
+      "status": "DONE",
+      "description": "Thực hiện Phase 3 (Scale & Growth) cho Backend API.",
+      "scope": [
+        "migrations/003_phase3_payments.ts",
+        "src/services/payment.service.ts",
+        "src/api/payment.routes.ts",
+        "src/services/notification.service.ts",
+        "src/api/notification.routes.ts",
+        "src/index.ts",
+        "k8s/deployment.yaml",
+        "k8s/hpa.yaml",
+        "k8s/service.yaml",
+        "package.json",
+        "claude-progress.md"
+      ]
+    },
+    {
+      "name": "final-polish",
+      "status": "DONE",
+      "description": "Hoàn thiện Backend (Swagger, ZaloPay, Loyalty/Referral, Seeding).",
+      "scope": [
+        "migrations/004_loyalty_referral.ts",
+        "src/db/seeds.ts",
+        "src/services/payment.service.ts",
+        "src/api/payment.routes.ts",
+        "docs/swagger.yaml",
+        "src/index.ts",
+        "src/services/loyalty.service.ts",
+        "src/api/loyalty.routes.ts",
+        "package.json",
+        "features.json",
+        "claude-progress.md"
+      ]
+    },
+    {
       "name": "implement-tab3-and-tab5-real-data",
       "status": "PAUSED",
       "description": "Hoàn thiện Tab 3/Tab 5 với dữ liệu thật và chuẩn hóa AI pipeline theo stack PostgreSQL, Qdrant, Redis, Kafka và Gemini.",

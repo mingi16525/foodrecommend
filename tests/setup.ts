@@ -37,7 +37,7 @@ jest.mock('ioredis', () => jest.fn().mockImplementation(() => ({
 
 jest.mock('pg', () => {
   const mPool = {
-    query: jest.fn().mockResolvedValue({ rows: [{ id: '123', name: 'Mock Dish', description: 'Mock Description', image_url: '', price: 10, currency: 'USD', restaurant_id: 'rest1', content: 'Great food!', tags: [], match_score: 95 }] }),
+    query: jest.fn().mockResolvedValue({ rows: [{ id: '123', name: 'Mock Dish', description: 'Mock Description', image_url: '', price: 10, currency: 'USD', restaurant_id: 'rest1', content: 'Great food!', tags: [], match_score: 95, subscription_tier: 'PREMIUM' }] }),
     connect: jest.fn(),
     end: jest.fn(),
     on: jest.fn()

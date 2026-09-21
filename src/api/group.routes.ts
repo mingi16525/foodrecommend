@@ -32,7 +32,9 @@ router.get('/', async (req: AuthRequest, res: Response): Promise<void> => {
   }
 });
 
-router.post('/', validate(createGroupSchema), async (req: AuthRequest, res: Response): Promise<void> => {
+import { requirePremium } from '../middleware/premium';
+
+router.post('/', requirePremium, validate(createGroupSchema), async (req: AuthRequest, res: Response): Promise<void> => {
   const { name } = req.body;
   const creatorId = req.user?.userId;
   
@@ -163,6 +165,15 @@ router.post('/:id/orders/:orderId/vote', requireOwnership('group'), validate(vot
   const userId = req.user?.userId;
   if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
   await groupService.voteRestaurant(orderId, userId, restaurantId);
+  res.json({ success: true });
+});
+
+router.delete('/:id/orders/:orderId/vote', requireOwnership('group'), validate(voteSchema), async (req: AuthRequest, res: Response): Promise<void> => {
+  const orderId = req.params.orderId as string;
+  const { restaurantId } = req.body;
+  const userId = req.user?.userId;
+  if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
+  await groupService.removeVote(orderId, userId, restaurantId);
   res.json({ success: true });
 });
 

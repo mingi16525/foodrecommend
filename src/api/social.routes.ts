@@ -30,9 +30,39 @@ router.get('/feed', async (req: Request, res: Response): Promise<void> => {
     lng = parseFloat(lngStr);
   }
 
-  const feed = await socialService.getFeed(lat, lng);
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 20;
+
+  const feed = await socialService.getFeed(lat, lng, page, limit);
   res.json({ data: feed });
 });
 
-export const socialRouter = router;
+router.post('/posts/:id/like', async (req: AuthRequest, res: Response): Promise<void> => {
+  const postId = req.params.id as string;
+  const userId = req.user?.userId;
+  if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
+  await socialService.likePost(postId, userId);
+  
+  // Optional: Emit notification to author if author_id is accessible.
+  // Using simple emitting logic for now.
+  res.json({ success: true });
+});
 
+router.delete('/posts/:id/like', async (req: AuthRequest, res: Response): Promise<void> => {
+  const postId = req.params.id as string;
+  const userId = req.user?.userId;
+  if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
+  await socialService.unlikePost(postId, userId);
+  res.json({ success: true });
+});
+
+router.post('/posts/:id/comments', async (req: AuthRequest, res: Response): Promise<void> => {
+  const postId = req.params.id as string;
+  const { commentText } = req.body;
+  const userId = req.user?.userId;
+  if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
+  const newComment = await socialService.commentPost(postId, userId, commentText);
+  res.json({ data: newComment });
+});
+
+export const socialRouter = router;

@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { DecisionComplexityEstimator, IntentType, RecommendationRequest } from '../recommendation/routing';
 import { AuthRequest } from '../auth/authMiddleware';
 import { eventCollector } from '../recommendation/eventCollector';
+import { withCache } from '../utils/cache';
+import { getExperimentGroup } from '../utils/abTesting';
 import { db } from '../db';
 import { validate } from '../middleware/validate';
 import { swipeSchema } from '../validators/group.validator';
@@ -41,7 +43,17 @@ recommendationRouter.get('/', async (req, res) => {
         location: location
       }
     };
-    const results = await estimator.handleRequest(aiRequest) as RecommendationResult[];
+    
+    const experimentGroup = getExperimentGroup(userId, 'recommendation_algorithm');
+    // We could pass experimentGroup into the estimator to change behavior, but for now we'll just log it.
+    
+    // Cache key incorporates location if present
+    const locKey = location ? `${location.lat}_${location.lng}` : 'none';
+    const cacheKey = `recs:${userId}:${locKey}:${experimentGroup}`;
+
+    const results = await withCache(cacheKey, 300, async () => {
+      return await estimator.handleRequest(aiRequest) as RecommendationResult[];
+    });
 
     // Enrich with Postgres data (price, image_url, restaurant_name)
     const dishIds = results.map((r: RecommendationResult) => r.id);
@@ -90,3 +102,23 @@ recommendationRouter.post('/swipe', validate(swipeSchema), async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+recommendationRouter.post('/feedback', async (req, res) => {
+  const userId = (req as AuthRequest).user?.userId;
+  if (!userId) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const { rating, feedback } = req.body;
+  if (rating === undefined) {
+    return res.status(400).json({ error: 'rating is required' });
+  }
+
+  try {
+    console.log(`[FEEDBACK] User ${userId} rated ${rating} with feedback: ${feedback}`);
+    res.json({ success: true });
+  } catch {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+

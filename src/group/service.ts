@@ -183,6 +183,13 @@ export class GroupService {
     );
   }
 
+  async removeVote(orderId: string, userId: string, restaurantId: string) {
+    await this.db.query(
+      `DELETE FROM group_order_votes WHERE order_id = $1 AND user_id = $2 AND restaurant_id = $3`,
+      [orderId, userId, restaurantId]
+    );
+  }
+
   async addItemToOrder(orderId: string, userId: string, dishId: string, quantity: number, price: number) {
     await this.db.query(
       `INSERT INTO group_order_items (order_id, user_id, dish_id, quantity, price) VALUES ($1, $2, $3, $4, $5)`,

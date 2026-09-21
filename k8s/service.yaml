@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: foodrecommend-service
+  namespace: default
+spec:
+  type: ClusterIP
+  selector:
+    app: foodrecommend-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000

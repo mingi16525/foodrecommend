@@ -12,8 +12,16 @@ import { groupRouter } from './api/group.routes';
 import { authRouter } from './api/auth.routes';
 import { healthRouter } from './api/health.routes';
 import { tripRouter } from './api/trip.routes';
+import paymentRouter from './api/payment.routes';
+import notificationRouter from './api/notification.routes';
+import { loyaltyRoutes } from './api/loyalty.routes';
+import { subscriptionRouter } from './api/subscription.routes';
 import { metricsMiddleware, metricsHandler } from './middleware/metrics';
 import { authenticateToken } from './auth/authMiddleware';
+import swaggerUi from 'swagger-ui-express';
+import fs from 'fs';
+import path from 'path';
+import YAML from 'yaml';
 import { setupSocket } from './socket';
 
 const app = express();
@@ -21,7 +29,10 @@ const port = process.env.PORT || 3000;
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: process.env.CORS_ORIGIN || '*' } });
 
+app.disable('x-powered-by');
+
 app.use(helmet());
+app.set('io', io);
 
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -51,6 +62,14 @@ app.use('/api/restaurants', restaurantRouter);
 app.use('/api/social', authenticateToken as express.RequestHandler, socialRouter);
 app.use('/api/groups', authenticateToken as express.RequestHandler, groupRouter);
 app.use('/api/trip', authenticateToken as express.RequestHandler, tripRouter);
+app.use('/api/payment', authenticateToken as express.RequestHandler, paymentRouter);
+app.use('/api/notifications', authenticateToken as express.RequestHandler, notificationRouter);
+app.use('/api/loyalty', loyaltyRoutes);
+app.use('/api/subscription', subscriptionRouter);
+
+const file = fs.readFileSync(path.resolve(__dirname, '../docs/swagger.yaml'), 'utf8');
+const swaggerDocument = YAML.parse(file);
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/metrics', metricsHandler);
 
@@ -70,10 +89,36 @@ app.use(errorHandler);
 
 setupSocket(io);
 
+import { db } from './db';
+
 if (require.main === module) {
   server.listen(port, () => {
     logger.info(`Server running on port ${port}`);
   });
+
+  const gracefulShutdown = async (signal: string) => {
+    logger.info(`Received ${signal}. Shutting down gracefully...`);
+    server.close(async () => {
+      logger.info('HTTP server closed.');
+      try {
+        await db.end();
+        logger.info('Database pool closed.');
+        process.exit(0);
+      } catch (err) {
+        logger.error('Error during shutdown:', err);
+        process.exit(1);
+      }
+    });
+    
+    // Force shutdown if it takes too long
+    setTimeout(() => {
+      logger.error('Could not close connections in time, forcefully shutting down');
+      process.exit(1);
+    }, 10000);
+  };
+
+  process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+  process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 }
 
 export default app;

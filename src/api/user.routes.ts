@@ -51,6 +51,16 @@ userRouter.put('/:id/preferences', requireOwnership('user'), validate(updatePref
   res.json({ success: true, data: updated });
 });
 
+import { socialService } from '../social/service';
+
+userRouter.post('/:id/follow', async (req: AuthRequest, res: Response): Promise<void> => {
+  const followingId = req.params.id as string;
+  const followerId = req.user?.userId;
+  if (!followerId) { res.status(401).json({ error: 'Unauthorized' }); return; }
+  await socialService.followUser(followerId, followingId);
+  res.json({ success: true });
+});
+
 userRouter.get('/', (req, res) => {
   res.json({ message: 'User API placeholder' });
 });
