@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
+import { validate } from '../middleware/validate';
+import { tripPlanSchema } from '../validators/trip.validator';
 
 export const tripRouter = Router();
 
@@ -25,7 +27,7 @@ const model = genAI.getGenerativeModel({
   }
 });
 
-tripRouter.post('/plan', async (req, res) => {
+tripRouter.post('/plan', validate(tripPlanSchema), async (req, res) => {
   const { groupName, preferences } = req.body;
 
   if (!process.env.GEMINI_API_KEY) {

@@ -33,14 +33,108 @@
       ]
     },
     {
+      "name": "phase0-security-hardening",
+      "status": "DONE",
+      "description": "Fix các security vulnerabilities thuộc Phase 0: IDOR trong Social Feed.",
+      "scope": [
+        "src/api/social.routes.ts",
+        "src/validators/social.validator.ts",
+        "claude-progress.md"
+      ]
+    },
+    {
+      "name": "phase1-production-readiness",
+      "status": "DONE",
+      "description": "Thực hiện Phase 1.3 (Observability) và Phase 1.4 (Performance Optimization) cho môi trường Production.",
+      "scope": [
+        "src/middleware/metrics.ts",
+        "src/api/health.routes.ts",
+        "src/index.ts",
+        "src/utils/cache.ts",
+        "src/api/restaurant.routes.ts",
+        "claude-progress.md"
+      ]
+    },
+    {
       "name": "implement-tab3-and-tab5-real-data",
-      "status": "IN_PROGRESS",
-      "description": "Xử lý ở phần tab 3, Tab 5, hiển thị dữ liệu thực tế thay vì mock data.",
+      "status": "PAUSED",
+      "description": "Hoàn thiện Tab 3/Tab 5 với dữ liệu thật và chuẩn hóa AI pipeline theo stack PostgreSQL, Qdrant, Redis, Kafka và Gemini.",
       "scope": [
         "frontend/lib/screens/recommendation/*",
         "frontend/lib/screens/profile/*",
         "src/api/*",
-        "src/recommendation/*"
+        "src/recommendation/*",
+        "src/group/mediumTier.ts",
+        "src/group/tripPlanner.ts",
+        "schema.sql",
+        "tests/**",
+        "frontend/test/**",
+        "jest.integration.config.js",
+        "TESTING.md",
+        "scripts/run-integration-tests.js",
+        "claude-progress.md"
+      ],
+      "tasks": [
+        {
+          "title": "Khóa user recommendation theo JWT và validate swipe contract",
+          "status": "DONE"
+        },
+        {
+          "title": "Đưa user_swipes vào schema và bỏ DDL trong request runtime",
+          "status": "DONE"
+        },
+        {
+          "title": "Lọc allergy hai lớp ở Fast/Medium Tier",
+          "status": "DONE"
+        },
+        {
+          "title": "Validate output Gemini và loại bỏ fallback mock Deep Tier",
+          "status": "DONE"
+        },
+        {
+          "title": "Hoàn thiện frontend recommendation/profile bằng API thật",
+          "status": "IN_PROGRESS"
+        },
+        {
+          "title": "Sửa Flutter provider smoke test và thêm error/retry state cho Tab 3/5",
+          "status": "DONE"
+        },
+        {
+          "title": "Bổ sung integration test với PostgreSQL/Qdrant/Kafka test services",
+          "status": "DONE"
+        },
+        {
+          "title": "Mở rộng unit/API/E2E coverage cho auth, AI, group, split bill và application boundaries",
+          "status": "DONE"
+        },
+        {
+          "title": "Thêm Flutter tests cho AppState, API logger, maps và app smoke flow",
+          "status": "DONE"
+        },
+        {
+          "title": "Đồng bộ Kafka producer/consumer cũ với EventCollector hoặc loại bỏ code không dùng",
+          "status": "DONE"
+        },
+        {
+          "title": "Bổ sung observability, timeout, retry và idempotency cho AI events",
+          "status": "TODO"
+        },
+        {
+          "title": "Khóa model embedding bằng singleton promise để tránh load đồng thời",
+          "status": "DONE"
+        },
+        {
+          "title": "Thêm test:prepare script để tự động setup database schema, Qdrant vectors và Kafka topic",
+          "status": "DONE"
+        }
+      ],
+      "definition_of_done": [
+        "npm test -- --runInBand exits 0",
+        "npx tsc --noEmit exits 0",
+        "npm run lint exits 0",
+        "Recommendation API không nhận userId từ request body/query",
+        "AI output từ Gemini được validate trước khi chạy RAG",
+        "Không còn CREATE TABLE trong request path"
       ]
     }
   ]

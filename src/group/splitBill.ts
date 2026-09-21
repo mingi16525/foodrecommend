@@ -15,13 +15,20 @@ export class SplitBillService {
    * Split a bill equally among given users.
    */
   splitEqually(totalAmount: number, userIds: string[]): SplitResult[] {
-    if (userIds.length === 0) return [];
-    
-    const splitAmount = Math.round((totalAmount / userIds.length) * 100) / 100;
-    
-    return userIds.map(userId => ({
+    if (!Number.isFinite(totalAmount) || totalAmount < 0) {
+      throw new Error('totalAmount must be a non-negative finite number');
+    }
+    if (userIds.length === 0 || new Set(userIds).size !== userIds.length) {
+      throw new Error('userIds must contain at least one unique user');
+    }
+
+    const totalCents = Math.round(totalAmount * 100);
+    const baseCents = Math.floor(totalCents / userIds.length);
+    const remainderCents = totalCents % userIds.length;
+
+    return userIds.map((userId, index) => ({
       userId,
-      amount: splitAmount
+      amount: (baseCents + (index < remainderCents ? 1 : 0)) / 100
     }));
   }
 
@@ -32,15 +39,20 @@ export class SplitBillService {
     const userTotals = new Map<string, number>();
 
     for (const item of items) {
-      const assignedCount = item.assigned_users.length;
-      if (assignedCount === 0) continue;
-
-      const splitAmount = item.amount / assignedCount;
-
-      for (const userId of item.assigned_users) {
-        const currentAmount = userTotals.get(userId) || 0;
-        userTotals.set(userId, currentAmount + splitAmount);
+      if (!Number.isFinite(item.amount) || item.amount < 0 || item.assigned_users.length === 0 ||
+        new Set(item.assigned_users).size !== item.assigned_users.length) {
+        throw new Error('Each item must have a non-negative amount and unique assigned users');
       }
+      const assignedCount = item.assigned_users.length;
+      const totalCents = Math.round(item.amount * 100);
+      const baseCents = Math.floor(totalCents / assignedCount);
+      const remainderCents = totalCents % assignedCount;
+
+      item.assigned_users.forEach((userId, index) => {
+        const currentAmount = userTotals.get(userId) || 0;
+        const itemShare = (baseCents + (index < remainderCents ? 1 : 0)) / 100;
+        userTotals.set(userId, currentAmount + itemShare);
+      });
     }
 
     const results: SplitResult[] = [];

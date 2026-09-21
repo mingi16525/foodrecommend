@@ -60,6 +60,17 @@ class CacheClient {
       await this.redis.quit();
     }
   }
+
+  async ping(): Promise<string> {
+    if (this.isConnected && this.redis) {
+      try {
+        return await this.redis.ping();
+      } catch {
+        throw new Error('Redis ping failed');
+      }
+    }
+    throw new Error('Redis not connected');
+  }
 }
 
 export const redisCache = new CacheClient();

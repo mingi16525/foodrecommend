@@ -1,8 +1,19 @@
-import { Router, Request, Response } from 'express';
+import { Router, Response } from 'express';
 import { groupService } from '../group/service';
 import { AuthRequest } from '../auth/authMiddleware';
 import { splitBillService, BillItem } from '../group/splitBill';
 import { mediumTierRecommender } from '../group/mediumTier';
+import { requireOwnership } from '../middleware/authorization';
+import { validate } from '../middleware/validate';
+import {
+  createGroupSchema,
+  addMemberSchema,
+  splitEquallySchema,
+  splitItemsSchema,
+  voteSchema,
+  addItemSchema,
+  updateOrderStatusSchema
+} from '../validators/group.validator';
 
 const router = Router();
 
@@ -21,12 +32,12 @@ router.get('/', async (req: AuthRequest, res: Response): Promise<void> => {
   }
 });
 
-router.post('/', async (req: AuthRequest, res: Response): Promise<void> => {
+router.post('/', validate(createGroupSchema), async (req: AuthRequest, res: Response): Promise<void> => {
   const { name } = req.body;
   const creatorId = req.user?.userId;
   
-  if (!name || !creatorId) {
-    res.status(400).json({ error: 'Name and valid session are required' });
+  if (!creatorId) {
+    res.status(401).json({ error: 'Unauthorized' });
     return;
   }
   try {
@@ -38,7 +49,7 @@ router.post('/', async (req: AuthRequest, res: Response): Promise<void> => {
   }
 });
 
-router.get('/:id', async (req: Request, res: Response): Promise<void> => {
+router.get('/:id', requireOwnership('group'), async (req: AuthRequest, res: Response): Promise<void> => {
   const id = req.params.id as string;
   const group = await groupService.getGroupDetails(id);
   if (!group) {
@@ -48,40 +59,42 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
   res.json({ data: group });
 });
 
-router.post('/:id/members', async (req: Request, res: Response): Promise<void> => {
+router.post('/:id/members', requireOwnership('group'), validate(addMemberSchema), async (req: AuthRequest, res: Response): Promise<void> => {
   const id = req.params.id as string;
   const { userId } = req.body;
-  if (!userId) {
-    res.status(400).json({ error: 'userId is required' });
-    return;
-  }
   await groupService.addMember(id, userId);
   res.json({ success: true });
 });
 
-router.post('/:id/split-equally', (req: Request, res: Response): void => {
+router.post('/:id/split-equally', requireOwnership('group'), validate(splitEquallySchema), (req: AuthRequest, res: Response): void => {
   const { totalAmount, userIds } = req.body;
-  if (!totalAmount || !userIds || !Array.isArray(userIds)) {
-    res.status(400).json({ error: 'totalAmount and userIds (array) are required' });
-    return;
+
+  try {
+    const results = splitBillService.splitEqually(totalAmount, userIds);
+    res.json({ data: results });
+  } catch (error) {
+    res.status(400).json({ error: (error as Error).message });
   }
-  
-  const results = splitBillService.splitEqually(totalAmount, userIds);
-  res.json({ data: results });
 });
 
-router.post('/:id/split-items', (req: Request, res: Response): void => {
+router.post('/:id/split-items', requireOwnership('group'), validate(splitItemsSchema), (req: AuthRequest, res: Response): void => {
   const { items } = req.body;
-  if (!items || !Array.isArray(items)) {
-    res.status(400).json({ error: 'items (array) is required' });
-    return;
-  }
   
-  const results = splitBillService.splitByItems(items as BillItem[]);
-  res.json({ data: results });
+  try {
+    const mappedItems: BillItem[] = items.map((i: { name: string; price: number; userId: string; quantity?: number }, index: number) => ({
+      id: index.toString(),
+      name: i.name,
+      amount: i.price * (i.quantity || 1),
+      assigned_users: [i.userId]
+    }));
+    const results = splitBillService.splitByItems(mappedItems);
+    res.json({ data: results });
+  } catch (error) {
+    res.status(400).json({ error: (error as Error).message });
+  }
 });
 
-router.get('/:id/messages', async (req: AuthRequest, res: Response): Promise<void> => {
+router.get('/:id/messages', requireOwnership('group'), async (req: AuthRequest, res: Response): Promise<void> => {
   const id = req.params.id as string;
   try {
     const messages = await groupService.getMessages(id);
@@ -92,7 +105,7 @@ router.get('/:id/messages', async (req: AuthRequest, res: Response): Promise<voi
   }
 });
 
-router.post('/:id/orders', async (req: AuthRequest, res: Response): Promise<void> => {
+router.post('/:id/orders', requireOwnership('group'), async (req: AuthRequest, res: Response): Promise<void> => {
   const id = req.params.id as string;
   const creatorId = req.user?.userId;
   if (!creatorId) {
@@ -107,7 +120,7 @@ router.post('/:id/orders', async (req: AuthRequest, res: Response): Promise<void
   }
 });
 
-router.get('/:id/orders/active', async (req: Request, res: Response): Promise<void> => {
+router.get('/:id/orders/active', requireOwnership('group'), async (req: AuthRequest, res: Response): Promise<void> => {
   const id = req.params.id as string;
   try {
     const order = await groupService.getActiveOrder(id);
@@ -129,7 +142,7 @@ router.get('/:id/orders/active', async (req: Request, res: Response): Promise<vo
   }
 });
 
-router.post('/:id/orders/:orderId/join', async (req: AuthRequest, res: Response): Promise<void> => {
+router.post('/:id/orders/:orderId/join', requireOwnership('group'), async (req: AuthRequest, res: Response): Promise<void> => {
   const orderId = req.params.orderId as string;
   const userId = req.user?.userId;
   if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
@@ -137,14 +150,14 @@ router.post('/:id/orders/:orderId/join', async (req: AuthRequest, res: Response)
   res.json({ success: true });
 });
 
-router.post('/:id/orders/:orderId/status', async (req: Request, res: Response): Promise<void> => {
+router.post('/:id/orders/:orderId/status', requireOwnership('group'), validate(updateOrderStatusSchema), async (req: AuthRequest, res: Response): Promise<void> => {
   const orderId = req.params.orderId as string;
   const { status, restaurantId } = req.body;
   await groupService.updateOrderStatus(orderId, status, restaurantId);
   res.json({ success: true });
 });
 
-router.post('/:id/orders/:orderId/vote', async (req: AuthRequest, res: Response): Promise<void> => {
+router.post('/:id/orders/:orderId/vote', requireOwnership('group'), validate(voteSchema), async (req: AuthRequest, res: Response): Promise<void> => {
   const orderId = req.params.orderId as string;
   const { restaurantId } = req.body;
   const userId = req.user?.userId;
@@ -153,7 +166,7 @@ router.post('/:id/orders/:orderId/vote', async (req: AuthRequest, res: Response)
   res.json({ success: true });
 });
 
-router.post('/:id/orders/:orderId/items', async (req: AuthRequest, res: Response): Promise<void> => {
+router.post('/:id/orders/:orderId/items', requireOwnership('group'), validate(addItemSchema), async (req: AuthRequest, res: Response): Promise<void> => {
   const orderId = req.params.orderId as string;
   const { dishId, quantity, price } = req.body;
   const userId = req.user?.userId;

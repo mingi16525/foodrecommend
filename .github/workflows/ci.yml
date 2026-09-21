@@ -17,11 +17,13 @@ jobs:
       with:
         node-version: '20'
     - name: Install Dependencies
-      run: npm install
+      run: npm ci
     - name: Run Linter
       run: npm run lint
     - name: Type Check
       run: npx tsc --noEmit
+    - name: Build Backend
+      run: npm run build
     - name: Run Tests
       run: npm test
 
@@ -46,6 +48,12 @@ jobs:
       # triggers a file-watcher conflict ("Already watching path") that causes
       # Flutter to lose track of the APK after Gradle builds it.
       run: flutter pub get
+      working-directory: ./frontend
+    - name: Analyze Flutter
+      run: flutter analyze
+      working-directory: ./frontend
+    - name: Test Flutter
+      run: flutter test
       working-directory: ./frontend
     - name: Accept Android SDK licenses
       run: yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses || true

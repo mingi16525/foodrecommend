@@ -1,13 +1,12 @@
 import { Router } from 'express';
 import { authService } from '../auth/authService';
+import { validate } from '../middleware/validate';
+import { loginSchema, registerSchema } from '../validators/auth.validator';
 
 export const authRouter = Router();
 
-authRouter.post('/register', async (req, res) => {
+authRouter.post('/register', validate(registerSchema), async (req, res) => {
   const { email, password, fullName } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required' });
-  }
 
   try {
     const user = await authService.register(email, password, fullName || '');
@@ -17,11 +16,8 @@ authRouter.post('/register', async (req, res) => {
   }
 });
 
-authRouter.post('/login', async (req, res) => {
+authRouter.post('/login', validate(loginSchema), async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required' });
-  }
 
   try {
     const data = await authService.login(email, password);

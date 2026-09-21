@@ -7,7 +7,6 @@ import '../../config/api_config.dart';
 import '../../widgets/swipe_card.dart';
 import '../../services/maps_service.dart';
 import '../../services/delivery_link_service.dart';
-import '../../services/location_service.dart';
 import '../../services/api_logger.dart';
 class RecommendationScreen extends StatefulWidget {
   const RecommendationScreen({super.key});
@@ -19,6 +18,7 @@ class RecommendationScreen extends StatefulWidget {
 class _RecommendationScreenState extends State<RecommendationScreen> {
   bool _isLoading = true;
   List<dynamic> _recommendations = [];
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -27,18 +27,19 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   }
 
   Future<void> _fetchRecommendations() async {
+    if (!mounted) return;
     setState(() => _isLoading = true);
     
     final isGuest = Provider.of<AppState>(context, listen: false).isGuest;
     String queryParams = '';
     
     if (isGuest) {
-      final position = await LocationService.getCurrentPosition();
-      if (position != null) {
-        queryParams = '?guest=true&lat=${position.latitude}&lng=${position.longitude}';
-      } else {
-        queryParams = '?guest=true';
-      }
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'Vui lòng đăng nhập để xem đề xuất cá nhân.';
+      });
+      return;
     }
 
     try {
@@ -60,10 +61,14 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
         setState(() {
           _recommendations = data['data'] ?? [];
           _isLoading = false;
+          _errorMessage = null;
         });
       } else {
         if (!mounted) return;
-        setState(() => _isLoading = false);
+        setState(() {
+          _isLoading = false;
+          _errorMessage = 'Không thể tải đề xuất (${response.statusCode}).';
+        });
       }
     } catch (e) {
       ApiLogger().addLog(
@@ -72,12 +77,14 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
         error: e.toString(),
       );
       if (!mounted) return;
-      setState(() => _isLoading = false);
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'Không thể kết nối tới máy chủ đề xuất.';
+      });
     }
   }
 
-
-  void _onSwipe(bool isLiked) {
+  Future<void> _onSwipe(bool isLiked) async {
     if (_recommendations.isEmpty) return;
     final item = _recommendations.first;
     
@@ -87,20 +94,21 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Vui lòng đăng nhập để lưu thao tác!')),
       );
+      return;
     } else {
-      // Gửi sự kiện quẹt thẻ về backend
       final requestBody = json.encode({
         'dishId': item['id'],
-        'action': isLiked ? 'LIKE' : 'SKIP'
+        'action': isLiked ? 'like' : 'skip'
       });
-      http.post(
-        Uri.parse('${ApiConfig.baseUrl}/api/recommendation/swipe'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${ApiConfig.token}',
-        },
-        body: requestBody,
-      ).then((response) {
+      try {
+        final response = await http.post(
+          Uri.parse('${ApiConfig.baseUrl}/api/recommendation/swipe'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ${ApiConfig.token}',
+          },
+          body: requestBody,
+        );
         ApiLogger().addLog(
           method: 'POST',
           url: '${ApiConfig.baseUrl}/api/recommendation/swipe',
@@ -108,26 +116,33 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
           statusCode: response.statusCode,
           responseBody: response.body,
         );
-      }).catchError((e) {
+        if (response.statusCode < 200 || response.statusCode >= 300) {
+          throw Exception('Swipe request failed: ${response.statusCode}');
+        }
+      } catch (e) {
         ApiLogger().addLog(
           method: 'POST',
           url: '${ApiConfig.baseUrl}/api/recommendation/swipe',
           requestBody: requestBody,
           error: e.toString(),
         );
-      });
-      
+        if (!mounted) return;
+        setState(() => _recommendations.insert(0, item));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Không thể lưu thao tác, vui lòng thử lại.')),
+        );
+        return;
+      }
+
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(isLiked ? 'Đã thích món ăn!' : 'Đã bỏ qua món ăn.'), duration: const Duration(milliseconds: 500)),
       );
     }
-    
-    setState(() {
-      _recommendations.removeAt(0);
-      if (_recommendations.isEmpty) {
-        _fetchRecommendations(); // Tải thêm dữ liệu mới khi hết
-      }
-    });
+
+    if (!mounted) return;
+    setState(() => _recommendations.removeAt(0));
+    if (_recommendations.isEmpty) await _fetchRecommendations();
   }
 
   @override
@@ -145,6 +160,17 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
+          : _errorMessage != null
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(_errorMessage!),
+                      const SizedBox(height: 20),
+                      ElevatedButton(onPressed: _fetchRecommendations, child: const Text('Thử lại')),
+                    ],
+                  ),
+                )
           : _recommendations.isEmpty
               ? Center(
                   child: Column(

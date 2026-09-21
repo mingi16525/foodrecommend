@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -36,9 +37,18 @@ class MapsService {
     assert(() { debugPrint('Đã khởi tạo Google Maps SDK với key: $apiKey'); return true; }());
   }
 
-  /// Tính toán khoảng cách giữa 2 điểm (mock)
+  /// Tính toán khoảng cách Haversine giữa 2 điểm theo kilomet.
   static double calculateDistance(double startLat, double startLng, double endLat, double endLng) {
-    // Sử dụng công thức Haversine để tính khoảng cách thực tế
-    return 1.5; // Giả định trả về 1.5 km
+    const earthRadiusKm = 6371.0;
+    final dLat = _radians(endLat - startLat);
+    final dLng = _radians(endLng - startLng);
+    final startLatRadians = _radians(startLat);
+    final endLatRadians = _radians(endLat);
+    final a = math.pow(math.sin(dLat / 2), 2) +
+        math.cos(startLatRadians) * math.cos(endLatRadians) * math.pow(math.sin(dLng / 2), 2);
+    final clamped = a.clamp(0.0, 1.0);
+    return earthRadiusKm * 2 * math.atan2(math.sqrt(clamped), math.sqrt(1 - clamped));
   }
+
+  static double _radians(double degrees) => degrees * math.pi / 180;
 }

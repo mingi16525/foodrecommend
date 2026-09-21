@@ -5,6 +5,7 @@ export class RecommendationEngine {
   private qdrant: QdrantClient;
   private db = db;
   private extractor: any;
+  private extractorPromise: Promise<any> | null = null;
 
   constructor() {
     this.qdrant = new QdrantClient({ 
@@ -15,12 +16,25 @@ export class RecommendationEngine {
   }
 
   async initModel() {
-    if (!this.extractor) {
-      console.log('Loading local AI model (all-MiniLM-L6-v2) for Recommendation Engine...');
-      // Use dynamic import to avoid ESM issues in CommonJS/Jest
-      const transformers = await Function('return import("@xenova/transformers")')();
-      this.extractor = await transformers.pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
-      console.log('Model loaded successfully.');
+    if (this.extractor) return;
+    if (!this.extractorPromise) {
+      this.extractorPromise = (async () => {
+        console.log('Loading local AI model (all-MiniLM-L6-v2) for Recommendation Engine...');
+        // Jest runs CommonJS without the VM ESM loader; production keeps the ESM path.
+        const transformers = process.env.NODE_ENV === 'test'
+          ? require('@xenova/transformers')
+          : await Function('return import("@xenova/transformers")')();
+        const extractor = await transformers.pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
+        console.log('Model loaded successfully.');
+        return extractor;
+      })();
+    }
+
+    try {
+      this.extractor = await this.extractorPromise;
+    } catch (error) {
+      this.extractorPromise = null;
+      throw error;
     }
   }
 
@@ -61,9 +75,15 @@ export class RecommendationEngine {
         'SELECT favorite_flavors, allergies FROM user_preferences WHERE user_id = $1',
         [userId]
       );
+      const flavors = Array.isArray(userPref.rows[0]?.favorite_flavors)
+        ? userPref.rows[0].favorite_flavors.filter((value: unknown): value is string => typeof value === 'string')
+        : [];
+      const allergies = Array.isArray(userPref.rows[0]?.allergies)
+        ? userPref.rows[0].allergies.filter((value: unknown): value is string => typeof value === 'string')
+        : [];
       return {
-        flavors: userPref.rows[0]?.favorite_flavors || ['savory'],
-        allergies: userPref.rows[0]?.allergies || []
+        flavors: flavors.length > 0 ? flavors : ['savory'],
+        allergies
       };
     } catch (e) {
       console.error('Error fetching user preferences:', e);
@@ -76,22 +96,13 @@ export class RecommendationEngine {
     
     // Insert swipe action into Postgres
     try {
-      await this.db.query(`
-        CREATE TABLE IF NOT EXISTS user_swipes (
-          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-          user_id UUID,
-          dish_id UUID,
-          action VARCHAR(10),
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-      `);
-      
       await this.db.query(
         'INSERT INTO user_swipes (user_id, dish_id, action) VALUES ($1, $2, $3)',
         [userId, dishId, action]
       );
     } catch (e) {
       console.error('DB query failed for processSwipeEvent', e);
+      throw new Error('Failed to persist swipe event', { cause: e });
     }
     return { success: true };
   }

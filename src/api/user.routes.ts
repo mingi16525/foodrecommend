@@ -1,6 +1,9 @@
-import { Router, Request, Response } from 'express';
+import { Router, Response } from 'express';
 import { userService } from '../user/service';
 import { AuthRequest } from '../auth/authMiddleware';
+import { requireOwnership } from '../middleware/authorization';
+import { validate } from '../middleware/validate';
+import { updatePreferencesSchema } from '../validators/user.validator';
 
 export const userRouter = Router();
 
@@ -18,23 +21,19 @@ userRouter.get('/me', async (req: AuthRequest, res: Response): Promise<void> => 
   res.json(profile);
 });
 
-userRouter.put('/me/preferences', async (req: AuthRequest, res: Response): Promise<void> => {
+userRouter.put('/me/preferences', validate(updatePreferencesSchema), async (req: AuthRequest, res: Response): Promise<void> => {
   const userId = req.user?.userId;
   if (!userId) {
     res.status(401).json({ error: 'Unauthorized' });
     return;
   }
   const { preferences } = req.body;
-  if (!preferences) {
-    res.status(400).json({ error: 'Preferences are required' });
-    return;
-  }
   
   const updated = await userService.updatePreferences(userId, preferences);
   res.json({ success: true, data: updated });
 });
 
-userRouter.get('/:id', async (req: Request, res: Response): Promise<void> => {
+userRouter.get('/:id', requireOwnership('user'), async (req: AuthRequest, res: Response): Promise<void> => {
   const userId = req.params.id as string;
   const profile = await userService.getUserProfile(userId);
   if (!profile) {
@@ -44,13 +43,9 @@ userRouter.get('/:id', async (req: Request, res: Response): Promise<void> => {
   res.json({ data: profile });
 });
 
-userRouter.put('/:id/preferences', async (req: Request, res: Response): Promise<void> => {
+userRouter.put('/:id/preferences', requireOwnership('user'), validate(updatePreferencesSchema), async (req: AuthRequest, res: Response): Promise<void> => {
   const userId = req.params.id as string;
   const { preferences } = req.body;
-  if (!preferences) {
-    res.status(400).json({ error: 'Preferences are required' });
-    return;
-  }
   
   const updated = await userService.updatePreferences(userId, preferences);
   res.json({ success: true, data: updated });

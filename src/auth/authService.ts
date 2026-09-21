@@ -2,7 +2,11 @@ import { Pool } from 'pg';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key-123456';
+const _JWT_SECRET = process.env.JWT_SECRET;
+if (!_JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
+const JWT_SECRET: string = _JWT_SECRET;
 const SALT_ROUNDS = 10;
 
 export class AuthService {

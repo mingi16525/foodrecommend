@@ -1,50 +1,28 @@
-/* eslint-disable */
 import request from 'supertest';
-// import app from '../../src/index'; // In a real scenario, import the Express app
+import app from '../../src/index';
 
-const app = 'http://localhost:3000'; // Mocking API endpoint for E2E testing
+describe('E2E: authentication boundary', () => {
+  it('rejects protected routes without a bearer token', async () => {
+    const response = await request(app).get('/api/users/me');
 
-describe('E2E Test: Auth Flow', () => {
-  let userToken: string;
-
-  it('should successfully register a new user', async () => {
-    // const res = await request(app)
-    //   .post('/register')
-    //   .send({
-    //     email: 'test@example.com',
-    //     phone: '0123456789',
-    //     full_name: 'Test User'
-    //   });
-    
-    // expect(res.statusCode).toEqual(201);
-    // expect(res.body).toHaveProperty('id');
-    console.log('Mocking successful registration E2E step');
+    expect(response.status).toBe(401);
   });
 
-  it('should successfully login and return a JWT token', async () => {
-    // const res = await request(app)
-    //   .post('/login')
-    //   .send({
-    //     email: 'test@example.com'
-    //   });
-    
-    // expect(res.statusCode).toEqual(200);
-    // expect(res.body).toHaveProperty('token');
-    // userToken = res.body.token;
-    console.log('Mocking successful login E2E step');
+  it('allows a protected route with the test token and returns the profile contract', async () => {
+    const response = await request(app)
+      .get('/api/users/me')
+      .set('Authorization', 'Bearer mock.jwt.token');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id');
+    expect(response.body).not.toHaveProperty('password_hash');
   });
 
-  it('should reject access to protected routes without a token', async () => {
-    // const res = await request(app).get('/me');
-    // expect(res.statusCode).toEqual(401);
-    console.log('Mocking unauthorized access rejection E2E step');
-  });
+  it('rejects malformed bearer tokens', async () => {
+    const response = await request(app)
+      .get('/api/users/me')
+      .set('Authorization', 'Bearer invalid.token');
 
-  it('should allow access to protected routes with a valid token', async () => {
-    // const res = await request(app)
-    //   .get('/me')
-    //   .set('Authorization', `Bearer ${userToken}`);
-    // expect(res.statusCode).toEqual(200);
-    console.log('Mocking authorized access E2E step');
+    expect(response.status).toBe(403);
   });
 });

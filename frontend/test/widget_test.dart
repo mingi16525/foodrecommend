@@ -7,13 +7,20 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 
 import 'package:food_recommend/main.dart';
+import 'package:food_recommend/providers/app_state.dart';
 
 void main() {
   testWidgets('App smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const FoodRecommendApp());
+    await tester.pumpWidget(
+      ChangeNotifierProvider(
+        create: (_) => AppState(),
+        child: const FoodRecommendApp(),
+      ),
+    );
 
     // Verify the app renders without crashing.
     expect(find.byType(MaterialApp), findsOneWidget);

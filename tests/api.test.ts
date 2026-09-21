@@ -17,7 +17,7 @@ describe('API Routes', () => {
 
 
   it('GET /api/recommendation should return recommendations for a valid userId', async () => {
-    const res = await request(app).get('/api/recommendation?userId=11111111-1111-1111-1111-111111111111');
+    const res = await request(app).get('/api/recommendation').set('Authorization', 'Bearer mock.jwt.token');
     if (res.status !== 200) console.log(res.body);
     expect(res.status).toBe(200);
     expect(res.body.data).toBeDefined();
@@ -25,14 +25,14 @@ describe('API Routes', () => {
   }, 30000); // 30s timeout for model load
 
   it('POST /api/recommendation/swipe should return 400 if data is missing', async () => {
-    const res = await request(app).post('/api/recommendation/swipe').send({});
+    const res = await request(app).post('/api/recommendation/swipe').set('Authorization', 'Bearer mock.jwt.token').send({});
     expect(res.status).toBe(400);
   });
 
   it('POST /api/recommendation/swipe should process swipe successfully', async () => {
-    const res = await request(app).post('/api/recommendation/swipe').send({
+    const res = await request(app).post('/api/recommendation/swipe').set('Authorization', 'Bearer mock.jwt.token').send({
       userId: '11111111-1111-1111-1111-111111111111',
-      dishId: '22222222-2222-2222-2222-222222222222',
+      dishId: '22222222-2222-4222-8222-222222222222',
       action: 'like'
     });
     expect(res.status).toBe(200);

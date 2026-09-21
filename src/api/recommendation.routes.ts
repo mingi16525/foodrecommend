@@ -3,6 +3,8 @@ import { DecisionComplexityEstimator, IntentType, RecommendationRequest } from '
 import { AuthRequest } from '../auth/authMiddleware';
 import { eventCollector } from '../recommendation/eventCollector';
 import { db } from '../db';
+import { validate } from '../middleware/validate';
+import { swipeSchema } from '../validators/group.validator';
 
 type RecommendationResult = {
   id: string;
@@ -14,9 +16,9 @@ export const recommendationRouter = Router();
 const estimator = new DecisionComplexityEstimator();
 
 recommendationRouter.get('/', async (req, res) => {
-  const userId = (req.query.userId as string) || (req as AuthRequest).user?.userId;
+  const userId = (req as AuthRequest).user?.userId;
   if (!userId) {
-    return res.status(400).json({ error: 'userId is required' });
+    return res.status(401).json({ error: 'Unauthorized' });
   }
 
   const latStr = req.query.lat as string;
@@ -26,7 +28,7 @@ recommendationRouter.get('/', async (req, res) => {
   if (latStr && lngStr) {
     const lat = parseFloat(latStr);
     const lng = parseFloat(lngStr);
-    if (!isNaN(lat) && !isNaN(lng)) {
+    if (Number.isFinite(lat) && Number.isFinite(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
       location = { lat, lng };
     }
   }
@@ -72,12 +74,12 @@ recommendationRouter.get('/', async (req, res) => {
   }
 });
 
-recommendationRouter.post('/swipe', async (req, res) => {
+recommendationRouter.post('/swipe', validate(swipeSchema), async (req, res) => {
   const { dishId, action } = req.body;
-  const userId = req.body.userId || (req as AuthRequest).user?.userId;
+  const userId = (req as AuthRequest).user?.userId;
   
-  if (!userId || !dishId || !action) {
-    return res.status(400).json({ error: 'userId, dishId, and action are required' });
+  if (!userId) {
+    return res.status(401).json({ error: 'Unauthorized' });
   }
 
   try {

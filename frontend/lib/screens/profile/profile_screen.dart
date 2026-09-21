@@ -22,6 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _savedCount = 0;
   int _postsCount = 0;
   bool _isVerified = false;
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -55,21 +56,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
         final data = json.decode(response.body);
         if (!mounted) return;
         setState(() {
-          _userName = data['full_name'] ?? data['name'] ?? 'Khách';
-          _avatarUrl = data['avatar'] ?? 'https://i.pravatar.cc/150?img=32';
-          _reviewsCount = data['reviews_count'] ?? 0;
-          _savedCount = data['saved_count'] ?? 0;
-          _postsCount = data['posts_count'] ?? 0;
+          _userName = _stringValue(data['full_name'] ?? data['name'], 'Khách');
+          _avatarUrl = _stringValue(data['avatar'], 'https://i.pravatar.cc/150?img=32');
+          _reviewsCount = _intValue(data['reviews_count']);
+          _savedCount = _intValue(data['saved_count']);
+          _postsCount = _intValue(data['posts_count']);
           _isVerified = data['is_reviewer'] == true || data['role'] == 'verified_reviewer';
           _isLoading = false;
+          _errorMessage = null;
         });
       } else {
         if (!mounted) return;
-        setState(() => _isLoading = false);
+        setState(() {
+          _isLoading = false;
+          _errorMessage = 'Không thể tải hồ sơ (${response.statusCode}).';
+        });
       }
     } catch (e) {
       if (!mounted) return;
-      setState(() => _isLoading = false);
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'Không thể kết nối tới máy chủ hồ sơ.';
+      });
     }
   }
 
@@ -131,6 +139,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       body: _isLoading 
           ? const Center(child: CircularProgressIndicator())
+          : _errorMessage != null
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(_errorMessage!),
+                      const SizedBox(height: 20),
+                      ElevatedButton(onPressed: _fetchProfile, child: const Text('Thử lại')),
+                    ],
+                  ),
+                )
           : SingleChildScrollView(
               child: Column(
                 children: [
@@ -202,6 +221,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ],
     );
   }
+
+  String _stringValue(dynamic value, String fallback) =>
+      value is String && value.trim().isNotEmpty ? value : fallback;
+
+  int _intValue(dynamic value) => value is int ? value : int.tryParse('$value') ?? 0;
 
   Widget _buildListTile(IconData icon, String title, VoidCallback onTap) {
     return ListTile(

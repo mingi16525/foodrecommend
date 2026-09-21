@@ -27,9 +27,13 @@ export class SocialService {
 
   async getFeed(userLat?: number, userLng?: number) {
     try {
-      // Create Haversine distance formula if userLat and userLng are provided
       let selectDistance = "'0km' as distance";
-      if (userLat !== undefined && userLng !== undefined && !isNaN(userLat) && !isNaN(userLng)) {
+      if (
+        userLat !== undefined && userLng !== undefined &&
+        Number.isFinite(userLat) && Number.isFinite(userLng) &&
+        userLat >= -90 && userLat <= 90 &&
+        userLng >= -180 && userLng <= 180
+      ) {
         selectDistance = `
           ROUND(
             (6371 * acos(

@@ -24,7 +24,7 @@ describe('Auth API mock tests', () => {
       .post('/api/auth/register')
       .send({
         email: 'test@example.com',
-        password: 'password123',
+        password: 'Password123',
         fullName: 'Test User'
       });
 
@@ -42,7 +42,7 @@ describe('Auth API mock tests', () => {
       });
 
     expect(res.status).toBe(400);
-    expect(res.body.error).toBe('Email and password are required');
+    expect(res.body.error).toBe('Validation failed');
   });
 
   test('should login and return token', async () => {
@@ -71,7 +71,7 @@ describe('Auth API mock tests', () => {
       .post('/api/auth/login')
       .send({
         email: 'unknown@example.com',
-        password: 'wrongpassword'
+        password: 'Wrongpassword1'
       });
 
     expect(res.status).toBe(401);

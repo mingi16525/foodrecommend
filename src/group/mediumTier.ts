@@ -2,6 +2,7 @@ import { recommendationEngine } from '../recommendation/engine';
 import { fastTierRecommender, FastTierCandidate } from '../recommendation/fastTier';
 import { groupService } from './service';
 import { ContextParams } from '../recommendation/routing';
+import { buildAllergyFilter, isSafeFromAllergies } from '../recommendation/filters';
 
 export interface GroupRecommendationResult {
   id: string;
@@ -95,13 +96,11 @@ export class MediumTierRecommender {
       const textToEmbed = `Flavor preferences: ${prefs.flavors.join(", ")}`;
       const vector = await recommendationEngine.generateEmbedding(textToEmbed);
       
-      const mustNotConditions = strictAllergies.map(allergy => ({
-        key: 'ingredients',
-        match: { value: allergy }
-      }));
-      const filterCondition = mustNotConditions.length > 0 ? { must_not: mustNotConditions } : undefined;
+       const filterCondition = buildAllergyFilter(strictAllergies);
 
-      const candidates = await recommendationEngine.searchDishes(vector, 20, filterCondition);
+       const candidates = (await recommendationEngine.searchDishes(vector, 20, filterCondition)).filter((candidate) =>
+         isSafeFromAllergies((candidate.payload as Record<string, unknown>) || {}, strictAllergies)
+       );
       
       // Map to FastTierCandidate structure (Mocking distance/context scores for group)
       const ranked: FastTierCandidate[] = candidates.map(c => {

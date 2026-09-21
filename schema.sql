@@ -102,3 +102,12 @@ CREATE TABLE group_order_items (
     price DECIMAL(10,2)
 );
 
+CREATE TABLE user_swipes (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    dish_id UUID NOT NULL REFERENCES dishes(id) ON DELETE CASCADE,
+    action VARCHAR(10) NOT NULL CHECK (action IN ('like', 'skip')),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX user_swipes_user_created_idx ON user_swipes (user_id, created_at DESC);

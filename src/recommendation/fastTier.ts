@@ -1,5 +1,6 @@
 import { recommendationEngine } from './engine';
 import { ContextParams } from './routing';
+import { buildAllergyFilter, isSafeFromAllergies } from './filters';
 
 export interface FastTierCandidate {
   id: string;
@@ -65,18 +66,16 @@ export class FastTierRecommender {
     }
 
     // 2. Tách bộ lọc dị ứng
-    const mustNotConditions = allergies.map(allergy => ({
-      key: 'ingredients',
-      match: { value: allergy }
-    }));
-    const filterCondition = mustNotConditions.length > 0 ? { must_not: mustNotConditions } : undefined;
+    const filterCondition = buildAllergyFilter(allergies);
 
     // 3. Generate Embedding
     const textToEmbed = `Flavor preferences: ${flavors.join(", ")}`;
     const vector = await recommendationEngine.generateEmbedding(textToEmbed);
 
     // 4. Lấy 50 Candidates từ Qdrant
-    const candidates = await recommendationEngine.searchDishes(vector, 50, filterCondition);
+    const candidates = (await recommendationEngine.searchDishes(vector, 50, filterCondition)).filter((candidate) =>
+      isSafeFromAllergies((candidate.payload as Record<string, unknown>) || {}, allergies)
+    );
 
     // 5. Decision Optimizer (Re-ranking)
     const userLat = contextParams.location?.lat;

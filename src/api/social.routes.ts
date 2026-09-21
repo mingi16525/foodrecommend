@@ -1,14 +1,20 @@
 import { Router, Request, Response } from 'express';
 import { socialService } from '../social/service';
+import { AuthRequest } from '../auth/authMiddleware';
+import { validate } from '../middleware/validate';
+import { createPostSchema } from '../validators/social.validator';
 
 const router = Router();
 
-router.post('/posts', async (req: Request, res: Response): Promise<void> => {
-  const { userId, type, content, videoUrl } = req.body;
-  if (!userId || !type) {
-    res.status(400).json({ error: 'userId and type are required' });
+router.post('/posts', validate(createPostSchema), async (req: AuthRequest, res: Response): Promise<void> => {
+  const { type, content, videoUrl } = req.body;
+  const userId = req.user?.userId;
+  
+  if (!userId) {
+    res.status(401).json({ error: 'Unauthorized' });
     return;
   }
+
   const newPost = await socialService.createPost(userId, type, content, videoUrl);
   res.json({ data: newPost });
 });

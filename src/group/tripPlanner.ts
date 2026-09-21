@@ -30,12 +30,7 @@ export class DeepTierPlanner {
   private async callLLM(prompt: string): Promise<Array<{day: number, session: 'breakfast' | 'lunch' | 'dinner', searchString: string, reasoning: string}>> {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      console.warn('[LLM Orchestrator] No GEMINI_API_KEY found, falling back to basic mock response.');
-      return [
-        { day: 1, session: 'breakfast', searchString: 'healthy breakfast with coffee', reasoning: 'Bữa sáng nhẹ nhàng.' },
-        { day: 1, session: 'lunch', searchString: 'local traditional savory dish', reasoning: 'Bữa trưa đặc sản địa phương.' },
-        { day: 1, session: 'dinner', searchString: 'fine dining steak or seafood', reasoning: 'Bữa tối sang trọng.' }
-      ];
+      throw new Error('GEMINI_API_KEY is not configured on the server');
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
@@ -105,6 +100,15 @@ export class DeepTierPlanner {
 
     // 4. Gọi LLM Orchestrator
     const llmOutput = await this.callLLM(prompt);
+    const validSessions = new Set(['breakfast', 'lunch', 'dinner']);
+    if (!Array.isArray(llmOutput) || llmOutput.length === 0 || llmOutput.some((meal) =>
+      !Number.isInteger(meal.day) || meal.day < 1 || meal.day > days ||
+      !validSessions.has(meal.session) ||
+      typeof meal.searchString !== 'string' || meal.searchString.trim().length === 0 || meal.searchString.length > 200 ||
+      typeof meal.reasoning !== 'string' || meal.reasoning.length > 1000
+    )) {
+      throw new Error('LLM returned an invalid trip plan');
+    }
 
     // 5. Query Qdrant (Grounding) để map từ Text sang Dish thực tế
     const finalPlan: MealPlan[] = [];

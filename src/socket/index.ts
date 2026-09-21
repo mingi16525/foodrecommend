@@ -2,7 +2,11 @@ import { Server, Socket } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import { db } from '../db';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const _JWT_SECRET = process.env.JWT_SECRET;
+if (!_JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
+const JWT_SECRET: string = _JWT_SECRET;
 
 interface AuthenticatedSocket extends Socket {
   user?: { userId: string; [key: string]: unknown };
@@ -27,9 +31,22 @@ export function setupSocket(io: Server) {
     console.log(`User connected to socket: ${userId}`);
 
     // Tham gia phòng chat của nhóm
-    socket.on('join_group', (groupId: string) => {
-      socket.join(`group_${groupId}`);
-      console.log(`User ${userId} joined group_${groupId}`);
+    socket.on('join_group', async (groupId: string) => {
+      try {
+        const membership = await db.query(
+          'SELECT 1 FROM group_members WHERE group_id = $1 AND user_id = $2',
+          [groupId, userId]
+        );
+        if (membership.rowCount === 0) {
+          socket.emit('error', { message: 'Not a member of this group' });
+          return;
+        }
+        socket.join(`group_${groupId}`);
+        console.log(`User ${userId} joined group_${groupId}`);
+      } catch (err) {
+        console.error('Socket join_group error:', err);
+        socket.emit('error', { message: 'Failed to join group' });
+      }
     });
 
     // Rời phòng chat của nhóm
@@ -42,6 +59,15 @@ export function setupSocket(io: Server) {
     socket.on('send_message', async (data: { groupId: string, message: string }) => {
       try {
         const { groupId, message } = data;
+
+        const membership = await db.query(
+          'SELECT 1 FROM group_members WHERE group_id = $1 AND user_id = $2',
+          [groupId, userId]
+        );
+        if (membership.rowCount === 0) {
+          socket.emit('error', { message: 'Not a member of this group' });
+          return;
+        }
         
         // Lưu tin nhắn vào DB
         const result = await db.query(

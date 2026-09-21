@@ -16,33 +16,19 @@ export const options = {
   },
 };
 
-const BASE_URL = 'http://localhost:3000'; // Target API Gateway
+const BASE_URL = __ENV.BASE_URL || 'http://localhost:3000';
+const TOKEN = __ENV.TEST_TOKEN;
 
 export default function () {
-  // 1. Authenticate (Mock)
-  const loginPayload = JSON.stringify({
-    email: `testuser_${__VU}@example.com`,
-  });
-
-  const params = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
-  const loginRes = http.post(`${BASE_URL}/login`, loginPayload, params);
-  
-  // For the sake of the test, assume we got a token or proceed without it if it's a mock.
-  const token = 'mock.jwt.token'; 
   const authParams = {
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${TOKEN}`
     }
   };
 
   // 2. Fetch Recommendations
-  const recsRes = http.get(`${BASE_URL}/recommendations?lat=10.762&lng=106.660`, authParams);
+  const recsRes = http.get(`${BASE_URL}/api/recommendation?lat=10.762&lng=106.660`, authParams);
   
   check(recsRes, {
     'recommendations status is 200': (r) => r.status === 200,
@@ -56,7 +42,7 @@ export default function () {
     action: Math.random() > 0.5 ? 'like' : 'skip'
   });
 
-  const swipeRes = http.post(`${BASE_URL}/swipe`, swipePayload, authParams);
+  const swipeRes = http.post(`${BASE_URL}/api/recommendation/swipe`, swipePayload, authParams);
   
   check(swipeRes, {
     'swipe status is 200': (r) => r.status === 200,
