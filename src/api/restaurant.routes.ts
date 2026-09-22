@@ -24,4 +24,14 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
   res.json({ data: restaurant });
 });
 
+router.get('/:id/dishes', async (req: Request, res: Response): Promise<void> => {
+  const id = req.params.id as string;
+  const dishes = await withCache(`restaurant:${id}:dishes`, 3600, () => restaurantService.getDishesByRestaurantId(id));
+  if (!dishes) {
+    res.status(404).json({ error: 'Dishes not found' });
+    return;
+  }
+  res.json({ data: dishes });
+});
+
 export const restaurantRouter = router;

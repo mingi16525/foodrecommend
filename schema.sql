@@ -33,6 +33,8 @@ CREATE TABLE dishes (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     restaurant_id UUID REFERENCES restaurants(id) ON DELETE CASCADE,
     name VARCHAR(255) NOT NULL,
+    description TEXT,
+    item_type VARCHAR(50) DEFAULT 'single',
     price DECIMAL(10,2),
     image_url TEXT,
     ingredients JSONB,

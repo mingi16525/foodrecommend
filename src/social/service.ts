@@ -57,8 +57,8 @@ export class SocialService {
           d.price, 
           r.name as restaurant_name,
           ${selectDistance},
-          (SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = p.id) as likes,
-          (SELECT COUNT(*) FROM post_comments pc WHERE pc.post_id = p.id) as comments
+          p.likes_count as likes,
+          p.comments_count as comments
         FROM posts p 
         JOIN users u ON p.user_id = u.id 
         LEFT JOIN dishes d ON p.dish_id = d.id
@@ -75,17 +75,23 @@ export class SocialService {
   }
 
   async likePost(postId: string, userId: string) {
-    await this.db.query(
-      'INSERT INTO post_likes (post_id, user_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',
+    const res = await this.db.query(
+      'INSERT INTO post_likes (post_id, user_id) VALUES ($1, $2) ON CONFLICT DO NOTHING RETURNING 1',
       [postId, userId]
     );
+    if (res.rowCount && res.rowCount > 0) {
+      await this.db.query('UPDATE posts SET likes_count = likes_count + 1 WHERE id = $1', [postId]);
+    }
   }
 
   async unlikePost(postId: string, userId: string) {
-    await this.db.query(
-      'DELETE FROM post_likes WHERE post_id = $1 AND user_id = $2',
+    const res = await this.db.query(
+      'DELETE FROM post_likes WHERE post_id = $1 AND user_id = $2 RETURNING 1',
       [postId, userId]
     );
+    if (res.rowCount && res.rowCount > 0) {
+      await this.db.query('UPDATE posts SET likes_count = GREATEST(likes_count - 1, 0) WHERE id = $1', [postId]);
+    }
   }
 
   async commentPost(postId: string, userId: string, commentText: string) {
@@ -93,6 +99,7 @@ export class SocialService {
       'INSERT INTO post_comments (post_id, user_id, comment_text) VALUES ($1, $2, $3) RETURNING *',
       [postId, userId, commentText]
     );
+    await this.db.query('UPDATE posts SET comments_count = comments_count + 1 WHERE id = $1', [postId]);
     return result.rows[0];
   }
 

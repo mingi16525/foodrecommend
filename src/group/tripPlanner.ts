@@ -40,9 +40,10 @@ export class DeepTierPlanner {
       Bạn là một chuyên gia ẩm thực và chuyên gia lên lịch trình (Trip Planner). 
       Dựa trên thông tin được cung cấp, hãy tạo ra một lịch trình ăn uống. 
       Lịch trình phải bao gồm 3 bữa (breakfast, lunch, dinner) cho mỗi ngày.
+      Trong searchString, hãy ưu tiên gợi ý theo dạng Set, Combo, hoặc Mâm thức ăn phù hợp với ngữ cảnh (VD: "Mâm cơm gia đình với cá kho và canh chua", "Combo bún đậu mắm tôm và nước sấu", "Set BBQ nướng"). Không chỉ gợi ý món đơn lẻ.
       Bạn BẮT BUỘC trả về dữ liệu thuần định dạng JSON Array chứa các object với cấu trúc chính xác như sau:
       [
-        { "day": 1, "session": "breakfast", "searchString": "từ khóa mô tả món ăn bằng tiếng anh", "reasoning": "giải thích tiếng việt" }
+        { "day": 1, "session": "breakfast", "searchString": "từ khóa tìm kiếm món ăn hoặc combo (tiếng Việt có dấu)", "reasoning": "giải thích vì sao chọn (tiếng Việt)" }
       ]
       Tuyệt đối KHÔNG trả về markdown block (như \`\`\`json) hay bất kỳ văn bản nào khác ngoài JSON Array.
     `;
@@ -98,16 +99,27 @@ export class DeepTierPlanner {
       Tuyệt đối tránh (dị ứng): ${strictAllergies.join(', ')}.
     `;
 
-    // 4. Gọi LLM Orchestrator
-    const llmOutput = await this.callLLM(prompt);
-    const validSessions = new Set(['breakfast', 'lunch', 'dinner']);
-    if (!Array.isArray(llmOutput) || llmOutput.length === 0 || llmOutput.some((meal) =>
-      !Number.isInteger(meal.day) || meal.day < 1 || meal.day > days ||
-      !validSessions.has(meal.session) ||
-      typeof meal.searchString !== 'string' || meal.searchString.trim().length === 0 || meal.searchString.length > 200 ||
-      typeof meal.reasoning !== 'string' || meal.reasoning.length > 1000
-    )) {
-      throw new Error('LLM returned an invalid trip plan');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let llmOutput: any;
+    try {
+      llmOutput = await this.callLLM(prompt);
+      const validSessions = new Set(['breakfast', 'lunch', 'dinner']);
+      if (!Array.isArray(llmOutput) || llmOutput.length === 0 || llmOutput.some((meal) =>
+        !Number.isInteger(meal.day) || meal.day < 1 || meal.day > days ||
+        !validSessions.has(meal.session) ||
+        typeof meal.searchString !== 'string' || meal.searchString.trim().length === 0 || meal.searchString.length > 200 ||
+        typeof meal.reasoning !== 'string' || meal.reasoning.length > 1000
+      )) {
+        throw new Error('LLM returned an invalid trip plan format');
+      }
+    } catch (error) {
+      console.warn('[LLM Orchestrator] LLM failed, using fallback plan:', error);
+      llmOutput = [];
+      for (let i = 1; i <= days; i++) {
+        llmOutput.push({ day: i, session: 'breakfast', searchString: 'bữa sáng nhẹ nhàng', reasoning: 'Khởi đầu ngày mới' });
+        llmOutput.push({ day: i, session: 'lunch', searchString: 'mâm cơm gia đình trưa', reasoning: 'Nạp năng lượng buổi trưa' });
+        llmOutput.push({ day: i, session: 'dinner', searchString: 'combo nướng BBQ', reasoning: 'Bữa tối thịnh soạn' });
+      }
     }
 
     // 5. Query Qdrant (Grounding) để map từ Text sang Dish thực tế

@@ -148,44 +148,65 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        title: const Text('Khám phá (Tab 3)'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _fetchRecommendations,
-          )
-        ],
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _errorMessage != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+      backgroundColor: const Color(0xFFF8F9FA),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(_errorMessage!),
-                      const SizedBox(height: 20),
-                      ElevatedButton(onPressed: _fetchRecommendations, child: const Text('Thử lại')),
+                      Text('Khám phá', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: Colors.black87)),
+                      Text('Tìm món ngon quanh bạn', style: TextStyle(fontSize: 14, color: Colors.black54)),
                     ],
                   ),
-                )
-          : _recommendations.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('Đã hết danh sách đề xuất.'),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: _fetchRecommendations,
-                        child: const Text('Tải thêm'),
-                      ),
-                    ],
-                  ),
-                )
-              : Padding(
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.refresh, color: Colors.orangeAccent),
+                      onPressed: _fetchRecommendations,
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Expanded(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _errorMessage != null
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(_errorMessage!),
+                              const SizedBox(height: 20),
+                              ElevatedButton(onPressed: _fetchRecommendations, child: const Text('Thử lại')),
+                            ],
+                          ),
+                        )
+                      : _recommendations.isEmpty
+                          ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text('Đã hết danh sách đề xuất.'),
+                                  const SizedBox(height: 20),
+                                  ElevatedButton(
+                                    onPressed: _fetchRecommendations,
+                                    child: const Text('Tải thêm'),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
@@ -248,6 +269,10 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                     ],
                   ),
                 ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

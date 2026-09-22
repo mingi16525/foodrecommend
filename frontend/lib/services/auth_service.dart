@@ -8,7 +8,7 @@ class AuthService {
   Future<Map<String, dynamic>> login(String email, String password) async {
     try {
       final HttpClient client = HttpClient();
-      final HttpClientRequest request = await client.postUrl(Uri.parse('$baseUrl/login'));
+      final HttpClientRequest request = await client.postUrl(Uri.parse('$baseUrl/api/auth/login'));
       request.headers.set('content-type', 'application/json');
       request.add(utf8.encode(jsonEncode({'email': email, 'password': password})));
       
@@ -33,7 +33,7 @@ class AuthService {
   Future<Map<String, dynamic>> register(String email, String phone, String fullName, String password) async {
     try {
       final HttpClient client = HttpClient();
-      final HttpClientRequest request = await client.postUrl(Uri.parse('$baseUrl/register'));
+      final HttpClientRequest request = await client.postUrl(Uri.parse('$baseUrl/api/auth/register'));
       request.headers.set('content-type', 'application/json');
       request.add(utf8.encode(jsonEncode({
         'email': email,

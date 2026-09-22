@@ -59,7 +59,7 @@ recommendationRouter.get('/', async (req, res) => {
     const dishIds = results.map((r: RecommendationResult) => r.id);
     if (dishIds.length > 0) {
       const dbRes = await db.query(`
-        SELECT d.id, d.price, d.image_url, r.name as restaurant_name
+        SELECT d.id, d.price, d.image_url, r.name as restaurant_name, d.item_type, d.description
         FROM dishes d
         LEFT JOIN restaurants r ON d.restaurant_id = r.id
         WHERE d.id = ANY($1)
@@ -72,7 +72,9 @@ recommendationRouter.get('/', async (req, res) => {
           price: dbDish?.price || 0,
           image_url: dbDish?.image_url || 'https://via.placeholder.com/400x300.png?text=Dish',
           restaurant_name: dbDish?.restaurant_name || 'Unknown Restaurant',
-          distance: `${(r.distanceScore * 10).toFixed(1)}km`
+          distance: `${(r.distanceScore * 10).toFixed(1)}km`,
+          item_type: dbDish?.item_type || 'single',
+          description: dbDish?.description || ''
         };
       });
       res.json({ data: enrichedResults });

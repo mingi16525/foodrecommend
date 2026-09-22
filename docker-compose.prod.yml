@@ -12,6 +12,7 @@ services:
       - KAFKA_BROKER=kafka:9092
       - QDRANT_URL=http://qdrant:6333
       - PORT=3000
+      - JWT_SECRET=supersecretjwtkey
     depends_on:
       - db
       - redis
@@ -62,7 +63,7 @@ services:
     restart: always
 
   qdrant:
-    image: qdrant/qdrant:v1.9.0
+    image: qdrant/qdrant:latest
     volumes:
       - qdrantdata_prod:/qdrant/storage
     restart: always

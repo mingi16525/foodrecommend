@@ -35,6 +35,16 @@ export class RestaurantService {
     }
   }
 
+  async getDishesByRestaurantId(id: string) {
+    try {
+      const dishesResult = await this.db.query('SELECT * FROM dishes WHERE restaurant_id = $1', [id]);
+      return dishesResult.rows;
+    } catch (e) {
+      console.error('DB error in getDishesByRestaurantId', e);
+      throw e;
+    }
+  }
+
   async searchRestaurants(query: string) {
     try {
       const result = await this.db.query(

@@ -44,6 +44,7 @@ tripRouter.post('/plan', requirePremium, validate(tripPlanSchema), async (req, r
 
     const prompt = `${context} Hãy tạo một lịch trình chi tiết trong một ngày gồm các hoạt động ăn uống và tham quan.
 Mỗi mục cần có thời gian (time), tiêu đề hoạt động (title), địa điểm (location), và loại (type: 'food' hoặc 'activity' hoặc 'meetup').
+Đối với các hoạt động ăn uống (type: 'food'), hãy ưu tiên gợi ý theo dạng Set, Combo hoặc Mâm thức ăn phù hợp với ngữ cảnh nhóm (VD: "Combo bún đậu", "Set nướng BBQ").
 Trả về định dạng mảng JSON.`;
 
     const result = await model.generateContent(prompt);

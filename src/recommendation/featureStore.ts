@@ -78,6 +78,19 @@ export class FeatureStore {
       console.warn('[FeatureStore] Error setting user features:', e);
     }
   }
+
+  public async invalidateUserFeatures(userId: string): Promise<void> {
+    try {
+      if (this.isConnected && this.redis) {
+        await this.redis.del(`user:features:${userId}`);
+      } else {
+        delete memoryCache[userId];
+      }
+      console.log(`[FeatureStore] Invalidated profile cache for User ${userId}.`);
+    } catch (e) {
+      console.warn('[FeatureStore] Error invalidating user features:', e);
+    }
+  }
 }
 
 export const featureStore = new FeatureStore();

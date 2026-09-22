@@ -25,12 +25,16 @@ describe('DeepTierPlanner', () => {
     expect(result.plan[0].recommendedDish?.id).toBe('dish-1');
   });
 
-  it('rejects malformed LLM meal schema', async () => {
+  it('falls back to default plan when LLM returns malformed schema', async () => {
     const planner = new DeepTierPlanner();
     jest.spyOn(planner as never, 'callLLM' as never).mockResolvedValue([
       { day: 3, session: 'lunch', searchString: 'x', reasoning: 'x' }
     ] as never);
+    jest.spyOn(recommendationEngine, 'searchDishes').mockResolvedValue([]);
 
-    await expect(planner.generateTripPlan(undefined, {})).rejects.toThrow('invalid trip plan');
+    const result = await planner.generateTripPlan(undefined, {});
+    expect(result.tripDays).toBe(1);
+    expect(result.plan.length).toBe(3);
+    expect(result.plan[0].session).toBe('breakfast');
   });
 });

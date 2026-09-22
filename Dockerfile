@@ -17,8 +17,9 @@ COPY package*.json ./
 RUN npm ci --only=production
 
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/src/db/seeds.ts ./dist/db/seeds.ts
+COPY seeds ./seeds
 COPY migrations ./migrations
+COPY docs ./docs
 
 EXPOSE 3000
 

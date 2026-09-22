@@ -1,5 +1,5 @@
 import { db } from '../db';
-
+import { featureStore } from '../recommendation/featureStore';
 export interface UserPreferences {
   favorite_flavors?: string[];
   allergies?: string[];
@@ -71,6 +71,8 @@ export class UserService {
         JSON.stringify(dietary_restrictions || []),
         JSON.stringify(hated_dishes || [])
       ]);
+      
+      await featureStore.invalidateUserFeatures(userId);
       
       return res.rows[0];
     } catch (e) {
