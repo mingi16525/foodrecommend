@@ -8,6 +8,13 @@ jest.mock('./../src/auth/authMiddleware', () => ({
     if (authorization !== 'Bearer mock.jwt.token') return res.status(403).json({ error: 'Token expired or invalid' });
     req.user = { userId: '11111111-1111-4111-8111-111111111111', email: 'test@example.com' };
     next();
+  },
+  optionalAuthenticateToken: (req, res, next) => {
+    const authorization = req.headers.authorization;
+    if (authorization === 'Bearer mock.jwt.token') {
+      req.user = { userId: '11111111-1111-4111-8111-111111111111', email: 'test@example.com' };
+    }
+    next();
   }
 }));
 

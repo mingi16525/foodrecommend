@@ -1,12 +1,12 @@
 import { Router, Request, Response } from 'express';
 import { socialService } from '../social/service';
-import { AuthRequest } from '../auth/authMiddleware';
+import { AuthRequest, authenticateToken, optionalAuthenticateToken } from '../auth/authMiddleware';
 import { validate } from '../middleware/validate';
 import { createPostSchema } from '../validators/social.validator';
 
 const router = Router();
 
-router.post('/posts', validate(createPostSchema), async (req: AuthRequest, res: Response): Promise<void> => {
+router.post('/posts', authenticateToken, validate(createPostSchema), async (req: AuthRequest, res: Response): Promise<void> => {
   const { type, content, videoUrl } = req.body;
   const userId = req.user?.userId;
   
@@ -19,7 +19,7 @@ router.post('/posts', validate(createPostSchema), async (req: AuthRequest, res: 
   res.json({ data: newPost });
 });
 
-router.get('/feed', async (req: Request, res: Response): Promise<void> => {
+router.get('/feed', optionalAuthenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
   const latStr = req.query.lat as string;
   const lngStr = req.query.lng as string;
   let lat: number | undefined;
@@ -33,11 +33,43 @@ router.get('/feed', async (req: Request, res: Response): Promise<void> => {
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 20;
 
-  const feed = await socialService.getFeed(lat, lng, page, limit);
+  const feed = await socialService.getFeed(req.user?.userId, lat, lng, page, limit);
   res.json({ data: feed });
 });
 
-router.post('/posts/:id/like', async (req: AuthRequest, res: Response): Promise<void> => {
+router.get('/feed/liked', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
+  const userId = req.user?.userId;
+  if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 20;
+  // Temporary: In a real app we'd have getLikedPosts method
+  const feed = await socialService.getFeed(userId, undefined, undefined, page, limit);
+  // Filter memory for simplicity since it's an MVP, though SQL is better
+  const liked = feed.filter(f => f.is_liked);
+  res.json({ data: liked });
+});
+
+router.get('/feed/saved', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
+  const userId = req.user?.userId;
+  if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 20;
+  const feed = await socialService.getFeed(userId, undefined, undefined, page, limit);
+  const saved = feed.filter(f => f.is_saved);
+  res.json({ data: saved });
+});
+
+router.get('/feed/my-posts', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
+  const userId = req.user?.userId;
+  if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 20;
+  const feed = await socialService.getFeed(userId, undefined, undefined, page, limit);
+  const myPosts = feed.filter(f => f.user_id === userId);
+  res.json({ data: myPosts });
+});
+
+router.post('/posts/:id/like', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
   const postId = req.params.id as string;
   const userId = req.user?.userId;
   if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
@@ -48,7 +80,7 @@ router.post('/posts/:id/like', async (req: AuthRequest, res: Response): Promise<
   res.json({ success: true });
 });
 
-router.delete('/posts/:id/like', async (req: AuthRequest, res: Response): Promise<void> => {
+router.delete('/posts/:id/like', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
   const postId = req.params.id as string;
   const userId = req.user?.userId;
   if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
@@ -56,13 +88,38 @@ router.delete('/posts/:id/like', async (req: AuthRequest, res: Response): Promis
   res.json({ success: true });
 });
 
-router.post('/posts/:id/comments', async (req: AuthRequest, res: Response): Promise<void> => {
+router.post('/posts/:id/comments', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
   const postId = req.params.id as string;
   const { commentText } = req.body;
   const userId = req.user?.userId;
   if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
   const newComment = await socialService.commentPost(postId, userId, commentText);
   res.json({ data: newComment });
+});
+
+router.get('/posts/:id/comments', async (req: Request, res: Response): Promise<void> => {
+  const postId = req.params.id as string;
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 10;
+  
+  const comments = await socialService.getComments(postId, page, limit);
+  res.json({ data: comments });
+});
+
+router.post('/posts/:id/save', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
+  const postId = req.params.id as string;
+  const userId = req.user?.userId;
+  if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
+  await socialService.savePost(postId, userId);
+  res.json({ success: true });
+});
+
+router.delete('/posts/:id/save', async (req: AuthRequest, res: Response): Promise<void> => {
+  const postId = req.params.id as string;
+  const userId = req.user?.userId;
+  if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
+  await socialService.unsavePost(postId, userId);
+  res.json({ success: true });
 });
 
 export const socialRouter = router;

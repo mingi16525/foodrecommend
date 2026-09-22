@@ -59,7 +59,7 @@ app.use('/api/health', healthRouter);
 app.use('/api/recommendation', authenticateToken as express.RequestHandler, recommendationRouter);
 app.use('/api/users', authenticateToken as express.RequestHandler, userRouter);
 app.use('/api/restaurants', restaurantRouter);
-app.use('/api/social', authenticateToken as express.RequestHandler, socialRouter);
+app.use('/api/social', socialRouter);
 app.use('/api/groups', authenticateToken as express.RequestHandler, groupRouter);
 app.use('/api/trip', authenticateToken as express.RequestHandler, tripRouter);
 app.use('/api/payment', authenticateToken as express.RequestHandler, paymentRouter);

@@ -106,6 +106,38 @@ export class RecommendationEngine {
     }
     return { success: true };
   }
+
+  async getLikedDishes(userId: string, limit: number): Promise<string[]> {
+    try {
+      const res = await this.db.query(
+        'SELECT dish_id FROM user_swipes WHERE user_id = $1 AND action = $2 ORDER BY RANDOM() LIMIT $3',
+        [userId, 'like', limit]
+      );
+      return res.rows.map(r => r.dish_id);
+    } catch (e) {
+      console.error('Error fetching liked dishes:', e);
+      return [];
+    }
+  }
+
+  async getDishesFromQdrant(dishIds: string[]) {
+    if (!dishIds || dishIds.length === 0) return [];
+    try {
+      const res = await this.qdrant.retrieve('dishes', {
+        ids: dishIds,
+        with_payload: true,
+        with_vector: false
+      });
+      return res.map(r => ({
+        id: r.id,
+        score: 1.0, // Default base score for direct fetch
+        payload: r.payload
+      }));
+    } catch (e) {
+      console.error('Error fetching dishes from Qdrant:', e);
+      return [];
+    }
+  }
 }
 
 export const recommendationEngine = new RecommendationEngine();

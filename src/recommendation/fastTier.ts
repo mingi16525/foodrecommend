@@ -77,7 +77,28 @@ export class FastTierRecommender {
       isSafeFromAllergies((candidate.payload as Record<string, unknown>) || {}, allergies)
     );
 
-    // 5. Decision Optimizer (Re-ranking)
+    // 5. Inject Liked Dishes
+    if (userId) {
+      const likedDishIds = await recommendationEngine.getLikedDishes(userId, 2);
+      if (likedDishIds.length > 0) {
+        // Filter out candidates that are already in the liked list so we don't fetch them again or duplicate
+        const existingCandidateIds = new Set(candidates.map(c => c.id));
+        const newLikedIds = likedDishIds.filter(id => !existingCandidateIds.has(id));
+
+        if (newLikedIds.length > 0) {
+          const likedDishes = await recommendationEngine.getDishesFromQdrant(newLikedIds);
+          // Mark these specific dishes with a special flag in their payload so we can boost them
+          likedDishes.forEach(d => {
+            if (d.payload) {
+              (d.payload as Record<string, unknown>)._is_liked_injection = true;
+            }
+          });
+          candidates.push(...likedDishes);
+        }
+      }
+    }
+
+    // 6. Decision Optimizer (Re-ranking)
     const userLat = contextParams.location?.lat;
     const userLng = contextParams.location?.lng;
     const currentTime = contextParams.time || new Date();
@@ -104,7 +125,12 @@ export class FastTierRecommender {
       const vectorScore = candidate.score ?? 0;
 
       // Final FAISS-like Ranking Score Formula
-      const finalScore = (vectorScore * 0.6) + (distanceScore * 0.3) + (contextScore * 0.1);
+      let finalScore = (vectorScore * 0.6) + (distanceScore * 0.3) + (contextScore * 0.1);
+
+      // Boost score significantly if it's an injected liked dish
+      if (payload._is_liked_injection) {
+        finalScore = 999.0;
+      }
 
       return {
         id: candidate.id as string,
@@ -117,9 +143,21 @@ export class FastTierRecommender {
       };
     });
 
-    // 6. Sort by Final Score DESC and take top 10
+    // 7. Sort by Final Score DESC and take top 10
     rankedCandidates.sort((a, b) => b.finalScore - a.finalScore);
-    return rankedCandidates.slice(0, 10);
+    
+    // 8. Deduplicate by ID in case of any overlap
+    const seenIds = new Set<string>();
+    const finalCandidates: FastTierCandidate[] = [];
+    for (const rc of rankedCandidates) {
+      if (!seenIds.has(rc.id)) {
+        seenIds.add(rc.id);
+        finalCandidates.push(rc);
+        if (finalCandidates.length === 10) break;
+      }
+    }
+    
+    return finalCandidates;
   }
 }
 

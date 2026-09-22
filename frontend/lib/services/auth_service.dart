@@ -22,11 +22,7 @@ class AuthService {
         throw Exception('Failed to login: $responseBody');
       }
     } catch (e) {
-      // Return a mock token if backend is not running yet
-      return {
-        'user': { 'id': 'mock-id-123', 'email': email },
-        'token': 'mock.jwt.token'
-      };
+      throw Exception('Login error: $e');
     }
   }
 
@@ -52,13 +48,7 @@ class AuthService {
         throw Exception('Failed to register: $responseBody');
       }
     } catch (e) {
-      // Mock registration success if backend not running
-      return {
-        'id': 'mock-id-${DateTime.now().millisecondsSinceEpoch}',
-        'email': email,
-        'phone': phone,
-        'full_name': fullName
-      };
+      throw Exception('Register error: $e');
     }
   }
 }

@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../providers/app_state.dart';
 import 'package:http/http.dart' as http;
 import '../../config/api_config.dart';
-
+import 'post_grid_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -186,9 +186,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: const Text('Đăng nhập để xem thêm'),
                     )
                   else ...[
-                    _buildListTile(Icons.favorite, 'Món đã thích', () {}),
-                    _buildListTile(Icons.bookmark, 'Quán đã lưu', () {}),
-                    _buildListTile(Icons.article, 'Bài viết đã đăng', () {}),
+                    _buildListTile(Icons.favorite, 'Món đã thích', () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => const PostGridScreen(endpoint: '/feed/liked', title: 'Món đã thích')));
+                    }),
+                    _buildListTile(Icons.bookmark, 'Video đã lưu', () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => const PostGridScreen(endpoint: '/feed/saved', title: 'Video đã lưu')));
+                    }),
+                    _buildListTile(Icons.article, 'Bài viết đã đăng', () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => const PostGridScreen(endpoint: '/feed/my-posts', title: 'Bài viết đã đăng')));
+                    }),
                     _buildListTile(Icons.link, 'Liên kết mạng xã hội', () {}),
                     
                     const Divider(height: 40),

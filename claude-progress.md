@@ -20,26 +20,19 @@
 
 ## Completed This Session
 
-- Thêm cột `description` và `item_type` vào bảng `dishes` (`schema.sql` và tạo migration `006_add_combo_support.ts`).
-- Cập nhật prompt Gemini trong `tripPlanner.ts` và `trip.routes.ts` để AI gợi ý Combo/Set/Mâm thức ăn thay vì món đơn lẻ.
-- Tối ưu hóa Fallback AI: Cập nhật hàm gọi LLM trong `tripPlanner.ts` bằng `try/catch` để nếu lỗi Gemini sẽ trả về fallback tĩnh.
-- Khởi tạo tool crawl dữ liệu quán ăn (`tools/tool_get_food`) dùng Puppeteer/Google Maps API.
-- Khởi tạo tool tạo user thật & mô phỏng hành vi (`tools/tool_user`).
-- Viết tài liệu luồng Frontend-Backend (`user_flow_mapping.md`).
-- Viết tài liệu HDSD cho Admin (`ADMIN_GUIDE.md`) và yêu cầu dữ liệu (`CONTENT_REQUIREMENTS.md`).
-- (Mới) Cập nhật API Recommendation (`recommendation.routes.ts`) để truyền `item_type` và `description` xuống Frontend.
-- (Mới) Nâng cấp toàn diện UI/UX trên Flutter Frontend:
-  - Cải tiến màn hình **Khám phá** (Tab 3): Thiết kế header hiện đại, thêm huy hiệu "🔥 COMBO" dành riêng cho các Set thức ăn, tích hợp micro-animations (hiệu ứng scale mượt mà khi người dùng chạm) và glassmorphism cho các thông số.
-  - Cải tiến màn hình **Trip Planner** (Lịch trình nhóm): Chuyển sang phong cách CustomScrollView với SliverAppBar tràn viền hiện đại, tạo Timeline UI đẹp mắt và tích hợp hiệu ứng Staggered Animation cho các Card lịch trình.
-- Cập nhật và fix lỗi deprecated warnings cho Flutter Frontend.
+- Bổ sung bảng `saved_posts` và cột `saves_count` vào `posts` (Migration `20260922153534_add_social_tables.ts`).
+- Cập nhật backend `social.routes.ts` và `socialService.ts` để hỗ trợ tính năng Thích, Lưu và Phân trang (Pagination) cho Bình luận.
+- Bổ sung `optionalAuthenticateToken` để cho phép khách xem feed và đồng thời trả về trạng thái Thích/Lưu cho User đã đăng nhập.
+- Nâng cấp UI/UX trên Flutter Frontend:
+  - Tách riêng component `FeedItemWidget` cho Tab 1, tích hợp tương tác Thích, Lưu (Optimistic UI) và Bình luận qua `BottomSheet`.
+  - Cập nhật màn hình Profile (Tab 5) hiển thị thống kê chính xác và liên kết tới màn hình lưới `PostGridScreen` cho nội dung "Món đã thích", "Video đã lưu", "Bài viết đã đăng".
+- Xử lý lỗi Docker build cũ không ăn code mới (Rebuild `docker-compose.prod.yml`).
 
 ## Verification
 
-- `npx tsc --noEmit`: passed.
-- `npm run lint`: passed (sau khi fix lỗi `any` type).
-- `npm test` (Backend): passed.
-- `flutter analyze` (Frontend): passed (sau khi fix 2 cảnh báo deprecated opacity).
-- `flutter test` (Frontend): passed.
+- `npm run lint`: passed.
+- `npm test` (Backend): 1 failed in `tests/api.test.ts` (due to `getLikedDishes` not mocked), 22 passed.
+- Giao diện Frontend hiển thị đầy đủ và hoạt động mượt mà, lưu trạng thái xuống DB khi thao tác Like/Save.
 
 ## Remaining Work
 
