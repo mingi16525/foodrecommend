@@ -73,15 +73,29 @@ export class RestaurantService {
 
   async claimRestaurant(restaurantId: string, userId: string) {
     try {
-      // In MVP, we just assign claimed_by and set is_verified to true instantly.
+      // Đăng ký quyền sở hữu nhưng is_verified = false (chờ Admin duyệt)
       const result = await this.db.query(
-        'UPDATE restaurants SET claimed_by = $1, is_verified = $2 WHERE id = $3 AND claimed_by IS NULL RETURNING *',
-        [userId, true, restaurantId]
+        'UPDATE restaurants SET claimed_by = $1, is_verified = false WHERE id = $2 AND (claimed_by IS NULL OR claimed_by = $1) RETURNING *',
+        [userId, restaurantId]
       );
-      if (result.rows.length === 0) return null; // already claimed or not found
+      if (result.rows.length === 0) return null; // already claimed by someone else or not found
       return result.rows[0];
     } catch (e) {
       console.error('DB error in claimRestaurant', e);
+      throw e;
+    }
+  }
+
+  async approveClaim(restaurantId: string) {
+    try {
+      const result = await this.db.query(
+        'UPDATE restaurants SET is_verified = true WHERE id = $1 AND claimed_by IS NOT NULL RETURNING *',
+        [restaurantId]
+      );
+      if (result.rows.length === 0) return null;
+      return result.rows[0];
+    } catch (e) {
+      console.error('DB error in approveClaim', e);
       throw e;
     }
   }

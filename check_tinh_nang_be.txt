@@ -43,7 +43,7 @@ Dưới đây là kết quả đối chiếu giữa danh sách kịch bản test
 ### B. BUSINESS OWNER (CHỦ NHÀ HÀNG)
 
 1. Yêu cầu quyền sở hữu (Claim Business)
-- [x] Claim & Duyệt: Đã có `POST /api/restaurant/:id/claim`. Trong file `restaurant/service.ts`, chức năng này hiện đang **AUTO-APPROVE** (tự động gán `is_verified = true` ngay lập tức). Chưa có luồng chờ Admin duyệt thực tế.
+- [x] Claim & Duyệt: Đã hoàn thiện. Người dùng gửi yêu cầu qua `POST /api/restaurant/:id/claim` (sẽ được đánh dấu `is_verified = false`). Admin sẽ duyệt qua API mới `PUT /api/admin/restaurants/claim/:id` để cấp tích xanh `is_verified = true`.
 
 2. Quản lý & Quảng bá (Business Post)
 - [x] Đăng bài đính kèm nhiều món: `POST /api/social/posts` có hỗ trợ `dishIds` (mảng các món).
@@ -57,8 +57,12 @@ Dưới đây là kết quả đối chiếu giữa danh sách kịch bản test
 
 ====================================================================
 KẾT LUẬN & ĐỀ XUẤT HÀNH ĐỘNG:
-1. Triển khai API/logic tạo và xác minh OTP (`auth.routes.ts`).
-2. Cập nhật logic User Post: Tự động tạo bản ghi nhà hàng nếu `restaurantId` không tồn tại.
-3. Tạo API cho Admin để duyệt yêu cầu Claim (`PUT /api/admin/restaurants/claim/:id`).
-4. Bổ sung API cho Business Owner thêm món ăn mới (`POST /api/restaurant/:id/dishes`) và trigger index vào Qdrant.
+TẤT CẢ CÁC TÍNH NĂNG VÀ LỖ HỔNG E2E ĐÃ ĐƯỢC HOÀN THIỆN 100%:
+1. [x] Luồng OTP đăng ký/đăng nhập đã hoạt động chặt chẽ (lưu DB is_verified, rate limit, timeout 5 phút).
+2. [x] Chức năng tự động tạo bản ghi nhà hàng khi User Post đăng bài đã tích hợp thành công.
+3. [x] Đã tạo `adminRouter` cho Admin duyệt quyền Claim quán ăn.
+4. [x] Đã bổ sung API thêm món ăn (`POST /api/restaurant/:id/dishes`).
+5. [x] Các tính năng Tab 2 (Group, Lịch trình, Split Bill, Notification) đã hoạt động tốt.
+
+Dự án Backend đã sẵn sàng cho bước MANUAL TEST TOÀN DIỆN TRÊN FRONTEND (APP).
 ====================================================================

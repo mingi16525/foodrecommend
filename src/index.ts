@@ -12,6 +12,7 @@ import { groupRouter } from './api/group.routes';
 import { authRouter } from './api/auth.routes';
 import { healthRouter } from './api/health.routes';
 import { tripRouter } from './api/trip.routes';
+import { adminRouter } from './api/admin.routes';
 import paymentRouter from './api/payment.routes';
 import notificationRouter from './api/notification.routes';
 import { loyaltyRoutes } from './api/loyalty.routes';
@@ -49,6 +50,8 @@ const authLimiter = rateLimit({
 app.use('/api/', generalLimiter);
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
+app.use('/api/auth/send-otp', authLimiter);
+app.use('/api/auth/verify-otp', authLimiter);
 
 app.use(express.json({ limit: '10kb' }));
 
@@ -56,6 +59,7 @@ app.use(metricsMiddleware);
 
 app.use('/api/auth', authRouter);
 app.use('/api/health', healthRouter);
+app.use('/api/admin', authenticateToken as express.RequestHandler, adminRouter);
 app.use('/api/recommendation', authenticateToken as express.RequestHandler, recommendationRouter);
 app.use('/api/users', authenticateToken as express.RequestHandler, userRouter);
 app.use('/api/restaurants', restaurantRouter);
