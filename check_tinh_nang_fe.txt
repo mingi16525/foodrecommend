@@ -1,0 +1,31 @@
+### BÁO CÁO KIỂM TRA TOÀN DIỆN FRONT-END (FLUTTER APP) ###
+
+Sau khi đối chiếu mã nguồn thư mục `frontend/lib` với các tính năng đã hoàn thiện ở Backend, dưới đây là hiện trạng thực tế của App (Frontend) chuẩn bị cho Manual Test:
+
+#### 1. Tab 1 - Authentication (Xác thực & OTP)
+- [x] **Giao diện Đăng ký & Đăng nhập cơ bản**: Đã có (`login_screen.dart`, `register_screen.dart`).
+- [x] **Giao diện Xác minh OTP**: Đã hoàn thiện. Thêm file `otp_screen.dart` cho phép người dùng nhập 6 số và gửi lại mã OTP. Đã đấu nối API `POST /api/auth/verify-otp` trong `auth_service.dart`.
+- [x] **Xử lý đăng nhập lỗi do thiếu OTP**: Đã xử lý trong `login_screen.dart`. Nếu API báo lỗi "not verified", hệ thống hiển thị cảnh báo và chuyển luôn sang trang `OtpScreen`.
+
+#### 2. Tab 1 - Dành cho bạn (Social Feed & Đăng bài)
+- [x] **Giao diện lướt Feed (giống TikTok)**: Đã có khung UI `feed_screen.dart`, có gọi API `GET /api/social/feed`.
+- [ ] **Giao diện "Đăng bài" (User Post)**: **THIẾU HOÀN TOÀN**. Người dùng chưa có nút hay màn hình nào để tải video lên, tag tên quán và chọn món. Dẫn đến tính năng "Tự động tạo quán ăn" của Backend không có cách nào test trên App.
+- [ ] **Tương tác Thích/Bình luận**: Giao diện chỉ có nút (mock UI), chưa được đấu nối vào API `POST /like` hay `POST /comment`.
+
+#### 3. Tính năng Quản lý Quán (Dành cho Business Owner)
+- [ ] **Nhận quyền sở hữu (Claim Business)**: **THIẾU HOÀN TOÀN**. Chưa có màn hình hoặc nút "Xác nhận quán của tôi".
+- [ ] **Thêm món ăn vào menu**: **THIẾU HOÀN TOÀN**. Chủ quán không có UI để gọi API `POST /api/restaurant/:id/dishes`.
+
+#### 4. Tab 2 - Cộng đồng (Nhóm, Lịch trình, Chia tiền)
+- [x] **Tạo nhóm & Danh sách nhóm**: Đã có `group_list_screen.dart`, gọi API tạo nhóm thực tế.
+- [x] **Group Chat & Đặt món chung**: Đã có `group_chat_screen.dart` và `group_order_screen.dart`, tích hợp polling API để realtime hóa.
+- [ ] **Lập lịch trình bằng AI (Trip Planner)**: Đã có khung thư mục `screens/trip` nhưng giao diện trò chuyện với AI (DeepTierPlanner) cần được làm mịn hơn để user có thể nhập context (thời tiết, ngân sách).
+
+====================================================================
+KẾT LUẬN & ĐỀ XUẤT HÀNH ĐỘNG CHO FRONTEND:
+====================================================================
+Để quy trình E2E Manual Test có thể diễn ra thông suốt từ đầu đến cuối, Frontend **BẮT BUỘC** phải được bổ sung ngay 2 luồng quan trọng nhất:
+1. **Xây dựng `otp_screen.dart`**: Điều hướng sang trang này ngay sau khi đăng ký.
+2. **Xây dựng `create_post_screen.dart`**: Cho phép user đăng bài có kèm tên quán ăn để test tính năng tự tạo nhà hàng của Backend.
+
+Các tính năng dành cho Admin/Chủ quán có thể test tạm bằng Postman, nhưng luồng của User thì bắt buộc phải có trên App.

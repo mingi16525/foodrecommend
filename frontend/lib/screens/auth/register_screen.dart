@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
+import 'otp_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -28,8 +29,10 @@ class RegisterScreenState extends State<RegisterScreen> {
       debugPrint('Registered successfully: ${response['id']}');
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Đăng ký thành công! Vui lòng đăng nhập.')));
-      Navigator.of(context).pop(); // Quay lại trang đăng nhập
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Đăng ký thành công! Vui lòng xác minh OTP.')));
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => OtpScreen(email: _emailController.text)),
+      );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Đăng ký thất bại: $e')));

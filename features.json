@@ -1,6 +1,20 @@
 {
   "features": [
     {
+      "name": "implement-frontend-e2e-gaps",
+      "status": "IN_PROGRESS",
+      "description": "Hoàn thiện các lỗ hổng trên Frontend để thực hiện E2E test, bao gồm: giao diện OTP, màn hình đăng bài, claim business.",
+      "scope": [
+        "frontend/lib/services/auth_service.dart",
+        "frontend/lib/screens/auth/register_screen.dart",
+        "frontend/lib/screens/auth/login_screen.dart",
+        "frontend/lib/screens/auth/otp_screen.dart",
+        "frontend/lib/screens/feed/create_post_screen.dart",
+        "check_tinh_nang_fe.txt",
+        "claude-progress.md"
+      ]
+    },
+    {
       "name": "fix-tab4-save-logout",
       "status": "DONE",
       "description": "Sau khi đăng xuất và đăng nhập lại, dữ liệu khi bấm lưu ở tab 4 không được lưu thành công. Thực hiện hoàn thiện phần lưu trữ thực tế cho tab 4.",

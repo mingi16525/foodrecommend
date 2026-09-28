@@ -6,6 +6,7 @@ import '../../providers/app_state.dart';
 import '../../services/auth_service.dart';
 import '../../config/api_config.dart';
 import 'register_screen.dart';
+import 'otp_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -38,7 +39,14 @@ class LoginScreenState extends State<LoginScreen> {
       context.go('/');
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login failed: $e')));
+      if (e.toString().contains('not verified')) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Tài khoản chưa được xác minh. Vui lòng nhập mã OTP.')));
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => OtpScreen(email: _emailController.text)),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login failed: $e')));
+      }
     } finally {
       setState(() => _isLoading = false);
     }

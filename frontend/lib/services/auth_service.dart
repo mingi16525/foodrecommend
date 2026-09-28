@@ -50,5 +50,45 @@ class AuthService {
     } catch (e) {
       throw Exception('Register error: $e');
     }
+  Future<Map<String, dynamic>> sendOtp(String email) async {
+    try {
+      final HttpClient client = HttpClient();
+      final HttpClientRequest request = await client.postUrl(Uri.parse('$baseUrl/api/auth/send-otp'));
+      request.headers.set('content-type', 'application/json');
+      request.add(utf8.encode(jsonEncode({'email': email})));
+      
+      final HttpClientResponse response = await request.close();
+      final String responseBody = await response.transform(utf8.decoder).join();
+      
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> body = jsonDecode(responseBody);
+        return body;
+      } else {
+        throw Exception('Failed to send OTP: $responseBody');
+      }
+    } catch (e) {
+      throw Exception('Send OTP error: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>> verifyOtp(String email, String otp) async {
+    try {
+      final HttpClient client = HttpClient();
+      final HttpClientRequest request = await client.postUrl(Uri.parse('$baseUrl/api/auth/verify-otp'));
+      request.headers.set('content-type', 'application/json');
+      request.add(utf8.encode(jsonEncode({'email': email, 'otp': otp})));
+      
+      final HttpClientResponse response = await request.close();
+      final String responseBody = await response.transform(utf8.decoder).join();
+      
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> body = jsonDecode(responseBody);
+        return body;
+      } else {
+        throw Exception('Failed to verify OTP: $responseBody');
+      }
+    } catch (e) {
+      throw Exception('Verify OTP error: $e');
+    }
   }
 }
