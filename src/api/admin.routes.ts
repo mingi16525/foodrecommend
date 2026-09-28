@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import express, { Router, Request, Response } from 'express';
 import { restaurantService } from '../restaurant/service';
 import { authenticateToken } from '../auth/authMiddleware';
 
@@ -10,7 +10,7 @@ adminRouter.put('/restaurants/claim/:id', authenticateToken as express.RequestHa
   const { id } = req.params;
   
   try {
-    const restaurant = await restaurantService.approveClaim(id);
+    const restaurant = await restaurantService.approveClaim(id as string);
     if (!restaurant) {
       res.status(404).json({ error: 'Restaurant claim not found or already processed' });
       return;
