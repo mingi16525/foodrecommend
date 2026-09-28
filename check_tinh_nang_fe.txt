@@ -10,22 +10,20 @@ Sau khi đối chiếu mã nguồn thư mục `frontend/lib` với các tính n�
 #### 2. Tab 1 - Dành cho bạn (Social Feed & Đăng bài)
 - [x] **Giao diện lướt Feed (giống TikTok)**: Đã có khung UI `feed_screen.dart`, có gọi API `GET /api/social/feed`.
 - [x] **Giao diện "Đăng bài" (User Post)**: Đã hoàn thiện. Thêm `create_post_screen.dart` cho phép người dùng nhập caption, Tên quán và Địa chỉ quán để kích hoạt tính năng tự tạo Quán của Backend.
-- [ ] **Tương tác Thích/Bình luận**: Giao diện chỉ có nút (mock UI), chưa được đấu nối vào API `POST /like` hay `POST /comment`.
+- [x] **Tương tác Thích/Bình luận**: Đã hoàn thiện. Trong `feed_item_widget.dart` đã tích hợp đầy đủ API `POST /like`, `POST /comment`, `POST /save`. Trang cá nhân cũng hiển thị danh sách bài viết.
 
 #### 3. Tính năng Quản lý Quán (Dành cho Business Owner)
-- [ ] **Nhận quyền sở hữu (Claim Business)**: **THIẾU HOÀN TOÀN**. Chưa có màn hình hoặc nút "Xác nhận quán của tôi".
-- [ ] **Thêm món ăn vào menu**: **THIẾU HOÀN TOÀN**. Chủ quán không có UI để gọi API `POST /api/restaurant/:id/dishes`.
+- [x] **Nhận quyền sở hữu (Claim Business)**: Đã hoàn thiện. Thêm `business_claim_screen.dart` cho phép tìm kiếm và gửi yêu cầu Claim qua API `POST /api/restaurants/:id/claim`. Truy cập qua màn hình Cài đặt của Profile.
+- [x] **Thêm món ăn vào menu**: Đã hoàn thiện. Bổ sung `business_menu_screen.dart` cho phép nhập món mới gọi qua API `POST /api/restaurants/:id/dishes`.
 
 #### 4. Tab 2 - Cộng đồng (Nhóm, Lịch trình, Chia tiền)
 - [x] **Tạo nhóm & Danh sách nhóm**: Đã có `group_list_screen.dart`, gọi API tạo nhóm thực tế.
 - [x] **Group Chat & Đặt món chung**: Đã có `group_chat_screen.dart` và `group_order_screen.dart`, tích hợp polling API để realtime hóa.
-- [ ] **Lập lịch trình bằng AI (Trip Planner)**: Đã có khung thư mục `screens/trip` nhưng giao diện trò chuyện với AI (DeepTierPlanner) cần được làm mịn hơn để user có thể nhập context (thời tiết, ngân sách).
+- [x] **Lập lịch trình bằng AI (Trip Planner)**: Đã hoàn thiện. Cải tiến `trip_planner_screen.dart` với thanh nhập `TextField` dạng chat ở cuối màn hình để user truyền trực tiếp `preferences` (ngữ cảnh, thời tiết, ngân sách) cho AI sinh lịch trình.
 
 ====================================================================
 KẾT LUẬN & ĐỀ XUẤT HÀNH ĐỘNG CHO FRONTEND:
 ====================================================================
-Để quy trình E2E Manual Test có thể diễn ra thông suốt từ đầu đến cuối, Frontend **BẮT BUỘC** phải được bổ sung ngay 2 luồng quan trọng nhất:
-1. **Xây dựng `otp_screen.dart`**: Điều hướng sang trang này ngay sau khi đăng ký.
-2. **Xây dựng `create_post_screen.dart`**: Cho phép user đăng bài có kèm tên quán ăn để test tính năng tự tạo nhà hàng của Backend.
-
-Các tính năng dành cho Admin/Chủ quán có thể test tạm bằng Postman, nhưng luồng của User thì bắt buộc phải có trên App.
+Tất cả các tính năng Frontend tương ứng với Backend (bao gồm Feed, OTP, Business Owner, Group, AI Trip Planner) đã được xây dựng đầy đủ giao diện và đấu nối API thành công.
+Hệ thống Frontend đã hoàn thiện 100% so với checklist.
+Sẵn sàng chuyển sang giai đoạn **End-to-End Manual Testing** trên thiết bị thật hoặc máy ảo (Emulator).

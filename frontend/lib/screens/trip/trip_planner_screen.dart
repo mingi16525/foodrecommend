@@ -17,6 +17,7 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> with SingleTicker
   bool _isLoading = false;
   bool _hasError = false;
   late AnimationController _animationController;
+  final TextEditingController _prefController = TextEditingController();
 
   @override
   void initState() {
@@ -28,6 +29,7 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> with SingleTicker
   @override
   void dispose() {
     _animationController.dispose();
+    _prefController.dispose();
     super.dispose();
   }
 
@@ -45,7 +47,7 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> with SingleTicker
         },
         body: json.encode({
           'groupName': widget.groupName,
-          'preferences': 'Thích hải sản, không ăn cay' // Example preferences
+          'preferences': _prefController.text.isNotEmpty ? _prefController.text : 'Gợi ý lịch trình tự động'
         }),
       );
       if (response.statusCode == 200) {
@@ -261,10 +263,47 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> with SingleTicker
             ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _fetchItinerary,
-        backgroundColor: Colors.orange,
-        child: const Icon(Icons.refresh, color: Colors.white),
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+          left: 10,
+          right: 10,
+          top: 10,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4, offset: const Offset(0, -2))],
+        ),
+        child: SafeArea(
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _prefController,
+                  decoration: InputDecoration(
+                    hintText: 'Nhập ngữ cảnh (VD: Ăn lẩu, đi 4 người)...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  ),
+                  onSubmitted: (_) => _fetchItinerary(),
+                ),
+              ),
+              const SizedBox(width: 8),
+              CircleAvatar(
+                backgroundColor: Colors.orange,
+                child: IconButton(
+                  icon: const Icon(Icons.send, color: Colors.white),
+                  onPressed: _isLoading ? null : _fetchItinerary,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

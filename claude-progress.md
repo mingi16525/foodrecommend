@@ -25,6 +25,9 @@
 - Lập danh sách file `check_tinh_nang_fe.txt` đánh giá tình trạng Frontend thực tế.
 - **Xác thực OTP**: Tạo `otp_screen.dart`, cập nhật `auth_service.dart` có `verifyOtp` và `sendOtp`. Chặn màn hình `login_screen.dart` chuyển hướng sang OTP nếu phát hiện mã lỗi "not verified" từ backend.
 - **Tạo Quán Ăn Tự Động**: Xây dựng `create_post_screen.dart` cho phép nhập text/caption và đính kèm `restaurantName`, địa chỉ để gọi API đăng bài (`POST /api/social/posts`) với tác vụ Auto-create restaurant ở backend.
+- **Tương tác Bài viết**: Xác minh tính năng Thích, Lưu và Bình luận đã hoạt động tốt thông qua `feed_item_widget.dart`.
+- **Quản lý Quán (Business Owner)**: Thêm mới luồng cho Chủ quán qua `business_claim_screen.dart` và `business_menu_screen.dart`. Chủ quán có thể tìm quán của mình, Claim và thêm Món Ăn mới thông qua `POST /api/restaurants/:id/claim` & `/dishes`.
+- **AI Trip Planner**: Đổi mới hoàn toàn giao diện `trip_planner_screen.dart`, thêm thanh nhập liệu dưới đáy dạng "Chat" để người dùng nhập "preferences" tuỳ ý.
 - Đã chạy kiểm thử `npm test` toàn bộ backend và xử lý các lỗi phát sinh (mocks) đảm bảo code mới cho phần OTP và Qdrant không ảnh hưởng tới kết quả Test tự động (PASS 100%).
 
 ## Verification

@@ -6,6 +6,7 @@ import '../../providers/app_state.dart';
 import 'package:http/http.dart' as http;
 import '../../config/api_config.dart';
 import 'post_grid_screen.dart';
+import '../business/business_claim_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -94,6 +95,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 leading: const Icon(Icons.person_outline),
                 title: const Text('Chỉnh sửa hồ sơ'),
                 onTap: () => Navigator.pop(context),
+              ),
+              ListTile(
+                leading: const Icon(Icons.store),
+                title: const Text('Quản lý Quán của tôi'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const BusinessClaimScreen()),
+                  );
+                },
               ),
               ListTile(
                 leading: const Icon(Icons.notifications_none),
