@@ -7,6 +7,7 @@ import '../../config/api_config.dart';
 import '../../widgets/feed_item_widget.dart';
 import '../../services/location_service.dart';
 import '../../services/api_logger.dart';
+import 'create_post_screen.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
@@ -133,6 +134,18 @@ class _FeedScreenState extends State<FeedScreen> {
                 ),
           _buildHeader(),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CreatePostScreen()),
+          );
+          if (result == true) {
+            _fetchFeed();
+          }
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }
