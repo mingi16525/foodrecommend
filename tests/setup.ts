@@ -54,7 +54,8 @@ jest.mock('pg', () => {
 
 jest.mock('@qdrant/js-client-rest', () => ({
   QdrantClient: jest.fn().mockImplementation(() => ({
-    search: jest.fn().mockResolvedValue([{ id: '1', score: 0.9, payload: { name: 'Pho', lat: 10, lng: 10, suitable_for: ['breakfast'] } }])
+    search: jest.fn().mockResolvedValue([{ id: '1', score: 0.9, payload: { name: 'Pho', lat: 10, lng: 10, suitable_for: ['breakfast'] } }]),
+    retrieve: jest.fn().mockResolvedValue([{ id: '1', payload: { name: 'Pho', lat: 10, lng: 10, suitable_for: ['breakfast'] } }])
   }))
 }));
 

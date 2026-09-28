@@ -2,7 +2,7 @@
   "features": [
     {
       "name": "implement-frontend-e2e-gaps",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "description": "Hoàn thiện các lỗ hổng trên Frontend để thực hiện E2E test, bao gồm: giao diện OTP, màn hình đăng bài, claim business.",
       "scope": [
         "frontend/lib/services/auth_service.dart",

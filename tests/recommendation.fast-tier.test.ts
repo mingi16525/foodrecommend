@@ -7,6 +7,7 @@ describe('Fast Tier recommendation', () => {
       flavors: ['savory'],
       allergies: ['peanut']
     });
+    jest.spyOn(recommendationEngine, 'getLikedDishes').mockResolvedValue([]);
     jest.spyOn(recommendationEngine, 'generateEmbedding').mockResolvedValue([0.1, 0.2]);
     const search = jest.spyOn(recommendationEngine, 'searchDishes').mockResolvedValue([
       { id: 'unsafe', score: 0.99, payload: { name: 'Peanut dish', ingredients: ['Peanuts'] } },

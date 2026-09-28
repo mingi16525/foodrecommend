@@ -14,8 +14,9 @@ describe('AuthService', () => {
 
   it('hashes passwords and returns the created public user', async () => {
     database.query
-      .mockResolvedValueOnce({ rows: [], rowCount: 0 })
-      .mockResolvedValueOnce({ rows: [{ id: 'u1', email: 'user@example.com', full_name: 'User' }], rowCount: 1 });
+      .mockResolvedValueOnce({ rows: [], rowCount: 0 }) // Check email
+      .mockResolvedValueOnce({ rows: [{ id: 'u1', email: 'user@example.com', full_name: 'User' }], rowCount: 1 }) // Insert user
+      .mockResolvedValueOnce({ rows: [{ id: 'u1', is_verified: false }], rowCount: 1 }); // sendOtp query
 
     const result = await authService.register('user@example.com', 'password123', 'User');
 
