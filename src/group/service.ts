@@ -1,4 +1,5 @@
 import { db } from '../db';
+import { notificationService } from '../services/notification.service';
 
 export interface Group {
   id: string;
@@ -172,6 +173,20 @@ export class GroupService {
       await this.db.query(`UPDATE group_orders SET status = $1, selected_restaurant_id = $2 WHERE id = $3`, [status, restaurantId, orderId]);
     } else {
       await this.db.query(`UPDATE group_orders SET status = $1 WHERE id = $2`, [status, orderId]);
+    }
+
+    if (status === 'CLOSED' || status === 'PAID') {
+      const partsRes = await this.db.query(
+        `SELECT user_id FROM group_order_participants WHERE order_id = $1`, [orderId]
+      );
+      const userIds = partsRes.rows.map(r => r.user_id);
+      for (const uid of userIds) {
+        await notificationService.sendPushNotification(
+          uid,
+          'Đơn nhóm đã thanh toán',
+          'Đơn hàng chung của nhóm đã được chốt và thanh toán thành công!'
+        );
+      }
     }
   }
 

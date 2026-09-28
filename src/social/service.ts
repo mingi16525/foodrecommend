@@ -1,4 +1,5 @@
 import { db } from '../db';
+import { restaurantService } from '../restaurant/service';
 
 export interface Post {
   id: string;
@@ -7,18 +8,37 @@ export interface Post {
   content?: string;
   video_url?: string;
   dish_id?: string;
+  restaurant_id?: string;
+  dish_ids?: string[];
 }
 
 export class SocialService {
   private db = db;
 
-  async createPost(userId: string, type: string, content?: string, videoUrl?: string, dishId?: string) {
+  async createPost(userId: string, type: string, content?: string, videoUrl?: string, dishId?: string, restaurantId?: string, dishIds?: string[], restaurantName?: string, restaurantAddress?: string) {
     try {
+      let finalRestaurantId = restaurantId;
+      if (!finalRestaurantId && restaurantName) {
+        const newRest = await restaurantService.createRestaurant(userId, restaurantName, restaurantAddress || '');
+        finalRestaurantId = newRest.id;
+      }
+
       const result = await this.db.query(
-        'INSERT INTO posts (user_id, post_type, content, video_url, dish_id) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-        [userId, type, content, videoUrl, dishId]
+        'INSERT INTO posts (user_id, post_type, content, video_url, dish_id, restaurant_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+        [userId, type, content, videoUrl, dishId, finalRestaurantId]
       );
-      return result.rows[0];
+      const post = result.rows[0];
+
+      if (dishIds && dishIds.length > 0) {
+        for (const dId of dishIds) {
+          await this.db.query(
+            'INSERT INTO post_dishes (post_id, dish_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',
+            [post.id, dId]
+          );
+        }
+        post.dish_ids = dishIds;
+      }
+      return post;
     } catch (e) {
       console.error('DB error in createPost', e);
       throw e;

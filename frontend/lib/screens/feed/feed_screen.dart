@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../../providers/app_state.dart';
 import '../../config/api_config.dart';
-import '../../widgets/video_player.dart';
 import '../../widgets/feed_item_widget.dart';
 import '../../services/location_service.dart';
 import '../../services/api_logger.dart';

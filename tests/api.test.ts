@@ -9,7 +9,9 @@ jest.mock('../src/recommendation/engine', () => ({
     processSwipeEvent: jest.fn().mockResolvedValue({ success: true }),
     getUserPreferences: jest.fn().mockResolvedValue({ flavors: [], allergies: [] }),
     generateEmbedding: jest.fn().mockResolvedValue([0.1, 0.2]),
-    searchDishes: jest.fn().mockResolvedValue([])
+    searchDishes: jest.fn().mockResolvedValue([]),
+    getLikedDishes: jest.fn().mockResolvedValue([]),
+    getDishesFromQdrant: jest.fn().mockResolvedValue([])
   }
 }));
 

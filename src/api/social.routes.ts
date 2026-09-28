@@ -7,7 +7,7 @@ import { createPostSchema } from '../validators/social.validator';
 const router = Router();
 
 router.post('/posts', authenticateToken, validate(createPostSchema), async (req: AuthRequest, res: Response): Promise<void> => {
-  const { type, content, videoUrl } = req.body;
+  const { type, content, videoUrl, dishId, restaurantId, dishIds, restaurantName, restaurantAddress } = req.body;
   const userId = req.user?.userId;
   
   if (!userId) {
@@ -15,7 +15,7 @@ router.post('/posts', authenticateToken, validate(createPostSchema), async (req:
     return;
   }
 
-  const newPost = await socialService.createPost(userId, type, content, videoUrl);
+  const newPost = await socialService.createPost(userId, type, content, videoUrl, dishId, restaurantId, dishIds, restaurantName, restaurantAddress);
   res.json({ data: newPost });
 });
 

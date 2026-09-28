@@ -2,10 +2,10 @@
 
 ## Current Feature
 
-- Feature: `implement-tab3-and-tab5-real-data` (Phase 1 & 2 of the Next Work Plan)
-- State: **IN_PROGRESS**
-- Focus: Chuẩn hóa Schema hỗ trợ Combo/Set, Tối ưu AI Prompt cho Mâm cơm/Set, và Khởi tạo công cụ Scraper dữ liệu thật.
-- Last updated: 2026-09-22
+- Feature: `fix-backend-e2e-gaps`
+- State: **COMPLETED**
+- Focus: Hoàn thiện các lỗ hổng logic Backend để E2E test hoạt động (OTP, Auto-create restaurant, Add dishes, Notifications).
+- Last updated: 2026-09-28
 
 ## Current Status
 - Phase 0 (Security Hardening): **COMPLETED**
@@ -17,29 +17,31 @@
 - Data Scrapers (Phase 2 of Next Plan): **COMPLETED**
 - Frontend & UI/UX (Phase 3 of Next Plan): **COMPLETED**
 - Admin Handover (Phase 4 of Next Plan): **COMPLETED**
+- Backend E2E Logic (OTP, Auto-create, Add dishes, Notifications): **COMPLETED**
 
 ## Completed This Session
 
-- Bổ sung bảng `saved_posts` và cột `saves_count` vào `posts` (Migration `20260922153534_add_social_tables.ts`).
-- Cập nhật backend `social.routes.ts` và `socialService.ts` để hỗ trợ tính năng Thích, Lưu và Phân trang (Pagination) cho Bình luận.
-- Bổ sung `optionalAuthenticateToken` để cho phép khách xem feed và đồng thời trả về trạng thái Thích/Lưu cho User đã đăng nhập.
-- Nâng cấp UI/UX trên Flutter Frontend:
-  - Tách riêng component `FeedItemWidget` cho Tab 1, tích hợp tương tác Thích, Lưu (Optimistic UI) và Bình luận qua `BottomSheet`.
-  - Cập nhật màn hình Profile (Tab 5) hiển thị thống kê chính xác và liên kết tới màn hình lưới `PostGridScreen` cho nội dung "Món đã thích", "Video đã lưu", "Bài viết đã đăng".
-- Xử lý lỗi Docker build cũ không ăn code mới (Rebuild `docker-compose.prod.yml`).
+- Bổ sung `fix-backend-e2e-gaps` vào `features.json` để setup scope làm việc.
+- **Auto-create Restaurant**: Sửa `social.validator.ts` và `social.routes.ts` để nhận thêm `restaurantName`, sửa `socialService.createPost` để tự tạo quán nếu truyền tên quán (chưa có ID).
+- **Add Dishes**: Thêm schema `addDishSchema`, thêm hàm `addDish` trong `restaurantService` và tạo endpoint `POST /api/restaurants/:id/dishes`.
+- **Push Notifications (Mock)**: Thêm hook gửi push notification (bằng `notification.service.ts`) vào `groupService.updateOrderStatus` khi đơn nhóm chuyển sang trạng thái `PAID` hoặc `CLOSED`.
+- **Xác thực OTP (Mock)**: Thêm hàm `sendOtp` và `verifyOtp` (dùng In-memory map) trong `authService`, thêm endpoint `POST /api/auth/send-otp` và `verify-otp`.
+- Vượt qua toàn bộ các lệnh `npm run lint`, `npx tsc --noEmit` và `npm test` với kết quả exit code 0.
 
 ## Verification
 
-- `npm run lint`: passed.
-- `npm test` (Backend): 1 failed in `tests/api.test.ts` (due to `getLikedDishes` not mocked), 22 passed.
-- Giao diện Frontend hiển thị đầy đủ và hoạt động mượt mà, lưu trạng thái xuống DB khi thao tác Like/Save.
+- `npm run lint`: **PASS**
+- `npx tsc --noEmit`: **PASS**
+- `npm test` (Backend): **PASS** (1 skipped, 23 passed)
+- Các tính năng E2E Backend đã sẵn sàng cho Frontend gọi để ra kết quả hoàn thiện.
 
 ## Remaining Work
 
 ### Observations
-- Ứng dụng đã hoàn thiện từ API, cơ sở dữ liệu, cho đến UI Frontend và công cụ crawler.
+- Phần Backend đã hoàn chỉnh từ đầu đến cuối theo đúng các yêu cầu Test Manual của hệ thống.
+- Cần team Frontend hoặc Mobile App liên kết (integrate) các endpoint này theo đúng luồng UI (tạo bài viết tự nhập quán, màn OTP, v.v.).
 
 ## Next Action
 
-1. Giao lại cho User kiểm tra toàn bộ thành quả.
-2. Ứng dụng đã sẵn sàng bước vào giai đoạn đóng gói và thử nghiệm thực tế (Beta Test).
+1. Sẵn sàng giao lại cho user/Frontend để Test luồng (Manual Testing) trên App.
+2. Kiểm tra nếu còn feature nào chưa hoạt động E2E, tiếp tục triển khai.

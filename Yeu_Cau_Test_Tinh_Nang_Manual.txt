@@ -1,0 +1,91 @@
+====================================================================
+           YÊU CẦU KIỂM THỬ TÍNH NĂNG THỦ CÔNG (MANUAL TEST)
+                      DỰ ÁN: FOOD DECISION PLATFORM
+====================================================================
+
+I. MỤC ĐÍCH & QUY TẮC KIỂM THỬ
+- Mục đích: Đảm bảo toàn bộ hệ sinh thái tính năng hoạt động mượt mà, đúng logic, không còn bị kẹt ở các bước mock data.
+- Quy tắc: Test tất cả kịch bản (Positive & Negative) từ những hành động nhỏ nhất của mọi Tác nhân (Actor).
+- Môi trường: Staging/Production (Cần kết nối thật đến PostgreSQL, Redis, Qdrant, Kafka, LLM, Firebase, Momo).
+
+II. PHÂN LOẠI TÁC NHÂN (ACTORS)
+1. End User (Người dùng thường / Premium)
+2. Business Owner (Chủ nhà hàng/Quán ăn)
+3. Admin/System (Quản trị viên & Bot)
+
+III. CHI TIẾT CÁC KỊCH BẢN KIỂM THỬ (TEST CASES)
+
+--------------------------------------------------------------------
+A. ACTOR: END USER (NGƯỜI DÙNG CUỐI)
+--------------------------------------------------------------------
+
+1. Xác thực (Authentication)
+   [ ] Mở app, đăng ký tài khoản mới bằng Email/SĐT.
+   [ ] Nhập mã OTP xác thực thành công.
+   [ ] Đăng nhập lại bằng tài khoản vừa tạo, kiểm tra token JWT.
+
+2. Tab 1 - Dành cho bạn (Social / Feed)
+   [ ] Xem danh sách các bài đăng/video trên luồng feed.
+   [ ] Ở một bài post, bấm nút "Thích". Chữ số tim tăng 1. Bấm lại thì giảm 1 (Unlike).
+   [ ] Bấm nút "Lưu" (Bookmark) bài viết.
+   [ ] Bấm vào bình luận: Viết một bình luận, gửi thành công và hiển thị ngay lập tức.
+   [ ] Đăng bài (User Post): Tải ảnh lên, tag nhà hàng (hệ thống tự tạo quán nếu chưa có trong DB). Bài đăng hiển thị trên feed.
+
+3. Tab 2 - Cộng đồng (Group, Split bill...)
+   [ ] Tạo một Nhóm mới (Ví dụ: "Nhóm ăn trưa").
+   [ ] Mời người khác (tài khoản B) vào nhóm bằng link/QR code.
+   [ ] Chức năng gợi ý món cho nhóm: Kiểm tra hệ thống (Medium Tier) gợi ý danh sách quán giao thoa sở thích giữa các thành viên.
+   [ ] Tạo Bill (Hóa đơn) cho nhóm.
+   [ ] Chọn chức năng "Chia đều" (Split equally): Kiểm tra số tiền nợ mỗi người tính toán đúng.
+   [ ] Chọn chức năng "Chia theo món" (Split by items): Gán món cho từng người, kiểm tra tổng tiền chính xác.
+   [ ] Bấm "Đã thanh toán": Thành viên nhận được thông báo xác nhận.
+
+4. Tab 3 - Khám phá (Recommendation / Vuốt món ăn)
+   [ ] Mở tab Khám phá, hệ thống load danh sách món ăn từ Qdrant (Fast Tier).
+   [ ] Vuốt phải (Like): Gửi action "like" thành công qua API/Kafka.
+   [ ] Vuốt trái (Skip): Gửi action "skip" thành công qua API/Kafka.
+   [ ] Sau nhiều lần vuốt, load lại feed để kiểm tra hệ thống có thay đổi trọng số gợi ý dựa trên lịch sử hay không.
+
+5. Tab 4 - Thiết lập (Profile ăn uống cá nhân)
+   [ ] Mở thiết lập, chọn/sửa đổi các sở thích (Flavors, Categories).
+   [ ] Đánh dấu các món/thành phần dị ứng (Allergies).
+   [ ] Lưu thay đổi, quay lại Tab 3 vuốt món ăn kiểm tra xem món dị ứng có bị bộ lọc (Filters) chặn lại không.
+
+6. Tab 5 - Tài khoản (Thông tin tài khoản)
+   [ ] Mở Tab Tài khoản, kiểm tra đúng thông tin cá nhân.
+   [ ] Xem danh sách các bài viết / món ăn đã "Lưu" (Saved posts) từ Tab 1 và Tab 3.
+   [ ] Bấm "Nâng cấp Premium" hoặc "Thanh toán".
+   [ ] Mở URL thanh toán MoMo, hoàn tất thanh toán (Môi trường Staging).
+   [ ] Nhận Webhook thành công từ MoMo, cập nhật trạng thái tài khoản thành PREMIUM.
+
+--------------------------------------------------------------------
+B. ACTOR: BUSINESS OWNER (CHỦ NHÀ HÀNG)
+--------------------------------------------------------------------
+
+1. Yêu cầu quyền sở hữu (Claim Business)
+   [ ] Đăng nhập bằng tài khoản Doanh nghiệp.
+   [ ] Tìm kiếm nhà hàng (do User tự tạo trước đó). Bấm "Claim".
+   [ ] Admin duyệt (`is_verified = true`), kiểm tra tài khoản này có quyền cập nhật tên/địa chỉ quán.
+
+2. Quản lý & Quảng bá (Business Post)
+   [ ] Thêm món ăn mới vào thực đơn của quán (tự động đưa vào Qdrant).
+   [ ] Tạo bài viết mới đính kèm hàng loạt các món ăn của quán.
+   [ ] Người dùng xem bài đăng trên Tab 1 có thể thấy và tương tác với các món đính kèm.
+
+--------------------------------------------------------------------
+C. ACTOR: ADMIN / HỆ THỐNG
+--------------------------------------------------------------------
+
+1. Cào dữ liệu & Khởi tạo (Scraper)
+   [ ] Chạy thử công cụ Scraper (crawler). Kiểm tra DB `restaurants` và `dishes` được seed chuẩn.
+
+2. Ổn định hệ thống (Background Services)
+   [ ] Tắt Redis: Kiểm tra hệ thống tự động fallback sang "Memory Mock" mà không sập.
+   [ ] Tắt Kafka: Ứng dụng mobile không bị treo khi User đang lướt (Swipe) liên tục ở Tab 3.
+   [ ] Kiểm thử quá tải (Load test K6): Hệ thống có Rate Limit chặn các yêu cầu rác.
+
+====================================================================
+KẾT LUẬN
+- Bất kỳ bước nào hiện dữ liệu cứng (mock data) phải đánh [FAILED].
+- Đảm bảo E2E đúng chính xác theo 5 luồng (Tab) của ứng dụng Mobile.
+====================================================================

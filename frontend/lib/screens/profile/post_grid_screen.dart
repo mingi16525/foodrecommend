@@ -14,7 +14,7 @@ class PostGridScreen extends StatefulWidget {
 }
 
 class _PostGridScreenState extends State<PostGridScreen> {
-  List<dynamic> _items = [];
+  final List<dynamic> _items = [];
   bool _isLoading = true;
   int _page = 1;
   bool _hasMore = true;

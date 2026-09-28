@@ -1,0 +1,64 @@
+====================================================================
+BÁO CÁO KIỂM TRA TÍNH NĂNG BACKEND (SO VỚI MANUAL TEST)
+====================================================================
+
+Dưới đây là kết quả đối chiếu giữa danh sách kịch bản test manual và các API/Routes hiện có trong mã nguồn Backend (thư mục `src/api/`):
+
+### A. END USER (NGƯỜI DÙNG CUỐI)
+
+1. Xác thực (Authentication)
+- [x] Đăng ký / Đăng nhập: Đã có `POST /api/auth/register` và `POST /api/auth/login`. Trả về JWT Token.
+- [ ] Xác thực OTP: **CÒN THIẾU**. Backend hiện tại đăng ký thẳng bằng email/password, không có route cấp phát và xác thực mã OTP.
+
+2. Tab 1 - Dành cho bạn (Social / Feed)
+- [x] Xem Feed: Đã có `GET /api/social/feed`.
+- [x] Thích/Bỏ thích: Đã có `POST /api/social/posts/:id/like` và `DELETE /api/social/posts/:id/like`.
+- [x] Lưu bài (Bookmark): Đã có `POST /api/social/posts/:id/save`.
+- [x] Bình luận: Đã có `POST /api/social/posts/:id/comments`.
+- [x] Đăng bài (User Post): Đã có `POST /api/social/posts`.
+- [!] Tag & Tự tạo quán: Trong hàm `createPost` của `socialService.ts` chỉ lưu `restaurant_id`, **CHƯA THẤY** logic tự động insert vào bảng `restaurants` nếu nhà hàng đó chưa tồn tại trong DB.
+
+3. Tab 2 - Cộng đồng (Group, Split Bill)
+- [x] Tạo nhóm / Mời: Đã có `POST /api/group` và `POST /api/group/:id/members`.
+- [x] Tạo Bill / Đơn nhóm: Đã có `POST /api/group/:id/orders`.
+- [x] Chia tiền đều / Theo món: Đã có `POST /api/group/:id/split-equally` và `POST /api/group/:id/split-items`.
+- [x] Gợi ý món cho nhóm: Đã verify, tính năng này được nhúng tự động bên trong `GET /api/group/:id/orders/active`. Khi order ở trạng thái 'VOTING', hệ thống sẽ gọi `mediumTierRecommender.getGroupRecommendations`.
+- [ ] Thông báo khi thanh toán xong: Đã kiểm tra `POST /api/group/:id/orders/:orderId/status` và `groupService.updateOrderStatus`, hoàn toàn **CHƯA CÓ** lệnh gọi service notification (FCM push) tới các user khác khi đơn hàng được chốt.
+
+4. Tab 3 - Khám phá (Recommendation / Vuốt món ăn)
+- [x] Load danh sách món ăn: Đã có `GET /api/recommendation` (Có RAG Pipeline và gọi Qdrant thông qua `DecisionComplexityEstimator`).
+- [x] Vuốt (Like/Skip): Đã có `POST /api/recommendation/swipe` và đẩy dữ liệu chuẩn vào Kafka thông qua `eventCollector.trackSwipe`.
+
+5. Tab 4 - Thiết lập (Profile ăn uống cá nhân)
+- [x] Chỉnh sửa sở thích / dị ứng: Đã có `PUT /api/user/me/preferences`. Dữ liệu được RAG engine đọc và xử lý.
+
+6. Tab 5 - Tài khoản (Profile)
+- [x] Thông tin cá nhân: Đã có `GET /api/user/me`.
+- [x] Xem bài/món đã lưu: Đã có `GET /api/social/feed/saved`.
+- [x] Thanh toán MoMo / ZaloPay: Đã có `POST /api/payment/create`.
+- [x] Webhook cập nhật PREMIUM: Đã có `POST /api/payment/ipn`.
+
+---
+
+### B. BUSINESS OWNER (CHỦ NHÀ HÀNG)
+
+1. Yêu cầu quyền sở hữu (Claim Business)
+- [x] Claim & Duyệt: Đã có `POST /api/restaurant/:id/claim`. Trong file `restaurant/service.ts`, chức năng này hiện đang **AUTO-APPROVE** (tự động gán `is_verified = true` ngay lập tức). Chưa có luồng chờ Admin duyệt thực tế.
+
+2. Quản lý & Quảng bá (Business Post)
+- [x] Đăng bài đính kèm nhiều món: `POST /api/social/posts` có hỗ trợ `dishIds` (mảng các món).
+- [ ] Thêm món ăn mới vào thực đơn: **CÒN THIẾU**. `restaurant.routes.ts` hiện tại chỉ có `GET /:id/dishes`, KHÔNG CÓ `POST /:id/dishes` để thêm món mới (cập nhật DB & Qdrant).
+
+---
+
+### C. ADMIN / HỆ THỐNG
+- [x] Ổn định hệ thống (Fallback, Resilience): Các module Redis (`withCache`) và Kafka (`eventCollector`) đều có tính chất unblocking và fallback-safe đã thiết lập từ Phase 1.
+- [ ] Scraper Crawler: Scraper tool độc lập (script Python hoặc Nodejs jobs), chưa thấy định nghĩa trực tiếp trong flow API.
+
+====================================================================
+KẾT LUẬN & ĐỀ XUẤT HÀNH ĐỘNG:
+1. Triển khai API/logic tạo và xác minh OTP (`auth.routes.ts`).
+2. Cập nhật logic User Post: Tự động tạo bản ghi nhà hàng nếu `restaurantId` không tồn tại.
+3. Tạo API cho Admin để duyệt yêu cầu Claim (`PUT /api/admin/restaurants/claim/:id`).
+4. Bổ sung API cho Business Owner thêm món ăn mới (`POST /api/restaurant/:id/dishes`) và trigger index vào Qdrant.
+====================================================================

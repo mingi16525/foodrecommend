@@ -1,0 +1,20 @@
+Hệ thống hỗ trợ 2 loại bài đăng chính:
+
+1. Bài đăng từ Người dùng (User Post)
+- Định dạng nội dung: Truyền tải chủ yếu qua hình ảnh (hỗ trợ nhiều ảnh). Video được hỗ trợ tải lên nhưng không bắt buộc.
+- Gắn thẻ (Tag) món ăn: Người dùng có thể gắn tag một hoặc nhiều món ăn xuất hiện trong bài viết.
+- Gắn thẻ (Check-in) quán ăn:
+  + Tìm kiếm & Tag quán đã có sẵn trong hệ thống.
+  + Gợi ý thông minh: Nếu nhập tên mà quán chưa có trong hệ thống, tự động gợi ý danh sách địa điểm mới dựa trên định vị hiện tại (GPS) và từ khóa đang nhập.
+  + Xử lý quán chưa tồn tại (Auto-create): Khi người dùng chọn/tag một quán mới, hệ thống tự động khởi tạo quán này dưới dạng "Địa điểm do người dùng đề xuất" (chưa xác thực), và hiển thị bình thường. Sau đó hệ thống/admin có thể gom cụm hoặc duyệt lại sau để tránh trùng lặp.
+  + Nhận quyền sở hữu (Claim Business): Khi quán ăn chính thức đăng ký tài khoản trên hệ thống, hệ thống/admin sẽ hỗ trợ đối soát với các "Địa điểm do người dùng đề xuất" trước đó. Chủ quán có 2 lựa chọn:
+    (1) Tiếp nhận (Merge): Gộp toàn bộ dữ liệu (bài review, hình ảnh, tag...) từ điểm auto-create cũ vào tài khoản chính thức của quán.
+    (2) Không tiếp nhận: Khởi tạo trang quán mới hoàn toàn (Hệ thống/Admin có thể ẩn hoặc xóa điểm auto-create cũ đi để tránh nhầm lẫn).
+  + Xác minh danh tính quán (Verification): Để tránh tình trạng mạo danh khi đăng ký hoặc Claim, chủ quán phải gửi tài liệu chứng minh (giấy phép kinh doanh, CMND/CCCD khớp tên chủ hộ, hoặc ảnh chụp mặt tiền quán...). Admin sẽ duyệt hồ sơ; khi thành công, quán sẽ có biểu tượng "Tích xanh" (Verified Badge).
+- Điều hướng: Bài viết có tag quán ăn phải hiển thị:
+  + Nút xem vị trí quán trực tiếp trên bản đồ.
+  + Nút bấm điều hướng đi thẳng đến "Trang chi tiết quán ăn" hoặc "Trang chi tiết món ăn" của quán đó.
+
+2. Bài đăng từ Quán ăn (Restaurant/Business Post)
+- Đính kèm Sản phẩm: Quán ăn có thể gắn thông tin chi tiết các Món ăn hoặc Combo vào hình ảnh/video của bài đăng.
+- Hiển thị động theo thao tác (Swipe-to-change): Khi bài viết chứa nhiều ảnh/video, thông tin đính kèm (tên món, giá, nút xem chi tiết...) sẽ tự động thay đổi tương thích với ảnh/video mà người dùng đang lướt tới.

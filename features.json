@@ -190,6 +190,79 @@
         "AI output từ Gemini được validate trước khi chạy RAG",
         "Không còn CREATE TABLE trong request path"
       ]
+    },
+    {
+      "name": "phase3-tab1-new-features",
+      "status": "DONE",
+      "description": "Phase 3: Triển khai & Kiểm thử các tính năng mới Tab 1 (User & Business Post)",
+      "scope": [
+        "schema.sql",
+        "src/api/social.routes.ts",
+        "src/api/restaurant.routes.ts",
+        "src/social/service.ts",
+        "src/restaurant/service.ts",
+        "frontend/lib/screens/social/*",
+        "claude-progress.md"
+      ],
+      "tasks": [
+        {
+          "title": "Bước 3.2: User Post & Auto-create (Upload media, tag food/restaurant, auto-create unverified location)",
+          "status": "DONE"
+        },
+        {
+          "title": "Bước 3.3: Quản lý & Claim Business (Đăng ký chủ quán, Claim để merge hoặc tạo mới)",
+          "status": "DONE"
+        },
+        {
+          "title": "Bước 3.4: Business Post & Swipe-to-change (Business đăng bài đính kèm nhiều món, cập nhật UI swipe)",
+          "status": "DONE"
+        }
+      ],
+      "definition_of_done": [
+        "npm test -- --runInBand exits 0",
+        "npx tsc --noEmit exits 0",
+        "npm run lint exits 0"
+      ]
+    },
+    {
+      "name": "fix-backend-e2e-gaps",
+      "status": "DONE",
+      "description": "Hoàn thiện các lỗ hổng logic Backend để E2E test hoạt động (OTP, Auto-create restaurant, Add dishes, Notifications)",
+      "scope": [
+        "src/auth/authService.ts",
+        "src/api/auth.routes.ts",
+        "src/social/service.ts",
+        "src/api/social.routes.ts",
+        "src/restaurant/service.ts",
+        "src/api/restaurant.routes.ts",
+        "src/group/service.ts",
+        "src/api/group.routes.ts",
+        "src/validators/social.validator.ts",
+        "claude-progress.md"
+      ],
+      "tasks": [
+        {
+          "title": "Hoàn thiện tính năng User Post (Tự động tạo quán nếu chưa có)",
+          "status": "DONE"
+        },
+        {
+          "title": "Thêm API Quản lý Món ăn cho Chủ Quán (Thêm món mới)",
+          "status": "DONE"
+        },
+        {
+          "title": "Hoàn thiện luồng Thanh toán Bill (Push notification)",
+          "status": "DONE"
+        },
+        {
+          "title": "Hoàn thiện luồng Xác thực OTP",
+          "status": "DONE"
+        }
+      ],
+      "definition_of_done": [
+        "npm test exits 0",
+        "npx tsc --noEmit exits 0",
+        "npm run lint exits 0"
+      ]
     }
   ]
 }

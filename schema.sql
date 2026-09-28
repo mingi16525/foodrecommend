@@ -26,7 +26,9 @@ CREATE TABLE restaurants (
     location JSONB, -- simplified for MVP without PostGIS
     geohash VARCHAR(50),
     delivery_links JSONB,
-    is_active BOOLEAN DEFAULT TRUE
+    is_active BOOLEAN DEFAULT TRUE,
+    is_verified BOOLEAN DEFAULT FALSE,
+    claimed_by UUID REFERENCES users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE dishes (
@@ -44,11 +46,18 @@ CREATE TABLE dishes (
 CREATE TABLE posts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    restaurant_id UUID REFERENCES restaurants(id) ON DELETE CASCADE,
     dish_id UUID REFERENCES dishes(id) ON DELETE CASCADE,
     post_type VARCHAR(50),
     video_url TEXT,
     content TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE post_dishes (
+    post_id UUID REFERENCES posts(id) ON DELETE CASCADE,
+    dish_id UUID REFERENCES dishes(id) ON DELETE CASCADE,
+    PRIMARY KEY (post_id, dish_id)
 );
 
 CREATE TABLE groups (

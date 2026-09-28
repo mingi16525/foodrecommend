@@ -26,3 +26,21 @@ authRouter.post('/login', validate(loginSchema), async (req, res) => {
     res.status(401).json({ error: (e as Error).message || 'Login failed' });
   }
 });
+
+authRouter.post('/send-otp', async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: 'Email is required' });
+  await authService.sendOtp(email);
+  res.json({ success: true, message: 'OTP sent' });
+});
+
+authRouter.post('/verify-otp', async (req, res) => {
+  const { email, otp } = req.body;
+  if (!email || !otp) return res.status(400).json({ error: 'Email and OTP are required' });
+  try {
+    await authService.verifyOtp(email, otp);
+    res.json({ success: true, message: 'OTP verified' });
+  } catch (e: unknown) {
+    res.status(400).json({ error: (e as Error).message || 'OTP verification failed' });
+  }
+});

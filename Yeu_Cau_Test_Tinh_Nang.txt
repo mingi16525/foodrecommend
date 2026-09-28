@@ -1,0 +1,74 @@
+# YÊU CẦU TEST VÀ KIỂM TRA TÍNH NĂNG (FOOD RECOMMEND APP)
+
+## 1. Hệ thống Tài khoản & Xác thực (Authentication)
+[ ] Đăng nhập bằng tài khoản test thành công (`test@example.com` / `password123`).
+[ ] Quản lý trạng thái đăng nhập: Khi khởi động lại app không cần đăng nhập lại (Lưu JWT token cục bộ).
+[ ] Xử lý lỗi Token hết hạn (401/403): Tự động đăng xuất hoặc refresh token.
+[ ] Chế độ Khách (Guest mode): Người dùng chưa đăng nhập vẫn có thể xem được nội dung bảng tin (Feed) nhưng khi bấm Like/Save/Comment sẽ yêu cầu đăng nhập.
+
+## 2. Tab 1: Trang chủ (Social Feed - Tiktok/Reels style)
+[ ] Chuyển tab ngang (Header): Chuyển đổi mượt mà giữa "Đang theo dõi" | "Dành cho bạn" | "Món hot". Dữ liệu thay đổi tương ứng.
+[ ] Trình phát video (Video Player): Tự động phát video khi lướt tới, tự động dừng khi lướt qua.
+[ ] Tương tác Like (Thích):
+    [ ] Bấm thả tim (hoặc click đúp): Đổi màu icon sang đỏ, tăng số lượng like ngay lập tức (Optimistic UI).
+    [ ] Bấm bỏ like: Giảm số lượng like, icon trở về màu trắng bình thường.
+    [ ] Khởi động lại (Reload app): Trạng thái like (đỏ/trắng) vẫn được giữ nguyên (lấy từ Backend).
+[ ] Tương tác Lưu (Save/Bookmark):
+    [ ] Bấm nút Lưu: Đổi màu icon (Vàng), tăng số lượng lưu.
+    [ ] Bấm bỏ Lưu: Giảm số lượng lưu, icon trở về bình thường.
+    [ ] Khởi động lại app: Trạng thái lưu được đồng bộ chính xác từ Backend.
+[ ] Tính năng Bình luận (Comments):
+    [ ] Bấm icon bình luận: Mở BottomSheet hiển thị danh sách các bình luận của bài đăng/video.
+    [ ] Hiển thị chính xác tổng số bình luận ở ngoài Feed và trong BottomSheet.
+    [ ] Phân trang (Pagination) bình luận: Cuộn xuống dưới cùng tự động tải thêm các bình luận cũ hơn.
+    [ ] Viết và Gửi bình luận mới: Cập nhật ngay lên đầu danh sách và tăng số đếm tổng bình luận.
+    [ ] Yêu cầu bổ sung: Thích bình luận, bình luận liên quan nhất, bình luận được thích nhiều nhất ưu tiên đẩy lên top trên cùng.
+[ ] Hiển thị thông tin Bài đăng/Video:
+    [ ] Tên người đăng, Avatar, Dấu tick xanh (Verified).
+    [ ] Tên món ăn, Tên nhà hàng/quán ăn, Khoảng cách (vd: 0km, 2km), Giá tiền món.
+    [ ] Nội dung bài viết/Mô tả (Caption).
+    [ ] Yêu cầu bổ sung: Tên món ăn, nhà hàng, khoảng cách và giá món ăn hiển thị ở vị trí nổi bật trên giao diện xem video. Dữ liệu khớp với Dữ liệu chi tiết món ăn.
+[ ] Tính năng Tạo bài đăng (Dành cho Người dùng):
+    [ ] Hỗ trợ tải lên nhiều hình ảnh/video.
+    [ ] Gắn thẻ (Tag) nhiều món ăn.
+    [ ] Gắn thẻ (Check-in) quán ăn: Tìm quán có sẵn hoặc gợi ý quán mới bằng GPS.
+    [ ] Xử lý Auto-create: Tạo thành công "Địa điểm do người dùng đề xuất" khi tag quán chưa có.
+[ ] Điều hướng từ Bài viết (Dành cho Người dùng):
+    [ ] Nút Bản đồ: Mở chính xác vị trí quán.
+    [ ] Nút Chi tiết: Chuyển hướng đúng sang trang Chi tiết quán ăn hoặc Chi tiết món.
+[ ] Quản lý Quyền sở hữu (Claim Business & Verification):
+    [ ] Chủ quán đăng ký nhận quyền sở hữu: Chọn "Tiếp nhận (Merge)" hoặc "Không tiếp nhận (Tạo mới)".
+    [ ] Upload tài liệu xác minh (GPKD, CMND, mặt tiền).
+    [ ] Admin duyệt và cấp "Tích xanh" (Verified Badge) thành công.
+[ ] Tính năng Tạo bài đăng (Dành cho Quán ăn):
+    [ ] Gắn/Đính kèm Món ăn/Combo vào từng hình ảnh/video.
+    [ ] Swipe-to-change: Khi lướt xem các ảnh/video khác nhau, thông tin (tên món, giá) tự động thay đổi theo.
+## 3. Tab 3: Khám phá (AI Recommendation & Tinder Swipe)
+[ ] Dữ liệu Đề xuất: Hiển thị đa dạng (Món lẻ, Combo, Mâm cơm, Set thức ăn).
+[ ] Thiết kế UI/UX cao cấp: Giao diện Glassmorphism (Kính mờ), hiệu ứng micro-animation (nút bấm co giãn khi chạm), Header hiện đại, Huy hiệu "🔥 COMBO" dành riêng cho set thức ăn.
+[ ] Tương tác Vuốt (Swipe): Vuốt thẻ sang phải để Thích (Like), Vuốt thẻ sang trái để Bỏ qua (Skip). Trơn tru, không giật lag.
+[ ] Cơ chế Lặp lại (Recirculation): Các món đã từng được vuốt "Thích" trước đây sẽ có một tỉ lệ % nhất định xuất hiện lại trong luồng đề xuất mới, giúp người dùng nhớ để đi ăn thay vì chỉ xem xong để đó.
+[ ] Mở chi tiết: Bấm vào một thẻ đề xuất sẽ mở sang trang chi tiết món/quán ăn.
+
+
+## 4. Tab 2: Lịch trình nhóm (Trip Planner)
+[ ] Giao diện tổng quan: Sử dụng CustomScrollView với SliverAppBar tràn viền hiện đại.
+[ ] Giao diện Dòng thời gian (Timeline UI): Hiển thị lộ trình các địa điểm ăn uống theo thứ tự rõ ràng.
+[ ] Hiệu ứng: Staggered Animation (hiệu ứng trượt lên tuần tự) khi tải và hiển thị danh sách Card lịch trình.
+[ ] Dữ liệu AI trả về: Gợi ý các điểm đến hợp lý, bao gồm Combo/Set, có luồng fallback tĩnh nếu API AI (Gemini) quá tải hoặc gặp lỗi.
+
+##. Tab 4: Hồ sơ cá nhân: bổ sung thông tin sao cho giống bảng kê khai thông tin ăn uống cá nhân nhất có thể, dễ dùng, đơn giản nhưng đầy đủ thông tin
+## 5. Tab 5: Hồ sơ cá nhân (User Profile)
+[ ] Thống kê Cá nhân: Hiển thị chính xác Avatar, Tên người dùng, Số Đang theo dõi, Số Người theo dõi, Tổng số Lượt thích.
+[ ] Chuyển tab Nội dung (Grid View):
+    [ ] Tab "Đã đăng" (My Posts): Lưới các bài viết/video do chính người dùng đăng tải. tương tự như dưới( bổ sung thêm tính năng của người sở hữu video hợp lý).
+    [ ] Tab "Đã thích" (Liked): Lưới các bài viết/video đã được người dùng thả tim. Có thể bấm vào video và chuyển đến xem được các thông tin của video đó y như Tab 1 nhưng chỉ có video không có các tab khác( có thể bình luận, thích, lưu, chia sẻ ... và quay lại, không thể mở sang tab khác).
+    [ ] Tab "Đã lưu" (Saved): Lưới các bài viết/video đã được bookmark lại. tương tự như trên
+[ ] Tương tác Mở Chi tiết từ Grid:
+    [ ] Bấm vào một ô vuông thu nhỏ (thumbnail) trong lưới: Ứng dụng phải mở ra trang xem chi tiết (hoặc Fullscreen Video Feed) của đúng bài đăng/video đó.
+    [ ] Đồng bộ dữ liệu: Khi thả tim/bỏ tim bên trong trang chi tiết này, quay ra ngoài (Tab 5) hoặc sang Feed (Tab 1), dữ liệu thả tim phải đồng nhất với nhau.
+
+## 6. Tính năng Khác & Hệ thống Server
+[ ] Crawler (Tool Scraper): Hệ thống có công cụ quét và lưu dữ liệu thật từ Google Maps (Quán ăn, menu, hình ảnh, bài đánh giá).
+[ ] Xử lý Lỗi/Crash: Không xuất hiện lỗi 403 (Cấm truy cập/Lỗi token), 500 (Internal Server Error) hay 404 trong các thao tác thông thường. Không bị "ld-linux-x86-64.so.2" crash backend.
+[ ] Tính năng Chia sẻ (Share): Giao diện có nút Share nhưng tính năng chia sẻ thực tế sẽ được triển khai trong phase sau (Chỉ cần có nút placeholder).

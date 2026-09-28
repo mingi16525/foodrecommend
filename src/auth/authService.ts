@@ -8,6 +8,7 @@ if (!_JWT_SECRET) {
 }
 const JWT_SECRET: string = _JWT_SECRET;
 const SALT_ROUNDS = 10;
+const otpStore = new Map<string, string>();
 
 export class AuthService {
   private db: Pool;
@@ -72,6 +73,22 @@ export class AuthService {
   private generateToken(id: string, email: string) {
     const payload = { userId: id, email };
     return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+  }
+
+  public async sendOtp(email: string) {
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    otpStore.set(email, otp);
+    console.log(`[MOCK OTP] Sent OTP ${otp} to email ${email}`);
+    return true;
+  }
+
+  public async verifyOtp(email: string, otp: string) {
+    const storedOtp = otpStore.get(email);
+    if (!storedOtp || storedOtp !== otp) {
+      throw new Error('Invalid OTP');
+    }
+    otpStore.delete(email);
+    return true;
   }
 }
 
