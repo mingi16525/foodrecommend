@@ -8,7 +8,7 @@ if (!_JWT_SECRET) {
 }
 const JWT_SECRET: string = _JWT_SECRET;
 const SALT_ROUNDS = 10;
-const otpStore = new Map<string, string>();
+const otpStore = new Map<string, { otp: string; expiresAt: number }>();
 
 export class AuthService {
   private db: Pool;
@@ -83,15 +83,31 @@ export class AuthService {
   }
 
   public async sendOtp(email: string) {
+    const userRes = await this.db.query('SELECT id, is_verified FROM users WHERE email = $1', [email]);
+    if (userRes.rowCount === 0) {
+      throw new Error('User not found');
+    }
+    if (userRes.rows[0].is_verified) {
+      throw new Error('User is already verified');
+    }
+
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    otpStore.set(email, otp);
-    console.log(`[MOCK OTP] Sent OTP ${otp} to email ${email}`);
+    const expiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes
+    otpStore.set(email, { otp, expiresAt });
+    console.log(`[MOCK OTP] Sent OTP ${otp} to email ${email} (Expires in 5m)`);
     return true;
   }
 
   public async verifyOtp(email: string, otp: string) {
-    const storedOtp = otpStore.get(email);
-    if (!storedOtp || storedOtp !== otp) {
+    const record = otpStore.get(email);
+    if (!record) {
+      throw new Error('OTP not found or expired');
+    }
+    if (Date.now() > record.expiresAt) {
+      otpStore.delete(email);
+      throw new Error('OTP has expired');
+    }
+    if (record.otp !== otp) {
       throw new Error('Invalid OTP');
     }
     otpStore.delete(email);

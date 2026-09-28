@@ -30,8 +30,12 @@ authRouter.post('/login', validate(loginSchema), async (req, res) => {
 authRouter.post('/send-otp', async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ error: 'Email is required' });
-  await authService.sendOtp(email);
-  res.json({ success: true, message: 'OTP sent' });
+  try {
+    await authService.sendOtp(email);
+    res.json({ success: true, message: 'OTP sent' });
+  } catch (e: unknown) {
+    res.status(400).json({ error: (e as Error).message || 'Failed to send OTP' });
+  }
 });
 
 authRouter.post('/verify-otp', async (req, res) => {
