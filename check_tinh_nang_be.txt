@@ -8,7 +8,7 @@ Dưới đây là kết quả đối chiếu giữa danh sách kịch bản test
 
 1. Xác thực (Authentication)
 - [x] Đăng ký / Đăng nhập: Đã có `POST /api/auth/register` và `POST /api/auth/login`. Trả về JWT Token.
-- [ ] Xác thực OTP: **CÒN THIẾU**. Backend hiện tại đăng ký thẳng bằng email/password, không có route cấp phát và xác thực mã OTP.
+- [x] Xác thực OTP: Đã hoàn thiện. Thêm `sendOtp` và `verifyOtp` trong `authService`, với 2 endpoint `POST /api/auth/send-otp` và `POST /api/auth/verify-otp`.
 
 2. Tab 1 - Dành cho bạn (Social / Feed)
 - [x] Xem Feed: Đã có `GET /api/social/feed`.
@@ -16,14 +16,14 @@ Dưới đây là kết quả đối chiếu giữa danh sách kịch bản test
 - [x] Lưu bài (Bookmark): Đã có `POST /api/social/posts/:id/save`.
 - [x] Bình luận: Đã có `POST /api/social/posts/:id/comments`.
 - [x] Đăng bài (User Post): Đã có `POST /api/social/posts`.
-- [!] Tag & Tự tạo quán: Trong hàm `createPost` của `socialService.ts` chỉ lưu `restaurant_id`, **CHƯA THẤY** logic tự động insert vào bảng `restaurants` nếu nhà hàng đó chưa tồn tại trong DB.
+- [x] Tag & Tự tạo quán: Đã hoàn thiện logic tự động gọi `restaurantService.createRestaurant` khi có `restaurantName` trong `socialService.createPost`.
 
 3. Tab 2 - Cộng đồng (Group, Split Bill)
 - [x] Tạo nhóm / Mời: Đã có `POST /api/group` và `POST /api/group/:id/members`.
 - [x] Tạo Bill / Đơn nhóm: Đã có `POST /api/group/:id/orders`.
 - [x] Chia tiền đều / Theo món: Đã có `POST /api/group/:id/split-equally` và `POST /api/group/:id/split-items`.
 - [x] Gợi ý món cho nhóm: Đã verify, tính năng này được nhúng tự động bên trong `GET /api/group/:id/orders/active`. Khi order ở trạng thái 'VOTING', hệ thống sẽ gọi `mediumTierRecommender.getGroupRecommendations`.
-- [ ] Thông báo khi thanh toán xong: Đã kiểm tra `POST /api/group/:id/orders/:orderId/status` và `groupService.updateOrderStatus`, hoàn toàn **CHƯA CÓ** lệnh gọi service notification (FCM push) tới các user khác khi đơn hàng được chốt.
+- [x] Thông báo khi thanh toán xong: Đã được bổ sung trong `groupService.updateOrderStatus`, hệ thống sẽ gọi `notificationService.sendPushNotification` tới tất cả các thành viên khi đơn hàng chuyển sang trạng thái `PAID` hoặc `CLOSED`.
 
 4. Tab 3 - Khám phá (Recommendation / Vuốt món ăn)
 - [x] Load danh sách món ăn: Đã có `GET /api/recommendation` (Có RAG Pipeline và gọi Qdrant thông qua `DecisionComplexityEstimator`).
@@ -47,7 +47,7 @@ Dưới đây là kết quả đối chiếu giữa danh sách kịch bản test
 
 2. Quản lý & Quảng bá (Business Post)
 - [x] Đăng bài đính kèm nhiều món: `POST /api/social/posts` có hỗ trợ `dishIds` (mảng các món).
-- [ ] Thêm món ăn mới vào thực đơn: **CÒN THIẾU**. `restaurant.routes.ts` hiện tại chỉ có `GET /:id/dishes`, KHÔNG CÓ `POST /:id/dishes` để thêm món mới (cập nhật DB & Qdrant).
+- [x] Thêm món ăn mới vào thực đơn: Đã hoàn thiện `POST /api/restaurants/:id/dishes` trong `restaurant.routes.ts` để thêm món mới.
 
 ---
 
