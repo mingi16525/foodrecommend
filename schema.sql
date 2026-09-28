@@ -7,6 +7,7 @@ CREATE TABLE users (
     phone VARCHAR(50),
     full_name VARCHAR(255),
     is_reviewer BOOLEAN DEFAULT FALSE,
+    is_verified BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

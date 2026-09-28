@@ -29,11 +29,14 @@ export class AuthService {
     // Mã hóa mật khẩu
     const passwordHash = await bcrypt.hash(passwordRaw, SALT_ROUNDS);
 
-    // Lưu vào cơ sở dữ liệu
+    // Lưu vào cơ sở dữ liệu (mặc định is_verified = false)
     const result = await this.db.query(
-      'INSERT INTO users (email, password_hash, full_name) VALUES ($1, $2, $3) RETURNING id, email, full_name',
+      'INSERT INTO users (email, password_hash, full_name, is_verified) VALUES ($1, $2, $3, false) RETURNING id, email, full_name',
       [email, passwordHash, fullName]
     );
+
+    // Tự động gửi OTP
+    await this.sendOtp(email);
 
     return result.rows[0];
   }
@@ -41,7 +44,7 @@ export class AuthService {
   public async login(email: string, passwordRaw: string) {
     // Lấy thông tin user
     const result = await this.db.query(
-      'SELECT id, email, password_hash, full_name FROM users WHERE email = $1',
+      'SELECT id, email, password_hash, full_name, is_verified FROM users WHERE email = $1',
       [email]
     );
 
@@ -55,6 +58,10 @@ export class AuthService {
     const isMatch = await bcrypt.compare(passwordRaw, user.password_hash);
     if (!isMatch) {
       throw new Error('Invalid email or password');
+    }
+
+    if (user.is_verified === false) {
+      throw new Error('Account not verified. Please verify OTP.');
     }
 
     // Tạo JWT Token
@@ -88,6 +95,9 @@ export class AuthService {
       throw new Error('Invalid OTP');
     }
     otpStore.delete(email);
+
+    // Cập nhật trạng thái xác thực trong CSDL
+    await this.db.query('UPDATE users SET is_verified = TRUE WHERE email = $1', [email]);
     return true;
   }
 }
