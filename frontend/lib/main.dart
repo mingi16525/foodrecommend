@@ -3,9 +3,11 @@ import 'package:provider/provider.dart';
 import 'core/theme.dart';
 import 'routes/app_routes.dart';
 import 'providers/app_state.dart';
+import 'config/api_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await ApiConfig.init();
   
   final appState = AppState();
   await appState.init();

@@ -38,7 +38,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Future<void> _loadPreferences() async {
     try {
-      const url = '${ApiConfig.baseUrl}/api/users/me';
+      final url = '${ApiConfig.baseUrl}/api/users/me';
       final response = await http.get(
         Uri.parse(url),
         headers: {
@@ -121,7 +121,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         }
       };
 
-      const url = '${ApiConfig.baseUrl}/api/users/me/preferences';
+      final url = '${ApiConfig.baseUrl}/api/users/me/preferences';
       final response = await http.put(
         Uri.parse(url),
         headers: {

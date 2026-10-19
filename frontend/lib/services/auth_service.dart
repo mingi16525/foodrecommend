@@ -3,11 +3,18 @@ import 'dart:io';
 import '../config/api_config.dart';
 
 class AuthService {
-  final String baseUrl = ApiConfig.baseUrl;
+  String get baseUrl => ApiConfig.baseUrl;
+
+  HttpClient _createClient() {
+    final client = HttpClient();
+    client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+    client.connectionTimeout = const Duration(seconds: 10);
+    return client;
+  }
 
   Future<Map<String, dynamic>> login(String email, String password) async {
     try {
-      final HttpClient client = HttpClient();
+      final HttpClient client = _createClient();
       final HttpClientRequest request = await client.postUrl(Uri.parse('$baseUrl/api/auth/login'));
       request.headers.set('content-type', 'application/json');
       request.add(utf8.encode(jsonEncode({'email': email, 'password': password})));
@@ -28,7 +35,7 @@ class AuthService {
 
   Future<Map<String, dynamic>> register(String email, String phone, String fullName, String password) async {
     try {
-      final HttpClient client = HttpClient();
+      final HttpClient client = _createClient();
       final HttpClientRequest request = await client.postUrl(Uri.parse('$baseUrl/api/auth/register'));
       request.headers.set('content-type', 'application/json');
       request.add(utf8.encode(jsonEncode({
@@ -54,7 +61,7 @@ class AuthService {
 
   Future<Map<String, dynamic>> sendOtp(String email) async {
     try {
-      final HttpClient client = HttpClient();
+      final HttpClient client = _createClient();
       final HttpClientRequest request = await client.postUrl(Uri.parse('$baseUrl/api/auth/send-otp'));
       request.headers.set('content-type', 'application/json');
       request.add(utf8.encode(jsonEncode({'email': email})));
@@ -75,7 +82,7 @@ class AuthService {
 
   Future<Map<String, dynamic>> verifyOtp(String email, String otp) async {
     try {
-      final HttpClient client = HttpClient();
+      final HttpClient client = _createClient();
       final HttpClientRequest request = await client.postUrl(Uri.parse('$baseUrl/api/auth/verify-otp'));
       request.headers.set('content-type', 'application/json');
       request.add(utf8.encode(jsonEncode({'email': email, 'otp': otp})));

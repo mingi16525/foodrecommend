@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -52,10 +54,168 @@ class LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void _showServerConfigDialog() {
+    final TextEditingController urlController = TextEditingController(text: ApiConfig.baseUrl);
+    String testStatus = '';
+    bool isTesting = false;
+
+    showDialog(
+      context: context,
+      builder: (dialogCtx) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            void testConnection() async {
+              setDialogState(() {
+                isTesting = true;
+                testStatus = 'Đang kiểm tra kết nối...';
+              });
+              try {
+                final client = HttpClient();
+                client.badCertificateCallback = (cert, host, port) => true;
+                client.connectionTimeout = const Duration(seconds: 5);
+                final targetUrl = urlController.text.trim();
+                final req = await client.getUrl(Uri.parse('$targetUrl/api/health'));
+                final res = await req.close();
+                final body = await res.transform(utf8.decoder).join();
+                if (res.statusCode == 200) {
+                  setDialogState(() {
+                    testStatus = '✅ Kết nối thành công! ($targetUrl)';
+                  });
+                } else {
+                  setDialogState(() {
+                    testStatus = '⚠️ Máy chủ trả về HTTP ${res.statusCode}: $body';
+                  });
+                }
+              } catch (e) {
+                setDialogState(() {
+                  testStatus = '❌ Lỗi kết nối: $e';
+                });
+              } finally {
+                setDialogState(() {
+                  isTesting = false;
+                });
+              }
+            }
+
+            return AlertDialog(
+              title: const Row(
+                children: [
+                  Icon(Icons.dns, color: Colors.blue),
+                  SizedBox(width: 8),
+                  Text('Cấu hình Server API', style: TextStyle(fontSize: 18)),
+                ],
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Địa chỉ Backend hiện tại:', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: urlController,
+                      decoration: const InputDecoration(
+                        labelText: 'API Base URL',
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text('Chọn nhanh cấu hình:', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 6),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      children: [
+                        ActionChip(
+                          avatar: const Icon(Icons.cloud_outlined, size: 16),
+                          label: const Text('Cloudflare Tunnel', style: TextStyle(fontSize: 11)),
+                          onPressed: () {
+                            urlController.text = ApiConfig.defaultTunnelUrl;
+                          },
+                        ),
+                        ActionChip(
+                          avatar: const Icon(Icons.wifi, size: 16),
+                          label: const Text('Wi-Fi LAN PC (192.168.1.89)', style: TextStyle(fontSize: 11)),
+                          onPressed: () {
+                            urlController.text = ApiConfig.defaultLanUrl;
+                          },
+                        ),
+                        ActionChip(
+                          avatar: const Icon(Icons.phone_android, size: 16),
+                          label: const Text('Android Emulator (10.0.2.2)', style: TextStyle(fontSize: 11)),
+                          onPressed: () {
+                            urlController.text = ApiConfig.defaultEmulatorUrl;
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    if (testStatus.isNotEmpty)
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: testStatus.startsWith('✅') ? Colors.green.shade50 : Colors.red.shade50,
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: testStatus.startsWith('✅') ? Colors.green : Colors.red,
+                          ),
+                        ),
+                        child: Text(
+                          testStatus,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: testStatus.startsWith('✅') ? Colors.green.shade900 : Colors.red.shade900,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: isTesting ? null : testConnection,
+                  child: isTesting
+                      ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                      : const Text('Kiểm tra Ping'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    final newUrl = urlController.text.trim();
+                    if (newUrl.isNotEmpty) {
+                      final messenger = ScaffoldMessenger.of(context);
+                      final nav = Navigator.of(dialogCtx);
+                      await ApiConfig.setBaseUrl(newUrl);
+                      nav.pop();
+                      messenger.showSnackBar(
+                        SnackBar(content: Text('Đã cập nhật Server: ${ApiConfig.baseUrl}')),
+                      );
+                      if (mounted) setState(() {});
+                    }
+                  },
+                  child: const Text('Lưu & Dùng'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Đăng nhập')),
+      appBar: AppBar(
+        title: const Text('Đăng nhập'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings_ethernet),
+            tooltip: 'Cấu hình Server API',
+            onPressed: _showServerConfigDialog,
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

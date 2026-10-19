@@ -6,12 +6,22 @@ Tài liệu này được thiết kế để phục vụ việc kiểm thử th�
 ---
 
 ## 🌐 0. THÔNG TIN MÔI TRƯỜNG TEST
-* **API Public Tunnel (Cloudflare)**: `https://doctor-screenshot-apparently-editing.trycloudflare.com`
-* **Local Backend URL**: `http://localhost:3000` (hoặc `http://10.0.2.2:3000` trên Android Emulator)
+* **API Public Tunnel (Cloudflare)**: `https://doctor-screenshot-apparently-editing.trycloudflare.com` (Khuyên dùng khi test qua mạng di động 4G/LTE hoặc ngoài quán cà phê)
+* **Wi-Fi LAN IP (PC của bạn)**: `http://192.168.1.89:3000` (Khuyên dùng khi điện thoại và máy tính kết nối chung mạng Wi-Fi, tốc độ phản hồi < 5ms)
+* **Android Emulator URL**: `http://10.0.2.2:3000` (Khuyên dùng khi chạy app trên máy ảo Android ngay trên PC)
+* **Localhost Backend**: `http://localhost:3000`
 * **PostgreSQL Database**: `postgresql://fooduser:foodpassword@localhost:5432/foodrecommend`
 * **Redis Cache**: `redis://localhost:6379`
 * **Qdrant Vector DB**: `http://localhost:6333`
 * **Kafka Event Bus**: `localhost:9092` (Topic chính: `swipe-events`)
+
+> [!TIP]
+> **TÍNH NĂNG ĐỔI SERVER NHANH TRÊN MÀN HÌNH ĐĂNG NHẬP:**
+> Tại màn hình Đăng nhập của App, nhấn vào biểu tượng **Mạng/Server** (nằm ở góc trên bên phải AppBar) để:
+> 1. Xem địa chỉ Server hiện tại.
+> 2. Bấm nhanh để chuyển giữa: **Cloudflare Tunnel**, **Wi-Fi LAN PC (192.168.1.89)** hoặc **Android Emulator (10.0.2.2)**.
+> 3. Bấm nút **"Kiểm tra Ping"** để xem ngay phản hồi từ máy chủ (trả về xanh `✅ Kết nối thành công!` trước khi đăng nhập).
+> 4. Bấm **"Lưu & Dùng"** để áp dụng ngay mà không cần cài lại app.
 
 ---
 
