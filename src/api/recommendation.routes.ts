@@ -125,11 +125,27 @@ recommendationRouter.post('/swipe', validate(swipeSchema), async (req, res) => {
   }
 
   try {
-    // Gọi EventCollector (Kafka) thay vì ghi Database trực tiếp
+    // 1. Lưu trực tiếp vào Database user_swipes để kiểm tra dữ liệu đồng bộ
+    try {
+      const dishCheck = await db.query('SELECT id FROM dishes WHERE id = $1', [dishId]);
+      if (dishCheck.rows.length > 0) {
+        await db.query(
+          'INSERT INTO user_swipes (user_id, dish_id, action) VALUES ($1, $2, $3)',
+          [userId, dishId, action]
+        );
+        console.log(`[Swipe] Persisted swipe '${action}' for user ${userId} on dish ${dishId} to user_swipes`);
+      } else {
+        console.warn(`[Swipe] Dish ${dishId} not in dishes table, skipped DB insert.`);
+      }
+    } catch (dbErr: any) {
+      console.error('[Swipe] Error inserting user_swipes:', dbErr.message);
+    }
+
+    // 2. Gọi EventCollector (Kafka & Redis FeatureStore)
     await eventCollector.trackSwipe(userId, dishId, action);
     res.json({ success: true, message: 'Event accepted' });
-  } catch {
-    res.status(500).json({ error: 'Internal server error' });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message || 'Internal server error' });
   }
 });
 
