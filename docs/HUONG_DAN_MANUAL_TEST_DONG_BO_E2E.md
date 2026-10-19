@@ -247,24 +247,25 @@ WHERE restaurant_id = (SELECT id FROM restaurants WHERE name = 'Phở Bò Cầu 
 
 ### 6.3 Kiểm tra Database (DB)
 ```sql
--- 1. Kiểm tra nhóm và đơn hàng
-SELECT g.name as group_name, o.id as order_id, o.status, o.total_amount
-FROM orders o
+-- 1. Kiểm tra nhóm và đơn hàng nhóm
+SELECT g.name as group_name, o.id as order_id, o.status, o.total_amount, o.created_at
+FROM group_orders o
 JOIN groups g ON o.group_id = g.id
 WHERE g.name = 'Hội Ăn Trưa Cầu Giấy';
 
--- 2. Kiểm tra chi tiết chia tiền
-SELECT b.user_id, u.full_name, b.amount, b.is_paid
-FROM split_bills b
-JOIN users u ON b.user_id = u.id
-WHERE b.order_id = (
-  SELECT o.id FROM orders o 
+-- 2. Kiểm tra chi tiết các món trong đơn hàng nhóm
+SELECT i.id, u.email as user_order, d.name as dish_name, i.quantity, i.price
+FROM group_order_items i
+JOIN dishes d ON i.dish_id = d.id
+LEFT JOIN users u ON i.user_id = u.id
+WHERE i.order_id = (
+  SELECT o.id FROM group_orders o 
   JOIN groups g ON o.group_id = g.id 
   WHERE g.name = 'Hội Ăn Trưa Cầu Giấy' 
   LIMIT 1
 );
 ```
-👉 **Kỳ vọng DB**: `orders.status = 'PAID'`, `orders.total_amount = 110000`, mỗi bản ghi `split_bills.amount = 55000`.
+👉 **Kỳ vọng DB**: `group_orders.status` cập nhật trạng thái đơn, `total_amount = 110000`, bảng `group_order_items` lưu danh sách món và số lượng.
 
 ---
 
