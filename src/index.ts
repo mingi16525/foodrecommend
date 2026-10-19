@@ -31,20 +31,23 @@ const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: process.env.CORS_ORIGIN || '*' } });
 
 app.disable('x-powered-by');
+app.set('trust proxy', 1);
 
 app.use(helmet());
 app.set('io', io);
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: 'Too many requests from this IP, please try again later'
+  max: isDev ? 2000 : 100,
+  message: { error: 'Too many requests from this IP, please try again later' }
 });
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: 'Too many login attempts, please try again later'
+  max: isDev ? 1000 : 20,
+  message: { error: 'Too many login attempts, please try again later' }
 });
 
 app.use('/api/', generalLimiter);

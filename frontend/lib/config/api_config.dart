@@ -2,7 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiConfig {
   /// Base URL mặc định (Cloudflare Tunnel công khai)
-  static const String defaultTunnelUrl = 'https://doctor-screenshot-apparently-editing.trycloudflare.com';
+  static const String defaultTunnelUrl = 'https://marie-fool-bedroom-headline.trycloudflare.com';
   static const String defaultEmulatorUrl = 'http://10.0.2.2:3000';
   static const String defaultLanUrl = 'http://192.168.1.89:3000';
 
