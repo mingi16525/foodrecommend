@@ -8,6 +8,8 @@ CREATE TABLE users (
     full_name VARCHAR(255),
     is_reviewer BOOLEAN DEFAULT FALSE,
     is_verified BOOLEAN DEFAULT FALSE,
+    subscription_tier VARCHAR(20) DEFAULT 'free',
+    subscription_expires_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -52,6 +54,9 @@ CREATE TABLE posts (
     post_type VARCHAR(50),
     video_url TEXT,
     content TEXT,
+    likes_count INT DEFAULT 0,
+    comments_count INT DEFAULT 0,
+    saves_count INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -123,3 +128,25 @@ CREATE TABLE user_swipes (
 );
 
 CREATE INDEX user_swipes_user_created_idx ON user_swipes (user_id, created_at DESC);
+
+CREATE TABLE post_likes (
+    post_id UUID REFERENCES posts(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(post_id, user_id)
+);
+
+CREATE TABLE saved_posts (
+    post_id UUID REFERENCES posts(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(post_id, user_id)
+);
+
+CREATE TABLE post_comments (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    post_id UUID REFERENCES posts(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

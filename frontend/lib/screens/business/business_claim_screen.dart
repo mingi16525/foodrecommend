@@ -30,15 +30,18 @@ class _BusinessClaimScreenState extends State<BusinessClaimScreen> {
       );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        if (!mounted) return;
         setState(() {
           _searchResults = data['data'] ?? [];
         });
       } else {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Không tìm thấy quán nào.')),
         );
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Lỗi kết nối.')),
       );
@@ -58,6 +61,7 @@ class _BusinessClaimScreenState extends State<BusinessClaimScreen> {
         },
       );
       if (response.statusCode == 200) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Đăng ký sở hữu $name thành công!')),
         );
@@ -66,11 +70,13 @@ class _BusinessClaimScreenState extends State<BusinessClaimScreen> {
           MaterialPageRoute(builder: (context) => BusinessMenuScreen(restaurantId: id, restaurantName: name)),
         );
       } else {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Không thể nhận quyền sở hữu. Quán có thể đã có chủ.')),
         );
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Lỗi khi đăng ký.')),
       );

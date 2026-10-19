@@ -5,9 +5,12 @@ Xây dựng nền tảng **AI Food Decision Platform** giúp người dùng quy�
 
 ## Các Tính Năng Cốt Lõi (Core Features)
 
-### 1. Khám Phá & Đề Xuất (Tab 3 - Core AI)
+### 1. Khám Phá & Đề Xuất (Tab 3 - Core AI & Real Navigation)
 - **Tinder-style Swiping:** Người dùng vuốt (Like/Skip) các món ăn hoặc Combo/Set để hệ thống AI học hỏi sở thích.
-- **Huy hiệu Combo:** Hiển thị rõ ràng các món ăn đơn lẻ vs Mâm/Combo (hỗ trợ nhóm).
+- **Tự Động Nhận Diện GPS Thực Tế:** Ứng dụng tự động lấy toạ độ GPS chính xác của người dùng, tính khoảng cách thực tế (theo m hoặc km) tới quán ăn.
+- **Điều Hướng Google Maps Native:** Nút bản đồ mở trực tiếp ứng dụng Google Maps chính thức, dẫn đường chi tiết tới địa chỉ quán đã chọn.
+- **Đặt Món Đa Nền Tảng (Multi-Platform Delivery):** Kết nối trực tiếp qua Deep Link / Web tìm kiếm tới các ứng dụng hàng đầu: **ShopeeFood**, **Be Food**, **GrabFood**.
+- **Huy hiệu Combo & Quán Gần Bạn:** Hiển thị rõ ràng các món ăn đơn lẻ vs Mâm/Combo (hỗ trợ nhóm) kèm khoảng cách cụ thể.
 - **Cá nhân hóa:** Lọc món ăn dựa trên Dị ứng (Allergies), Sở thích hương vị (Flavors) và Vị trí (Location).
 
 ### 2. Cộng Đồng & Lịch Trình Nhóm (Tab 2 - Group/Trip Planner)

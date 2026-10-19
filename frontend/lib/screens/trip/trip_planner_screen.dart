@@ -270,9 +270,9 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> with SingleTicker
           right: 10,
           top: 10,
         ),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
-          boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4, offset: const Offset(0, -2))],
+          boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, -2))],
         ),
         child: SafeArea(
           child: Row(

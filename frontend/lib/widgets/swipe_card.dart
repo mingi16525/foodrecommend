@@ -134,13 +134,30 @@ class _SwipeCardState extends State<SwipeCard> with SingleTickerProviderStateMix
                           Expanded(
                             child: Text(
                               dish['restaurant_name'] ?? 'Tên quán ăn',
-                              style: const TextStyle(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w500),
+                              style: const TextStyle(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w600),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
                       ),
+                      if (dish['restaurant_address'] != null && dish['restaurant_address'].toString().isNotEmpty) ...[
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            const Icon(Icons.pin_drop, color: Colors.amberAccent, size: 14),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                dish['restaurant_address'].toString(),
+                                style: const TextStyle(color: Colors.white70, fontSize: 12),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                       if (description.isNotEmpty) ...[
                         const SizedBox(height: 8),
                         Text(

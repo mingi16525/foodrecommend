@@ -65,6 +65,7 @@ services:
       - REDIS_URL=redis://redis:6379
       - KAFKA_BROKER=kafka:29092
       - QDRANT_URL=http://qdrant:6333
+      - JWT_SECRET=my-super-secret-jwt-key-123456
     depends_on:
       - postgres
       - redis

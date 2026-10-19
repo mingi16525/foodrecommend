@@ -59,7 +59,9 @@ recommendationRouter.get('/', async (req, res) => {
     const dishIds = results.map((r: RecommendationResult) => r.id);
     if (dishIds.length > 0) {
       const dbRes = await db.query(`
-        SELECT d.id, d.price, d.image_url, r.name as restaurant_name, d.item_type, d.description
+        SELECT d.id, d.name as dish_name, d.price, d.image_url, d.item_type, d.description,
+               r.id as restaurant_id, r.name as restaurant_name, r.address as restaurant_address,
+               r.location as restaurant_location, r.delivery_links
         FROM dishes d
         LEFT JOIN restaurants r ON d.restaurant_id = r.id
         WHERE d.id = ANY($1)
@@ -67,12 +69,38 @@ recommendationRouter.get('/', async (req, res) => {
 
       const enrichedResults = results.map((r: RecommendationResult) => {
         const dbDish = dbRes.rows.find(d => d.id === r.id);
+        const loc = (dbDish?.restaurant_location && typeof dbDish.restaurant_location === 'object')
+          ? dbDish.restaurant_location
+          : {};
+        const payload = (r.payload as Record<string, unknown>) || {};
+        const lat = loc.lat != null ? Number(loc.lat) : (payload.lat != null ? Number(payload.lat) : null);
+        const lng = loc.lng != null ? Number(loc.lng) : (payload.lng != null ? Number(payload.lng) : null);
+
+        let distanceText = `${(r.distanceScore * 10).toFixed(1)}km`;
+        if (location && lat != null && lng != null) {
+          const R = 6371;
+          const dLat = (lat - location.lat) * Math.PI / 180;
+          const dLon = (lng - location.lng) * Math.PI / 180;
+          const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(location.lat * Math.PI / 180) * Math.cos(lat * Math.PI / 180) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          const distKm = R * c;
+          distanceText = distKm < 1 ? `${Math.round(distKm * 1000)}m` : `${distKm.toFixed(1)}km`;
+        }
+
         return {
           ...r,
-          price: dbDish?.price || 0,
-          image_url: dbDish?.image_url || 'https://via.placeholder.com/400x300.png?text=Dish',
-          restaurant_name: dbDish?.restaurant_name || 'Unknown Restaurant',
-          distance: `${(r.distanceScore * 10).toFixed(1)}km`,
+          name: dbDish?.dish_name || r.name || 'Món ngon',
+          price: dbDish?.price ? Number(dbDish.price) : 0,
+          image_url: dbDish?.image_url || 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80',
+          restaurant_id: dbDish?.restaurant_id || null,
+          restaurant_name: dbDish?.restaurant_name || 'Quán ngon',
+          restaurant_address: dbDish?.restaurant_address || 'Hà Nội',
+          lat,
+          lng,
+          delivery_links: dbDish?.delivery_links || {},
+          distance: distanceText,
           item_type: dbDish?.item_type || 'single',
           description: dbDish?.description || ''
         };

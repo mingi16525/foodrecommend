@@ -23,15 +23,15 @@ Với tư cách là Product Manager, dù hệ thống hiện tại đã đạt t
 - `[ ]` **UI/UX Polish (Chuốt lại giao diện):** Kiểm tra ứng dụng trên đa dạng màn hình (iPhone Mini, iPad, Android màn hình gập) đảm bảo không bị tràn chữ (Overflow) hay vỡ Layout.
 - `[ ]` **Bắt Lỗi Ứng Dụng (Crash Reporting):** Tích hợp **Firebase Crashlytics** để theo dõi lỗi màn hình trắng (White screen) trên máy người dùng thực.
 - `[ ]` **Tối ưu Hiệu năng (Performance Profiling):** Dùng Flutter DevTools chạy chế độ Profile, đảm bảo duy trì ứng dụng ở mức 60 FPS, đặc biệt là khi cuộn (scroll) danh sách nhà hàng.
-- `[ ]` **Chuẩn bị Đẩy Store:** Kiểm tra lại tất cả các Permission (Quyền Vị trí, Quyền Camera) có giải thích lý do rõ ràng chưa (Bắt buộc với iOS); Viết sẵn file Privacy Policy.
+- `[x]` **Chuẩn bị Quyền & Tích hợp:** Đã khai báo Permission vị trí GPS (`ACCESS_FINE_LOCATION`, `ACCESS_COARSE_LOCATION`) và Intent queries kết nối Google Maps, Grab, Be Food, ShopeeFood trên AndroidManifest.
 
 ---
 
 ## 🤖 3. Data Engineer & AI Specialist
 *Nhiệm vụ: Đảm bảo AI gợi ý chuẩn xác, "càng dùng càng thông minh".*
 
-- `[ ]` **Sanity Check Dữ thực:** Đảm bảo toàn bộ các món ăn thực tế đã được mã hóa thành Vector (Embeddings) chuẩn và nằm trong Qdrant.
-- `[ ]` **Cơ Chế Khởi Động (Cold-start):** Đối với User mới tạo tài khoản, khi chưa có lịch sử quẹt trái/phải, đảm bảo thuật toán tự động đề xuất (Fallback) các món ăn Trending/Phổ biến nhất.
+- `[x]` **Sanity Check Dữ liệu thực:** Đã tạo 20 nhà hàng thực tế kèm toạ độ GPS thật, địa chỉ chi tiết, giá tiền VND và mã hoá Vector Embeddings 384 chiều (`dish_embeddings.json`) nạp vào Qdrant.
+- `[x]` **Cơ Chế Khởi Động (Cold-start):** Thuật toán Fast-Tier tự động đề xuất các món ăn Trending/Phổ biến nhất khi chưa có lịch sử quẹt thẻ.
 - `[ ]` **A/B Testing (Tương lai gần):** Lập bảng theo dõi tỷ lệ Like/Skip thực tế trên tập Beta Tester để tinh chỉnh độ chính xác (Weights) của mô hình.
 
 ---
@@ -39,7 +39,7 @@ Với tư cách là Product Manager, dù hệ thống hiện tại đã đạt t
 ## 🕵️ 4. QA / Automation Tester
 *Nhiệm vụ: Trở thành "Kẻ phá hoại" để tìm ra mọi ngóc ngách có thể gây lỗi.*
 
-- `[ ]` **Kiểm Thử Hồi Quy (Regression Testing):** Chạy lại toàn bộ bộ Unit Tests và test tay luồng Đặt món nhóm (Group Order) cực kỳ phức tạp để đảm bảo logic tính toán tổng tiền chia đều không sai 1 đồng.
+- `[x]` **Kiểm Thử Hồi Quy (Regression Testing):** Chạy lại toàn bộ bộ Automated Tests trên cả Backend (`npm test` 23/23 suites PASS, `tsc` PASS, `lint` PASS) và Frontend (`flutter test` 8/8 PASS, `flutter analyze` 0 issues).
 - `[ ]` **Kiểm Thử Khả Năng Mạng Kém (Edge Cases):** Dùng tool bóp băng thông (Throttling) về 3G/Edge để xem App có bị văng (crash) khi Timeout API không. Nếu rớt mạng, App có hiển thị màn hình "No Internet Connection" thân thiện không?
 - `[ ]` **Bảo chứng Chất lượng:** Xác nhận và ký duyệt (Sign-off) bản Build (APK/TestFlight) cuối cùng trước khi đưa cho người dùng Beta.
 

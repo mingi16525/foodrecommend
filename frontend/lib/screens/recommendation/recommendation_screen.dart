@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../../providers/app_state.dart';
@@ -7,7 +8,9 @@ import '../../config/api_config.dart';
 import '../../widgets/swipe_card.dart';
 import '../../services/maps_service.dart';
 import '../../services/delivery_link_service.dart';
+import '../../services/location_service.dart';
 import '../../services/api_logger.dart';
+
 class RecommendationScreen extends StatefulWidget {
   const RecommendationScreen({super.key});
 
@@ -19,6 +22,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   bool _isLoading = true;
   List<dynamic> _recommendations = [];
   String? _errorMessage;
+  Position? _currentPosition;
 
   @override
   void initState() {
@@ -29,10 +33,9 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   Future<void> _fetchRecommendations() async {
     if (!mounted) return;
     setState(() => _isLoading = true);
-    
+
     final isGuest = Provider.of<AppState>(context, listen: false).isGuest;
-    String queryParams = '';
-    
+
     if (isGuest) {
       if (!mounted) return;
       setState(() {
@@ -42,11 +45,26 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       return;
     }
 
+    // Tự động lấy vị trí GPS thực tế khi người dùng vào Tab 3
+    try {
+      final pos = await LocationService.getCurrentPosition();
+      if (pos != null && mounted) {
+        _currentPosition = pos;
+      }
+    } catch (e) {
+      debugPrint('Không thể lấy toạ độ GPS: $e');
+    }
+
+    String queryParams = '';
+    if (_currentPosition != null) {
+      queryParams = '?lat=${_currentPosition!.latitude}&lng=${_currentPosition!.longitude}';
+    }
+
     try {
       final response = await http.get(
         Uri.parse('${ApiConfig.baseUrl}/api/recommendation$queryParams'),
         headers: {
-          if (!isGuest) 'Authorization': 'Bearer ${ApiConfig.token}',
+          'Authorization': 'Bearer ${ApiConfig.token}',
         },
       );
       ApiLogger().addLog(
@@ -87,9 +105,9 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   Future<void> _onSwipe(bool isLiked) async {
     if (_recommendations.isEmpty) return;
     final item = _recommendations.first;
-    
+
     final isGuest = Provider.of<AppState>(context, listen: false).isGuest;
-    
+
     if (isGuest) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Vui lòng đăng nhập để lưu thao tác!')),
@@ -136,7 +154,10 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(isLiked ? 'Đã thích món ăn!' : 'Đã bỏ qua món ăn.'), duration: const Duration(milliseconds: 500)),
+        SnackBar(
+          content: Text(isLiked ? 'Đã thích món ăn!' : 'Đã bỏ qua món ăn.'),
+          duration: const Duration(milliseconds: 500),
+        ),
       );
     }
 
@@ -157,11 +178,33 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Khám phá', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: Colors.black87)),
-                      Text('Tìm món ngon quanh bạn', style: TextStyle(fontSize: 14, color: Colors.black54)),
+                      const Text(
+                        'Khám phá',
+                        style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: Colors.black87),
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            _currentPosition != null ? Icons.my_location : Icons.location_on_outlined,
+                            size: 14,
+                            color: _currentPosition != null ? Colors.green : Colors.orange,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            _currentPosition != null
+                                ? 'GPS: ${_currentPosition!.latitude.toStringAsFixed(2)}, ${_currentPosition!.longitude.toStringAsFixed(2)} (Quán gần bạn)'
+                                : 'Tìm món ngon quanh bạn',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: _currentPosition != null ? Colors.green.shade700 : Colors.black54,
+                              fontWeight: _currentPosition != null ? FontWeight.w600 : FontWeight.normal,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                   Container(
@@ -172,6 +215,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                     ),
                     child: IconButton(
                       icon: const Icon(Icons.refresh, color: Colors.orangeAccent),
+                      tooltip: 'Tải lại đề xuất',
                       onPressed: _fetchRecommendations,
                     ),
                   )
@@ -207,68 +251,104 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                               ),
                             )
                           : Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Dismissible(
-                          key: Key(_recommendations.first['id'].toString()),
-                          direction: DismissDirection.horizontal,
-                          onDismissed: (direction) {
-                            if (direction == DismissDirection.endToStart) {
-                              _onSwipe(false); // Vuốt trái (Skip)
-                            } else if (direction == DismissDirection.startToEnd) {
-                              _onSwipe(true); // Vuốt phải (Like)
-                            }
-                          },
-                          background: Container(
-                            alignment: Alignment.centerLeft,
-                            padding: const EdgeInsets.only(left: 20.0),
-                            decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: BorderRadius.circular(20),
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    child: Dismissible(
+                                      key: Key(_recommendations.first['id'].toString()),
+                                      direction: DismissDirection.horizontal,
+                                      onDismissed: (direction) {
+                                        if (direction == DismissDirection.endToStart) {
+                                          _onSwipe(false); // Vuốt trái (Skip)
+                                        } else if (direction == DismissDirection.startToEnd) {
+                                          _onSwipe(true); // Vuốt phải (Like)
+                                        }
+                                      },
+                                      background: Container(
+                                        alignment: Alignment.centerLeft,
+                                        padding: const EdgeInsets.only(left: 20.0),
+                                        decoration: BoxDecoration(
+                                          color: Colors.green,
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                        child: const Icon(Icons.favorite, color: Colors.white, size: 40),
+                                      ),
+                                      secondaryBackground: Container(
+                                        alignment: Alignment.centerRight,
+                                        padding: const EdgeInsets.only(right: 20.0),
+                                        decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                        child: const Icon(Icons.close, color: Colors.white, size: 40),
+                                      ),
+                                      child: SizedBox(
+                                        width: MediaQuery.of(context).size.width - 32,
+                                        height: MediaQuery.of(context).size.height * 0.6,
+                                        child: SwipeCard(dish: _recommendations.first),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      _buildActionButton(
+                                        Icons.close,
+                                        Colors.red,
+                                        'Bỏ qua (Vuốt trái)',
+                                        () => _onSwipe(false),
+                                      ),
+                                      _buildActionButton(
+                                        Icons.favorite,
+                                        Colors.green,
+                                        'Thích món (Vuốt phải)',
+                                        () => _onSwipe(true),
+                                      ),
+                                      _buildActionButton(
+                                        Icons.map,
+                                        Colors.blue,
+                                        'Chỉ đường Google Maps',
+                                        () {
+                                          if (_recommendations.isNotEmpty) {
+                                            final item = _recommendations.first;
+                                            final lat = (item['lat'] as num?)?.toDouble() ?? 21.033785;
+                                            final lng = (item['lng'] as num?)?.toDouble() ?? 105.847585;
+                                            final name = item['restaurant_name'] ?? 'Quán ăn';
+                                            final address = item['restaurant_address'] as String?;
+                                            MapsService.openMapsDirection(
+                                              lat,
+                                              lng,
+                                              name,
+                                              address: address,
+                                            );
+                                          }
+                                        },
+                                      ),
+                                      _buildActionButton(
+                                        Icons.delivery_dining,
+                                        Colors.orange,
+                                        'Đặt món qua ShopeeFood / Be / Grab',
+                                        () {
+                                          if (_recommendations.isNotEmpty) {
+                                            final item = _recommendations.first;
+                                            final name = item['restaurant_name'] ?? 'Quán ăn';
+                                            final deliveryLinks = item['delivery_links'] as Map<String, dynamic>?;
+                                            DeliveryLinkService.showDeliveryOptions(
+                                              context,
+                                              name,
+                                              deliveryLinks,
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 20),
+                                ],
+                              ),
                             ),
-                            child: const Icon(Icons.favorite, color: Colors.white, size: 40),
-                          ),
-                          secondaryBackground: Container(
-                            alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.only(right: 20.0),
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const Icon(Icons.close, color: Colors.white, size: 40),
-                          ),
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width - 32,
-                            height: MediaQuery.of(context).size.height * 0.6,
-                            child: SwipeCard(dish: _recommendations.first),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          _buildActionButton(Icons.close, Colors.red, () => _onSwipe(false)),
-                          _buildActionButton(Icons.favorite, Colors.green, () => _onSwipe(true)),
-                          _buildActionButton(Icons.map, Colors.blue, () {
-                            if (_recommendations.isNotEmpty) {
-                              // Giả lập toạ độ (thực tế sẽ dùng toạ độ quán từ API)
-                              MapsService.openMapsDirection(10.762622, 106.660172, _recommendations.first['restaurant_name']);
-                            }
-                          }), // Tích hợp Maps
-                          _buildActionButton(Icons.delivery_dining, Colors.orange, () {
-                            if (_recommendations.isNotEmpty) {
-                              DeliveryLinkService.openGrabFood(_recommendations.first['restaurant_name']);
-                            }
-                          }), // Grab/Shopee
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                    ],
-                  ),
-                ),
             ),
           ],
         ),
@@ -276,7 +356,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     );
   }
 
-  Widget _buildActionButton(IconData icon, Color color, VoidCallback onPressed) {
+  Widget _buildActionButton(IconData icon, Color color, String tooltip, VoidCallback onPressed) {
     return Container(
       decoration: const BoxDecoration(
         shape: BoxShape.circle,
@@ -285,6 +365,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       ),
       child: IconButton(
         icon: Icon(icon, color: color, size: 30),
+        tooltip: tooltip,
         onPressed: onPressed,
       ),
     );

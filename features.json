@@ -1,282 +1,98 @@
 {
   "features": [
     {
-      "name": "implement-frontend-e2e-gaps",
+      "name": "tab3-real-data-and-delivery-apis",
       "status": "DONE",
-      "description": "Hoàn thiện các lỗ hổng trên Frontend để thực hiện E2E test, bao gồm: giao diện OTP, màn hình đăng bài, claim business.",
+      "description": "Tích hợp dữ liệu quán ăn thật với toạ độ GPS, kết nối Google Maps chính xác từ Tab 3, tích hợp API & Deep Link cho Be, ShopeeFood, GrabFood, cập nhật crawler tự động lấy dữ liệu thật và đồng bộ toàn bộ luồng xử lý từ Backend sang Frontend.",
       "scope": [
-        "frontend/lib/services/auth_service.dart",
-        "frontend/lib/screens/auth/register_screen.dart",
-        "frontend/lib/screens/auth/login_screen.dart",
-        "frontend/lib/screens/auth/otp_screen.dart",
-        "frontend/lib/screens/feed/create_post_screen.dart",
-        "check_tinh_nang_fe.txt",
-        "claude-progress.md"
-      ]
-    },
-    {
-      "name": "fix-tab4-save-logout",
-      "status": "DONE",
-      "description": "Sau khi đăng xuất và đăng nhập lại, dữ liệu khi bấm lưu ở tab 4 không được lưu thành công. Thực hiện hoàn thiện phần lưu trữ thực tế cho tab 4.",
-      "scope": [
-        "frontend/lib/screens/onboarding/",
-        "frontend/lib/providers/app_state.dart",
-        "src/api/user.routes.ts",
-        "src/user/service.ts"
-      ]
-    },
-    {
-      "name": "fix-backend-502-restart",
-      "status": "DONE",
-      "description": "Xử lý vấn đề của backend: mỗi lần chạy đều gặp lỗi 502, phải chạy npm run dev mới load được backend thành công.",
-      "scope": [
-        "package.json",
-        "docker-compose.yml"
-      ]
-    },
-    {
-      "name": "implement-tab2-groups",
-      "status": "DONE",
-      "description": "Xử lý hoàn thiện phần Tab 2 (Cộng đồng/Nhóm), bao gồm Chat nhóm, Tạo Đơn Nhóm (bình chọn quán, gợi ý AI cho nhóm) và tạo mock data theo MoTaThuatToan và Product Specification.",
-      "scope": [
-        "schema.sql",
-        "seed.sql",
-        "src/group/*",
-        "src/api/group.routes.ts",
-        "frontend/lib/screens/group/*"
-      ]
-    },
-    {
-      "name": "phase0-security-hardening",
-      "status": "DONE",
-      "description": "Fix các security vulnerabilities thuộc Phase 0: IDOR trong Social Feed.",
-      "scope": [
-        "src/api/social.routes.ts",
-        "src/validators/social.validator.ts",
-        "claude-progress.md"
-      ]
-    },
-    {
-      "name": "phase1-production-readiness",
-      "status": "DONE",
-      "description": "Thực hiện Phase 1.3 (Observability) và Phase 1.4 (Performance Optimization) cho môi trường Production.",
-      "scope": [
-        "src/middleware/metrics.ts",
-        "src/api/health.routes.ts",
-        "src/index.ts",
-        "src/utils/cache.ts",
-        "src/api/restaurant.routes.ts",
-        "claude-progress.md"
-      ]
-    },
-    {
-      "name": "phase2-feature-completion",
-      "status": "DONE",
-      "description": "Thực hiện Phase 2 (Feature Completion) cho Backend API.",
-      "scope": [
-        "migrations/002_phase2_features.ts",
-        "src/group/service.ts",
-        "src/api/group.routes.ts",
-        "src/socket/index.ts",
-        "src/social/service.ts",
-        "src/api/social.routes.ts",
-        "src/api/user.routes.ts",
-        "src/utils/abTesting.ts",
-        "src/recommendation/engine.ts",
         "src/api/recommendation.routes.ts",
-        "claude-progress.md"
-      ]
-    },
-    {
-      "name": "phase3-scale-growth",
-      "status": "DONE",
-      "description": "Thực hiện Phase 3 (Scale & Growth) cho Backend API.",
-      "scope": [
-        "migrations/003_phase3_payments.ts",
-        "src/services/payment.service.ts",
-        "src/api/payment.routes.ts",
-        "src/services/notification.service.ts",
-        "src/api/notification.routes.ts",
-        "src/index.ts",
-        "k8s/deployment.yaml",
-        "k8s/hpa.yaml",
-        "k8s/service.yaml",
-        "package.json",
-        "claude-progress.md"
-      ]
-    },
-    {
-      "name": "final-polish",
-      "status": "DONE",
-      "description": "Hoàn thiện Backend (Swagger, ZaloPay, Loyalty/Referral, Seeding).",
-      "scope": [
-        "migrations/004_loyalty_referral.ts",
-        "src/db/seeds.ts",
-        "src/services/payment.service.ts",
-        "src/api/payment.routes.ts",
-        "docs/swagger.yaml",
-        "src/index.ts",
-        "src/services/loyalty.service.ts",
-        "src/api/loyalty.routes.ts",
-        "package.json",
+        "src/recommendation/fastTier.ts",
+        "scripts/generate_seed.js",
+        "seed.sql",
+        "dish_embeddings.json",
+        "tools/tool_get_food/index.js",
+        "tools/tool_get_food/crawl_real_data.js",
+        "frontend/android/app/src/main/AndroidManifest.xml",
+        "frontend/lib/services/maps_service.dart",
+        "frontend/lib/services/delivery_link_service.dart",
+        "frontend/lib/screens/recommendation/recommendation_screen.dart",
+        "frontend/lib/widgets/swipe_card.dart",
+        "frontend/test/maps_service_test.dart",
+        "check_tinh_nang_fe.txt",
+        "check_tinh_nang_be.txt",
         "features.json",
-        "claude-progress.md"
-      ]
-    },
-    {
-      "name": "implement-tab3-and-tab5-real-data",
-      "status": "PAUSED",
-      "description": "Hoàn thiện Tab 3/Tab 5 với dữ liệu thật và chuẩn hóa AI pipeline theo stack PostgreSQL, Qdrant, Redis, Kafka và Gemini.",
-      "scope": [
-        "frontend/lib/screens/recommendation/*",
-        "frontend/lib/screens/profile/*",
-        "src/api/*",
-        "src/recommendation/*",
-        "src/group/mediumTier.ts",
-        "src/group/tripPlanner.ts",
-        "schema.sql",
-        "tests/**",
-        "frontend/test/**",
-        "jest.integration.config.js",
-        "TESTING.md",
-        "scripts/run-integration-tests.js",
-        "claude-progress.md"
+        "claude-progress.md",
+        "AGENTS.md"
       ],
       "tasks": [
         {
-          "title": "Khóa user recommendation theo JWT và validate swipe contract",
+          "title": "Bổ sung thông tin địa chỉ thật, toạ độ lat/lng và delivery_links vào SELECT và API output của /api/recommendation",
           "status": "DONE"
         },
         {
-          "title": "Đưa user_swipes vào schema và bỏ DDL trong request runtime",
+          "title": "Tạo bộ dữ liệu thật các quán ăn tại Hà Nội & TP.HCM với địa chỉ cụ thể, toạ độ thực tế và liên kết Be, ShopeeFood, Grab",
           "status": "DONE"
         },
         {
-          "title": "Lọc allergy hai lớp ở Fast/Medium Tier",
+          "title": "Cập nhật tool crawler tự động lấy dữ liệu quán ăn thật từ web với địa chỉ, thực đơn và toạ độ",
           "status": "DONE"
         },
         {
-          "title": "Validate output Gemini và loại bỏ fallback mock Deep Tier",
+          "title": "Cấu hình AndroidManifest.xml với queries package/intent cho Google Maps, Be, ShopeeFood, Grab",
           "status": "DONE"
         },
         {
-          "title": "Hoàn thiện frontend recommendation/profile bằng API thật",
-          "status": "IN_PROGRESS"
-        },
-        {
-          "title": "Sửa Flutter provider smoke test và thêm error/retry state cho Tab 3/5",
+          "title": "Nâng cấp MapsService hỗ trợ mở Google Maps native app qua externalApplication và fallback chuẩn toạ độ/địa chỉ thật",
           "status": "DONE"
         },
         {
-          "title": "Bổ sung integration test với PostgreSQL/Qdrant/Kafka test services",
+          "title": "Nâng cấp DeliveryLinkService hỗ trợ ShopeeFood, Be Food, Grab kèm BottomSheet UI chọn nền tảng",
           "status": "DONE"
         },
         {
-          "title": "Mở rộng unit/API/E2E coverage cho auth, AI, group, split bill và application boundaries",
+          "title": "Cập nhật RecommendationScreen (Tab 3) tự động lấy GPS thực, truyền lat/lng vào API và hiển thị toạ độ, địa chỉ thực",
           "status": "DONE"
         },
         {
-          "title": "Thêm Flutter tests cho AppState, API logger, maps và app smoke flow",
+          "title": "Kiểm thử và xác minh toàn bộ test suite (Backend npm test, tsc, lint và Frontend flutter test) đều PASS 100%",
           "status": "DONE"
         },
         {
-          "title": "Đồng bộ Kafka producer/consumer cũ với EventCollector hoặc loại bỏ code không dùng",
-          "status": "DONE"
-        },
-        {
-          "title": "Bổ sung observability, timeout, retry và idempotency cho AI events",
-          "status": "TODO"
-        },
-        {
-          "title": "Khóa model embedding bằng singleton promise để tránh load đồng thời",
-          "status": "DONE"
-        },
-        {
-          "title": "Thêm test:prepare script để tự động setup database schema, Qdrant vectors và Kafka topic",
-          "status": "DONE"
-        }
-      ],
-      "definition_of_done": [
-        "npm test -- --runInBand exits 0",
-        "npx tsc --noEmit exits 0",
-        "npm run lint exits 0",
-        "Recommendation API không nhận userId từ request body/query",
-        "AI output từ Gemini được validate trước khi chạy RAG",
-        "Không còn CREATE TABLE trong request path"
-      ]
-    },
-    {
-      "name": "phase3-tab1-new-features",
-      "status": "DONE",
-      "description": "Phase 3: Triển khai & Kiểm thử các tính năng mới Tab 1 (User & Business Post)",
-      "scope": [
-        "schema.sql",
-        "src/api/social.routes.ts",
-        "src/api/restaurant.routes.ts",
-        "src/social/service.ts",
-        "src/restaurant/service.ts",
-        "frontend/lib/screens/social/*",
-        "claude-progress.md"
-      ],
-      "tasks": [
-        {
-          "title": "Bước 3.2: User Post & Auto-create (Upload media, tag food/restaurant, auto-create unverified location)",
-          "status": "DONE"
-        },
-        {
-          "title": "Bước 3.3: Quản lý & Claim Business (Đăng ký chủ quán, Claim để merge hoặc tạo mới)",
-          "status": "DONE"
-        },
-        {
-          "title": "Bước 3.4: Business Post & Swipe-to-change (Business đăng bài đính kèm nhiều món, cập nhật UI swipe)",
-          "status": "DONE"
-        }
-      ],
-      "definition_of_done": [
-        "npm test -- --runInBand exits 0",
-        "npx tsc --noEmit exits 0",
-        "npm run lint exits 0"
-      ]
-    },
-    {
-      "name": "fix-backend-e2e-gaps",
-      "status": "DONE",
-      "description": "Hoàn thiện các lỗ hổng logic Backend để E2E test hoạt động (OTP, Auto-create restaurant, Add dishes, Notifications)",
-      "scope": [
-        "src/auth/authService.ts",
-        "src/api/auth.routes.ts",
-        "src/social/service.ts",
-        "src/api/social.routes.ts",
-        "src/restaurant/service.ts",
-        "src/api/restaurant.routes.ts",
-        "src/group/service.ts",
-        "src/api/group.routes.ts",
-        "src/validators/social.validator.ts",
-        "claude-progress.md"
-      ],
-      "tasks": [
-        {
-          "title": "Hoàn thiện tính năng User Post (Tự động tạo quán nếu chưa có)",
-          "status": "DONE"
-        },
-        {
-          "title": "Thêm API Quản lý Món ăn cho Chủ Quán (Thêm món mới)",
-          "status": "DONE"
-        },
-        {
-          "title": "Hoàn thiện luồng Thanh toán Bill (Push notification)",
-          "status": "DONE"
-        },
-        {
-          "title": "Hoàn thiện luồng Xác thực OTP",
+          "title": "Cập nhật tài liệu check_tinh_nang_fe.txt, check_tinh_nang_be.txt, claude-progress.md và AGENTS.md",
           "status": "DONE"
         }
       ],
       "definition_of_done": [
         "npm test exits 0",
         "npx tsc --noEmit exits 0",
-        "npm run lint exits 0"
+        "npm run lint exits 0",
+        "node scripts/run-flutter-tests.js exits 0",
+        "Tab 3 gửi GPS thực tế lên /api/recommendation",
+        "API trả về lat, lng, restaurant_address và delivery_links thực tế",
+        "Nút bản đồ mở Google Maps với toạ độ thật và địa chỉ thật thành công",
+        "Nút giao hàng hỗ trợ điều hướng sang ShopeeFood, Be Food, Grab",
+        "Dữ liệu quán ăn có địa chỉ thật và toạ độ thật"
       ]
+    },
+    {
+      "name": "implement-frontend-e2e-gaps",
+      "status": "DONE",
+      "description": "Hoàn thiện các lỗ hổng trên Frontend để thực hiện E2E test, bao gồm: giao diện OTP, màn hình đăng bài, claim business."
+    },
+    {
+      "name": "fix-backend-e2e-gaps",
+      "status": "DONE",
+      "description": "Hoàn thiện các lỗ hổng logic Backend để E2E test hoạt động (OTP, Auto-create restaurant, Add dishes, Notifications)"
+    },
+    {
+      "name": "implement-tab2-groups",
+      "status": "DONE",
+      "description": "Xử lý hoàn thiện phần Tab 2 (Cộng đồng/Nhóm), bao gồm Chat nhóm, Tạo Đơn Nhóm (bình chọn quán, gợi ý AI cho nhóm)"
+    },
+    {
+      "name": "phase3-tab1-new-features",
+      "status": "DONE",
+      "description": "Phase 3: Triển khai & Kiểm thử các tính năng mới Tab 1 (User & Business Post)"
     }
   ]
 }

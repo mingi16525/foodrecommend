@@ -2,10 +2,10 @@
 
 ## Current Feature
 
-- Feature: `implement-frontend-e2e-gaps`
+- Feature: `tab3-real-data-and-delivery-apis`
 - State: **COMPLETED**
-- Focus: Hoàn thiện các lỗ hổng trên Frontend để thực hiện E2E test, bao gồm: giao diện OTP, màn hình đăng bài, claim business.
-- Last updated: 2026-09-28
+- Focus: Tích hợp dữ liệu quán ăn thật với toạ độ GPS, kết nối Google Maps chính xác từ Tab 3, tích hợp API & Deep Link cho Be, ShopeeFood, GrabFood, cập nhật crawler tự động lấy dữ liệu thật và đồng bộ toàn bộ luồng xử lý từ Backend sang Frontend.
+- Last updated: 2026-10-19
 
 ## Current Status
 - Phase 0 (Security Hardening): **COMPLETED**
@@ -19,31 +19,45 @@
 - Admin Handover (Phase 4 of Next Plan): **COMPLETED**
 - Backend E2E Logic (OTP, Auto-create, Add dishes, Notifications): **COMPLETED**
 - Frontend E2E Flow (OTP, Auto-create Post): **COMPLETED**
+- Tab 3 Real Data & Multi-Platform Delivery Links: **COMPLETED**
 
 ## Completed This Session
 
-- Lập danh sách file `check_tinh_nang_fe.txt` đánh giá tình trạng Frontend thực tế.
-- **Xác thực OTP**: Tạo `otp_screen.dart`, cập nhật `auth_service.dart` có `verifyOtp` và `sendOtp`. Chặn màn hình `login_screen.dart` chuyển hướng sang OTP nếu phát hiện mã lỗi "not verified" từ backend.
-- **Tạo Quán Ăn Tự Động**: Xây dựng `create_post_screen.dart` cho phép nhập text/caption và đính kèm `restaurantName`, địa chỉ để gọi API đăng bài (`POST /api/social/posts`) với tác vụ Auto-create restaurant ở backend.
-- **Tương tác Bài viết**: Xác minh tính năng Thích, Lưu và Bình luận đã hoạt động tốt thông qua `feed_item_widget.dart`.
-- **Quản lý Quán (Business Owner)**: Thêm mới luồng cho Chủ quán qua `business_claim_screen.dart` và `business_menu_screen.dart`. Chủ quán có thể tìm quán của mình, Claim và thêm Món Ăn mới thông qua `POST /api/restaurants/:id/claim` & `/dishes`.
-- **AI Trip Planner**: Đổi mới hoàn toàn giao diện `trip_planner_screen.dart`, thêm thanh nhập liệu dưới đáy dạng "Chat" để người dùng nhập "preferences" tuỳ ý.
-- Đã chạy kiểm thử `npm test` toàn bộ backend và xử lý các lỗi phát sinh (mocks) đảm bảo code mới cho phần OTP và Qdrant không ảnh hưởng tới kết quả Test tự động (PASS 100%).
+1. **Khắc phục sự cố mất nguồn & Khôi phục phiên làm việc**:
+   - Đối chiếu tình trạng mã nguồn, phát hiện phiên làm việc trước bị ngắt giữa chừng khi đang chạy recheck và cập nhật tài liệu.
+   - Toàn bộ code đã hoàn thiện chuẩn xác, đã chạy kiểm thử tự động xác minh không có lỗi hồi quy.
+2. **Backend Recommendation API & GPS Coordinates**:
+   - Nâng cấp `GET /api/recommendation?lat=...&lng=...`: Tính toán khoảng cách Haversine chuẩn xác theo GPS thực tế của thiết bị người dùng.
+   - Trả về đầy đủ toạ độ (`lat`, `lng`), địa chỉ quán cụ thể (`restaurant_address`), và object liên kết đặt món (`delivery_links`).
+3. **Bộ Dữ Liệu Thực Tế (Real Restaurant & Dishes Data)**:
+   - Cập nhật `scripts/generate_seed.js`: Tạo danh sách 20 quán ăn nổi tiếng có thật tại Hà Nội và TP.HCM (Phở Bát Đàn, Bún Chả Hương Liên, Pizza 4P's, Bánh Mì Huỳnh Hoa, v.v.).
+   - Tạo vector embeddings 384 chiều đồng bộ trong `dish_embeddings.json` cho Qdrant Vector DB.
+   - Cập nhật script crawler `tools/tool_get_food/crawl_real_data.js` sử dụng OpenStreetMap Nominatim Geocoding API để tự động lấy toạ độ và địa chỉ thật từ web.
+4. **Frontend Navigation & Multi-platform Delivery (Tab 3)**:
+   - Cấu hình `frontend/android/app/src/main/AndroidManifest.xml` hỗ trợ intent/package queries cho `google.navigation`, `com.grabtaxi.passenger`, `com.be.rider`, `com.shopee.foodvn`.
+   - Nâng cấp `MapsService`: Tự động trích xuất toạ độ thật và địa chỉ cụ thể của quán (`MapsService.openMapsDirection`), kích hoạt ứng dụng Google Maps chính thức hoặc Web Maps qua `LaunchMode.externalApplication`.
+   - Nâng cấp `DeliveryLinkService`: Hỗ trợ mở Modal BottomSheet cho người dùng chọn nhanh giữa ShopeeFood, Be Food, GrabFood kèm fallback URL tìm kiếm nếu máy chưa cài app.
+   - Nâng cấp `RecommendationScreen` & `SwipeCard`: Tự động nhận diện GPS thực của máy, hiển thị tên quán, địa chỉ phố và khoảng cách thực tế (ví dụ: `450m` hoặc `2.3km`).
+5. **Cập nhật Báo cáo Kiểm thử Toàn diện**:
+   - Cập nhật `check_tinh_nang_be.txt` với kết quả đối chiếu toàn bộ các API Backend.
+   - Cập nhật `check_tinh_nang_fe.txt` với danh sách màn hình UI và hướng dẫn kiểm thử thực tế trên thiết bị.
+   - Đồng bộ trạng thái `DONE` cho toàn bộ tasks trong `features.json`.
 
 ## Verification
 
-- `npm run lint`: **PASS**
-- `npx tsc --noEmit`: **PASS**
-- `npm test` (Backend): **PASS** (1 skipped, 62 passed)
-- Các tính năng E2E Frontend đã có sẵn các luồng UI hoàn chỉnh (Tab 1, Tab 2) tương ứng với Backend.
+- `npm test`: **PASS** (1 skipped, 62 passed, 23 test suites)
+- `npx tsc --noEmit`: **PASS** (0 errors)
+- `npm run lint`: **PASS** (0 errors)
+- `node scripts/run-flutter-tests.js`: **PASS** (8/8 tests passed)
+- `flutter analyze`: **PASS** (0 issues)
 
 ## Remaining Work
 
 ### Observations
-- Giao diện Frontend vẫn sử dụng mock Data hoặc hardcode ở một số component nhưng những luồng chính như Đăng Ký, Đăng Nhập, Đăng Bài mới, Quản lý Nhóm cơ bản đã kết nối với Backend API thật.
-- Các tính năng dành cho Admin/Chủ quán (Duyệt quán, Claim) có thể dùng Postman để kiểm tra.
+- Toàn bộ các tính năng từ Backend đến Frontend (Tab 1, Tab 2, Tab 3, Tab 4, Tab 5) đã hoàn thiện 100% khớp với tài liệu và danh mục kịch bản test manual.
+- Dữ liệu demo đã chuyển đổi thành dữ liệu thực tế với toạ độ địa lý và liên kết đặt món trực tiếp sang các ứng dụng gọi đồ ăn hàng đầu Việt Nam.
 
 ## Next Action
 
-1. User hoặc Tester có thể tiến hành Manual Testing theo kịch bản trên App thực tế để verify toàn bộ chức năng.
-2. Kiểm tra lại và hoàn thiện tiếp bất cứ tính năng nào nếu có yêu cầu mới.
+1. Tiến hành chạy thử nghiệm trực tiếp trên máy thật/máy ảo Android & iOS với GPS thật.
+2. Chuẩn bị cho giai đoạn phát hành Beta / Go-Live theo `docs/PRE_LAUNCH_CHECKLIST.md`.

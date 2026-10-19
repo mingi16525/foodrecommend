@@ -43,5 +43,41 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <!-- Web Links & Universal Links -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="http" />
+        </intent>
+        <!-- Maps Navigation -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="geo" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="google.navigation" />
+        </intent>
+        <!-- Delivery Deep Links -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="shopeefood" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="be" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="grab" />
+        </intent>
+        <!-- App Packages -->
+        <package android:name="com.google.android.apps.maps" />
+        <package android:name="com.shopee.food" />
+        <package android:name="com.be.customer" />
+        <package android:name="com.grabtaxi.passenger" />
     </queries>
 </manifest>

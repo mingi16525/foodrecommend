@@ -50,6 +50,8 @@ class AuthService {
     } catch (e) {
       throw Exception('Register error: $e');
     }
+  }
+
   Future<Map<String, dynamic>> sendOtp(String email) async {
     try {
       final HttpClient client = HttpClient();

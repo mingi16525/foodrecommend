@@ -69,12 +69,14 @@ class _BusinessMenuScreenState extends State<BusinessMenuScreen> {
       );
 
       if (response.statusCode == 200) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Đã thêm món ăn!')));
         _nameController.clear();
         _priceController.clear();
         _descController.clear();
         _fetchDishes();
       } else {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Không thể thêm món ăn.')));
       }
     } catch (e) {

@@ -110,30 +110,52 @@ async function scrapeAndSeed(db) {
       // Tránh trùng tên
       let res = await db.query('SELECT id FROM restaurants WHERE name = $1', [r.name]);
       let restaurantId;
+      const encName = encodeURIComponent(r.name);
+      const deliveryLinks = JSON.stringify({
+        shopeefood: `https://shopeefood.vn/tim-kiem?keyword=${encName}`,
+        be: `https://food.be.com.vn`,
+        be_app: `be://food/search?q=${encName}`,
+        grab: `https://food.grab.com/vn/vi/restaurants?search=${encName}`,
+        google_maps: `https://www.google.com/maps/dir/?api=1&destination=${r.lat},${r.lng}`
+      });
+
       if (res.rows.length > 0) {
         restaurantId = res.rows[0].id;
+        await db.query(
+          `UPDATE restaurants SET address = $1, location = $2, delivery_links = $3 WHERE id = $4`,
+          [r.address, JSON.stringify({ lat: r.lat, lng: r.lng }), deliveryLinks, restaurantId]
+        );
       } else {
         res = await db.query(
-          `INSERT INTO restaurants (name, address, location) 
-           VALUES ($1, $2, $3) 
+          `INSERT INTO restaurants (name, address, location, delivery_links) 
+           VALUES ($1, $2, $3, $4) 
            RETURNING id`,
-          [r.name, r.address, JSON.stringify({ lat: r.lat, lng: r.lng })]
+          [r.name, r.address, JSON.stringify({ lat: r.lat, lng: r.lng }), deliveryLinks]
         );
         restaurantId = res.rows[0].id;
         resCount++;
       }
 
       // Chọn ngẫu nhiên 5-10 món cho quán này
+      const sampleImages = [
+        'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1555126634-323283e090fa?auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=600&q=80'
+      ];
       const menuSize = Math.floor(Math.random() * 6) + 5;
       const shuffledDishes = dishes.sort(() => 0.5 - Math.random()).slice(0, menuSize);
 
-      for (const d of shuffledDishes) {
+      for (let i = 0; i < shuffledDishes.length; i++) {
+        const d = shuffledDishes[i];
         const dishRes = await db.query('SELECT id FROM dishes WHERE restaurant_id = $1 AND name = $2', [restaurantId, d.name]);
+        const img = sampleImages[i % sampleImages.length];
         if (dishRes.rows.length === 0) {
           await db.query(
             `INSERT INTO dishes (restaurant_id, name, description, price, image_url, item_type)
              VALUES ($1, $2, $3, $4, $5, $6)`,
-            [restaurantId, d.name, d.description, d.price, 'https://via.placeholder.com/150', d.type]
+            [restaurantId, d.name, d.description, d.price, img, d.type]
           );
         }
       }

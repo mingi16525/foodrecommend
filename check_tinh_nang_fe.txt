@@ -1,29 +1,64 @@
-### BÁO CÁO KIỂM TRA TOÀN DIỆN FRONT-END (FLUTTER APP) ###
+### BÁO CÁO KIỂM TRA TOÀN DIỆN FRONT-END (FLUTTER APP) & HƯỚNG DẪN TEST THỰC TẾ ###
 
-Sau khi đối chiếu mã nguồn thư mục `frontend/lib` với các tính năng đã hoàn thiện ở Backend, dưới đây là hiện trạng thực tế của App (Frontend) chuẩn bị cho Manual Test:
+Sau quá trình rà soát toàn diện cấu trúc thư mục `frontend/lib/screens` và đối chiếu với luồng nghiệp vụ trong tài liệu `Yeu_Cau_Test_Tinh_Nang_Manual.txt`, dưới đây là danh sách toàn bộ các tính năng Giao diện (UI) đã được triển khai, đảm bảo độ bao phủ 100% so với Backend và sẵn sàng cho kiểm thử thực tế.
 
-#### 1. Tab 1 - Authentication (Xác thực & OTP)
-- [x] **Giao diện Đăng ký & Đăng nhập cơ bản**: Đã có (`login_screen.dart`, `register_screen.dart`).
-- [x] **Giao diện Xác minh OTP**: Đã hoàn thiện. Thêm file `otp_screen.dart` cho phép người dùng nhập 6 số và gửi lại mã OTP. Đã đấu nối API `POST /api/auth/verify-otp` trong `auth_service.dart`.
-- [x] **Xử lý đăng nhập lỗi do thiếu OTP**: Đã xử lý trong `login_screen.dart`. Nếu API báo lỗi "not verified", hệ thống hiển thị cảnh báo và chuyển luôn sang trang `OtpScreen`.
+#### 1. Tab 1: Dành cho bạn (Feed & Social)
+- [x] **`feed_screen.dart`**: Khung UI lướt feed video/ảnh giống TikTok, tích hợp API `GET /api/social/feed`.
+- [x] **`feed_item_widget.dart`**: Chứa logic hiển thị từng bài viết. Đã tích hợp API `POST /like`, `POST /comment`, `POST /save`.
+- [x] **`create_post_screen.dart`**: Màn hình đăng bài viết mới, cho phép gắn thẻ (tag) tên quán và địa chỉ. Kích hoạt tính năng Auto-create Restaurant.
 
-#### 2. Tab 1 - Dành cho bạn (Social Feed & Đăng bài)
-- [x] **Giao diện lướt Feed (giống TikTok)**: Đã có khung UI `feed_screen.dart`, có gọi API `GET /api/social/feed`.
-- [x] **Giao diện "Đăng bài" (User Post)**: Đã hoàn thiện. Thêm `create_post_screen.dart` cho phép người dùng nhập caption, Tên quán và Địa chỉ quán để kích hoạt tính năng tự tạo Quán của Backend.
-- [x] **Tương tác Thích/Bình luận**: Đã hoàn thiện. Trong `feed_item_widget.dart` đã tích hợp đầy đủ API `POST /like`, `POST /comment`, `POST /save`. Trang cá nhân cũng hiển thị danh sách bài viết.
+#### 2. Tab 2: Cộng đồng (Groups & Lịch trình)
+- [x] **`group_list_screen.dart`**: Xem danh sách nhóm và tạo nhóm mới (API `POST /api/groups`).
+- [x] **`group_chat_screen.dart`**: Giao diện chat nhóm, chia sẻ vị trí/link, tích hợp cơ chế Polling Real-time.
+- [x] **`group_order_screen.dart`**: Giao diện đặt món chung và Chia tiền (Split Bill), bao gồm chia đều và chia theo món.
+- [x] **`trip_planner_screen.dart`**: Giao diện trò chuyện với AI Trip Planner, tích hợp Text input ở cuối màn hình để user nhập ngữ cảnh (thời tiết, budget, v.v.).
 
-#### 3. Tính năng Quản lý Quán (Dành cho Business Owner)
-- [x] **Nhận quyền sở hữu (Claim Business)**: Đã hoàn thiện. Thêm `business_claim_screen.dart` cho phép tìm kiếm và gửi yêu cầu Claim qua API `POST /api/restaurants/:id/claim`. Truy cập qua màn hình Cài đặt của Profile.
-- [x] **Thêm món ăn vào menu**: Đã hoàn thiện. Bổ sung `business_menu_screen.dart` cho phép nhập món mới gọi qua API `POST /api/restaurants/:id/dishes`.
+#### 3. Tab 3: Khám phá & Gợi ý Thông Minh (Recommendation & Real Navigation)
+- [x] **`recommendation_screen.dart`**: 
+  + **Tự động nhận diện GPS thực**: Sử dụng `LocationService` để lấy toạ độ thực tế từ thiết bị, tự động đẩy `?lat=...&lng=...` lên API Backend.
+  + **Badge trạng thái GPS**: Hiển thị toạ độ thực tế và gắn nhãn "Quán gần bạn".
+  + **Nút Google Maps (Xanh dương)**: Tự động trích xuất toạ độ thật và địa chỉ cụ thể của quán (`MapsService.openMapsDirection`), kích hoạt ứng dụng Google Maps chính thức hoặc Web Maps qua `LaunchMode.externalApplication`.
+  + **Nút Đặt món Đa nền tảng (Cam)**: Mở Modal BottomSheet cho phép người dùng chọn điều hướng trực tiếp sang:
+    * **ShopeeFood**: Deep link `shopeefood://` hoặc URL tìm kiếm `https://shopeefood.vn/tim-kiem?keyword=...`
+    * **Be Food**: Deep link `be://food` hoặc cổng web `https://food.be.com.vn`
+    * **GrabFood**: Deep link `grab://` hoặc URL tìm kiếm `https://food.grab.com`
+- [x] **`swipe_card.dart`**: 
+  + Giao diện vuốt thẻ (Tinder-style) để gửi action Like (vuốt phải) và Skip (vuốt trái).
+  + Hiển thị hình ảnh món ăn thực tế chất lượng cao.
+  + Hiển thị tên quán, địa chỉ phố cụ thể (ví dụ: "49 Bát Đàn, Hoàn Kiếm, Hà Nội") và khoảng cách thực tính theo km/m.
 
-#### 4. Tab 2 - Cộng đồng (Nhóm, Lịch trình, Chia tiền)
-- [x] **Tạo nhóm & Danh sách nhóm**: Đã có `group_list_screen.dart`, gọi API tạo nhóm thực tế.
-- [x] **Group Chat & Đặt món chung**: Đã có `group_chat_screen.dart` và `group_order_screen.dart`, tích hợp polling API để realtime hóa.
-- [x] **Lập lịch trình bằng AI (Trip Planner)**: Đã hoàn thiện. Cải tiến `trip_planner_screen.dart` với thanh nhập `TextField` dạng chat ở cuối màn hình để user truyền trực tiếp `preferences` (ngữ cảnh, thời tiết, ngân sách) cho AI sinh lịch trình.
+#### 4. Tab 4: Thiết lập Sở Thích (Onboarding)
+- [x] **`onboarding_screen.dart`**: Giao diện thiết lập profile ăn uống, chọn Flavors, Categories và đánh dấu Allergies (dị ứng). Dữ liệu được gửi lên backend để cá nhân hóa đề xuất.
+
+#### 5. Tab 5: Tài khoản & Chủ quán (Profile & Business)
+- [x] **`profile_screen.dart`**: Màn hình xem thông tin tài khoản, cài đặt, nâng cấp Premium (Thanh toán MoMo).
+- [x] **`post_grid_screen.dart`**: Hiển thị danh sách các bài viết / món ăn mà user đã "Lưu" (Bookmark) hoặc đã "Đăng".
+- [x] **`business_claim_screen.dart`**: Dành cho Chủ quán tìm kiếm và Claim (Nhận quyền sở hữu) nhà hàng thông qua API `POST /api/restaurants/:id/claim`.
+- [x] **`business_menu_screen.dart`**: Màn hình quản lý Menu, cho phép chủ quán thêm món mới gọi qua API `POST /api/restaurants/:id/dishes`.
+
+#### 6. Luồng Xác thực (Authentication Flow)
+- [x] **`login_screen.dart` / `register_screen.dart`**: Đăng nhập, đăng ký tài khoản.
+- [x] **`otp_screen.dart`**: Nhập 6 mã số xác thực, có luồng tự chuyển hướng nếu API đăng nhập báo lỗi "not verified".
+
+#### 7. Quản trị & Hệ thống (Admin & System)
+- [x] **`admin_log_screen.dart`**: Nút "Bug" (truy cập từ Main Screen) để xem Log Debug/Kafka gửi từ hệ thống cho Admin kiểm tra E2E.
+- [x] **`main_screen.dart`**: Quản lý điều hướng Bottom Navigation Bar, kiểm tra quyền `Guest` để ẩn các Tab yêu cầu đăng nhập.
 
 ====================================================================
-KẾT LUẬN & ĐỀ XUẤT HÀNH ĐỘNG CHO FRONTEND:
+HƯỚNG DẪN TEST TAY TRÊN THIẾT BỊ / MÁY ẢO:
 ====================================================================
-Tất cả các tính năng Frontend tương ứng với Backend (bao gồm Feed, OTP, Business Owner, Group, AI Trip Planner) đã được xây dựng đầy đủ giao diện và đấu nối API thành công.
-Hệ thống Frontend đã hoàn thiện 100% so với checklist.
-Sẵn sàng chuyển sang giai đoạn **End-to-End Manual Testing** trên thiết bị thật hoặc máy ảo (Emulator).
+1. **Kiểm tra Tab 3 (Bật GPS & Google Maps)**:
+   - Bước 1: Mở app, cấp quyền truy cập Vị trí (Location Permission).
+   - Bước 2: Vào Tab 3 ("Khám phá"). Quan sát thanh tiêu đề sẽ hiển thị: "GPS: [Vĩ độ], [Kinh độ] (Quán gần bạn)".
+   - Bước 3: Thẻ món ăn sẽ hiển thị quán ăn thực tế với tên quán, địa chỉ chính xác và khoảng cách.
+   - Bước 4: Nhấn vào nút Bản đồ (màu xanh dương). Ứng dụng sẽ gọi Intent mở trực tiếp ứng dụng Google Maps dẫn đường tới toạ độ và tên quán đã chọn.
+2. **Kiểm tra Đặt món qua Be, ShopeeFood, Grab**:
+   - Bước 1: Tại Tab 3, nhấn vào biểu tượng xe giao hàng (màu cam).
+   - Bước 2: Một bảng chọn hiện lên với 3 tùy chọn: ShopeeFood, Be Food, GrabFood.
+   - Bước 3: Nhấn vào bất kỳ tùy chọn nào để kích hoạt chuyển hướng sang ứng dụng đặt món tương ứng.
+3. **Kiểm tra Vuốt (Swipe)**:
+   - Vuốt thẻ sang phải (hoặc nhấn nút Trái tim màu xanh) -> Báo "Đã thích món ăn!" và gửi event Like lên hệ thống.
+   - Vuốt thẻ sang trái (hoặc nhấn nút X màu đỏ) -> Báo "Đã bỏ qua món ăn!" và gửi event Skip lên hệ thống.
+4. **Kiểm tra Quản lý quán & Đăng bài**:
+   - Vào Tab 1 nhấn nút (+) để đăng bài review và gắn thẻ tên quán -> Quán tự động được tạo nếu chưa tồn tại.
+   - Vào Tab 5 -> "Quản lý quán ăn" để Claim quán và thêm thực đơn mới.
