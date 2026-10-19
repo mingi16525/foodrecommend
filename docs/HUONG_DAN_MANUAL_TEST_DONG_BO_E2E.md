@@ -19,9 +19,44 @@ Tài liệu này được thiết kế để phục vụ việc kiểm thử th�
 > **TÍNH NĂNG ĐỔI SERVER NHANH TRÊN MÀN HÌNH ĐĂNG NHẬP:**
 > Tại màn hình Đăng nhập của App, nhấn vào biểu tượng **Mạng/Server** (nằm ở góc trên bên phải AppBar) để:
 > 1. Xem địa chỉ Server hiện tại.
-> 2. Bấm nhanh để chuyển giữa: **Cloudflare Tunnel**, **Wi-Fi LAN PC (192.168.1.89)** hoặc **Android Emulator (10.0.2.2)**.
+> 2. Bấm nhanh để chuyển giữa: **Tự động tải từ GitHub**, **Cloudflare Tunnel**, **Wi-Fi LAN PC (192.168.1.89)** hoặc **Android Emulator (10.0.2.2)**.
 > 3. Bấm nút **"Kiểm tra Ping"** để xem ngay phản hồi từ máy chủ (trả về xanh `✅ Kết nối thành công!` trước khi đăng nhập).
 > 4. Bấm **"Lưu & Dùng"** để áp dụng ngay mà không cần cài lại app.
+
+---
+
+## 🖥️ BẮT ĐẦU TEST: NHẬP LỆNH Ở ĐÂU, QUAN SÁT NHƯ THẾ NÀO?
+
+Để kiểm tra đồng bộ cả 3 lớp một cách trực quan và dễ dàng nhất, bạn hãy mở **song song 3 cửa sổ** trên máy tính:
+
+```text
+┌─────────────────────────┐  ┌─────────────────────────┐  ┌─────────────────────────┐
+│     CỬA SỔ 1 (FE)       │  │     CỬA SỔ 2 (BE)       │  │     CỬA SỔ 3 (DB)       │
+│   Điện thoại di động    │  │   Nhấp đúp chuột file   │  │   Nhấp đúp chuột file   │
+│  (hoặc Android Emulator)│  │ THEO_DOI_LOG_BACKEND.bat│  │KIEM_TRA_NHANH_DATABASE.bat│
+│                         │  │                         │  │                         │
+│  Thao tác: Bấm nút,     │  │  Quan sát: Thấy API gọi │  │  Bấm các số [1], [2]... │
+│  nhập form, quẹt thẻ... │  │  và mã OTP in ra tức thì│  │  để xem dữ liệu lưu DB  │
+└─────────────────────────┘  └─────────────────────────┘  └─────────────────────────┘
+```
+
+### 1. Chuẩn bị Cửa sổ 2: Theo dõi Backend (BE) & Lấy mã OTP
+* Bạn vào thư mục dự án `D:\FoodRecommend`, nhấp đúp chuột vào file:
+  👉 **`THEO_DOI_LOG_BACKEND.bat`**
+* **Cách quan sát**: Cửa sổ màu đen hiện ra và liên tục cập nhật:
+  * Khi bạn bấm nút trên điện thoại, cửa sổ này sẽ in ra: `POST /api/auth/register`, `GET /api/recommendation`...
+  * Khi đăng ký tài khoản mới, mã OTP 6 số sẽ xuất hiện ngay tại đây dạng: `[MOCK OTP] Sent OTP 123456 to email ...`. Bạn chỉ việc lấy số này nhập vào điện thoại.
+
+### 2. Chuẩn bị Cửa sổ 3: Kiểm tra Database (DB)
+Bạn có 2 lựa chọn cực kỳ đơn giản:
+* **Cách 1 (Khuyên dùng - Không cần gõ SQL)**:
+  * Nhấp đúp chuột vào file: 👉 **`KIEM_TRA_NHANH_DATABASE.bat`**
+  * Script hiện menu từ `[1]` đến `[6]`.
+  * Bạn vừa test Kịch bản nào trên điện thoại thì bấm số tương ứng (ví dụ: vừa đăng ký xong thì bấm phím `1` rồi `Enter`), bảng dữ liệu từ PostgreSQL sẽ in ra màn hình ngay lập tức!
+* **Cách 2 (Dành cho ai thích tự gõ lệnh SQL tuỳ ý)**:
+  * Nhấp đúp chuột vào file: 👉 **`MO_POSTGRES_SQL.bat`**
+  * Bạn sẽ vào giao diện dòng lệnh `foodrecommend=#`.
+  * Chỉ việc copy bất kỳ câu lệnh SQL nào trong tài liệu dưới đây (ví dụ: `SELECT id, email, is_verified FROM users;`), dán vào và nhấn `Enter`.
 
 ---
 
@@ -77,12 +112,12 @@ WHERE email = 'tester_vip@gmail.com';
 
 ### 2.3 Kiểm tra Database (DB)
 ```sql
-SELECT u.email, p.preferred_flavors, p.preferred_categories, p.allergies 
+SELECT u.email, p.favorite_flavors, p.allergies, p.dietary_restrictions, p.hated_dishes 
 FROM user_preferences p
 JOIN users u ON p.user_id = u.id
 WHERE u.email = 'tester_vip@gmail.com';
 ```
-👉 **Kỳ vọng DB**: Cột `allergies` lưu `{"peanuts"}`, `preferred_flavors` lưu `{"spicy", "sour"}`.
+👉 **Kỳ vọng DB**: Cột `allergies` lưu `["peanuts"]`, `favorite_flavors` lưu `["spicy", "sour"]`.
 
 ---
 
