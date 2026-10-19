@@ -50,27 +50,36 @@
    - Kích hoạt Cloudflare Tunnel công khai (`https://doctor-screenshot-apparently-editing.trycloudflare.com`) trỏ thẳng vào Backend local port 3000.
    - Cập nhật `ApiConfig.baseUrl` trong `frontend/lib/config/api_config.dart` đồng bộ sang Public Tunnel.
    - Biên dịch thành công file cài đặt Android Release mới nhất: `app-release-test.apk` (52.7 MB) đặt tại thư mục gốc của dự án.
-   - Soạn thảo tài liệu kiểm thử chi tiết 3 lớp: `docs/HUONG_DAN_MANUAL_TEST_DONG_BO_E2E.md` bao gồm 7 kịch bản đồng bộ Frontend ↔ Backend ↔ PostgreSQL Database.
+   - Soạn thảo tài liệu kiểm thử chi tiết 3 lớp: `docs/HUONG_DAN_MANUAL_TEST_DONG_BO_E2E.md` bao gồm 8 kịch bản đồng bộ Frontend ↔ Backend ↔ PostgreSQL Database.
+8. **Khắc phục lỗi Tab 1 (Social Feed KeepAlive & State Persistence)**:
+   - Sửa lỗi mất trạng thái Like/Lưu/Bình luận khi cuộn qua lại ở Tab 1 bằng cách tích hợp `AutomaticKeepAliveClientMixin` và cập nhật trực tiếp vào `widget.item`.
+   - Bổ sung `RefreshIndicator` và nút làm mới trên header Tab 1.
+   - Sửa lỗi thiếu xác thực `authenticateToken` tại route `DELETE /api/social/posts/:id/save`.
+   - Đồng bộ đếm số lượng like, save, comment chính xác từ các bảng cơ sở dữ liệu.
+9. **Khắc phục đồng bộ Kịch bản 3 (user_swipes) & Kịch bản 4 (post_likes, saved_posts, post_comments)**:
+   - Thêm mã ghi nhận trực tiếp vào bảng `user_swipes` trong PostgreSQL khi người dùng quẹt thẻ ở Tab 3.
+   - Nâng cấp `scripts/check_db.js` và `KIEM_TRA_NHANH_DATABASE.bat` bổ sung Menu [4] kiểm tra tức thì 4 bảng tương tác mạng xã hội.
+10. **Biên dịch bản Android APK Release mới**:
+   - Biên dịch thành công APK release hoàn chỉnh tại: `d:\FoodRecommend\app-release-test.apk` (52.7 MB).
 
 ## Verification
 
 - `npm test`: **PASS** (1 skipped, 62 passed, 23 test suites)
 - `npx tsc --noEmit`: **PASS** (0 errors)
 - `npm run lint`: **PASS** (0 errors)
-- `node scripts/run-flutter-tests.js`: **PASS** (8/8 tests passed)
+- `npm run build`: **PASS** (tsc exited 0)
 - `flutter analyze`: **PASS** (0 issues)
-- **GitHub Actions CI (Run #39193305897)**: **PASS 100% (SUCCESS)**
+- `flutter test`: **PASS** (7/7 tests passed)
 - **Cloudflare Public Tunnel**: **ACTIVE & HEALTHY** (`/api/health` trả về `status: ok`)
 - **Android Release APK**: **Sẵn sàng tại `d:\FoodRecommend\app-release-test.apk`**
 
 ## Remaining Work
 
 ### Observations
-- Toàn bộ các tính năng từ Backend đến Frontend (Tab 1, Tab 2, Tab 3, Tab 4, Tab 5) đã hoàn thiện 100% khớp với tài liệu và danh mục kịch bản test manual.
-- Dữ liệu demo đã chuyển đổi thành dữ liệu thực tế với toạ độ địa lý và liên kết đặt món trực tiếp sang các ứng dụng gọi đồ ăn hàng đầu Việt Nam.
-- Đã có đường hầm Internet hoạt động ổn định và file APK mới nhất để tiến hành cài đặt test ngay.
+- Toàn bộ các tương tác ở Tab 1 (Like, Save, Comment) đã đồng bộ 2 chiều hoàn chỉnh và không bị mất khi lướt cuộn trang.
+- Cơ sở dữ liệu PostgreSQL lưu đầy đủ lịch sử hoạt động và phản ánh ngay qua công cụ 1-click `KIEM_TRA_NHANH_DATABASE.bat`.
 
 ## Next Action
 
-1. Cài đặt file `app-release-test.apk` lên thiết bị di động thật (hoặc kéo thả vào Android Emulator).
-2. Thực hiện kiểm thử theo 7 kịch bản đồng bộ trong `docs/HUONG_DAN_MANUAL_TEST_DONG_BO_E2E.md`.
+1. Kiểm tra trạng thái Git CI trên GitHub Actions.
+2. Tiến hành manual test các kịch bản tiếp theo trên điện thoại.
