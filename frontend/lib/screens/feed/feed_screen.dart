@@ -65,7 +65,11 @@ class _FeedScreenState extends State<FeedScreen> {
         });
       } else {
         if (!mounted) return;
-        _loadMockData();
+        if (_feedItems.isEmpty) {
+          _loadMockData();
+        } else {
+          setState(() => _isLoading = false);
+        }
       }
     } catch (e) {
       ApiLogger().addLog(
@@ -74,7 +78,11 @@ class _FeedScreenState extends State<FeedScreen> {
         error: e.toString(),
       );
       if (!mounted) return;
-      _loadMockData();
+      if (_feedItems.isEmpty) {
+        _loadMockData();
+      } else {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -123,14 +131,20 @@ class _FeedScreenState extends State<FeedScreen> {
         children: [
           _isLoading
               ? const Center(child: CircularProgressIndicator(color: Colors.white))
-              : PageView.builder(
-                  controller: _pageController,
-                  scrollDirection: Axis.vertical,
-                  itemCount: _feedItems.length,
-                  itemBuilder: (context, index) {
-                    final item = _feedItems[index];
-                    return _buildFeedItem(item);
-                  },
+              : RefreshIndicator(
+                  color: Colors.orange,
+                  backgroundColor: Colors.white,
+                  onRefresh: _fetchFeed,
+                  child: PageView.builder(
+                    controller: _pageController,
+                    scrollDirection: Axis.vertical,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: _feedItems.length,
+                    itemBuilder: (context, index) {
+                      final item = _feedItems[index];
+                      return _buildFeedItem(item);
+                    },
+                  ),
                 ),
           _buildHeader(),
         ],
@@ -153,15 +167,26 @@ class _FeedScreenState extends State<FeedScreen> {
   Widget _buildHeader() {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildTab('Đang theo dõi'),
-            const Text(' | ', style: TextStyle(color: Colors.white54, fontSize: 16)),
-            _buildTab('Dành cho bạn'),
-            const Text(' | ', style: TextStyle(color: Colors.white54, fontSize: 16)),
-            _buildTab('Món hot'),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildTab('Đang theo dõi'),
+                  const Text(' | ', style: TextStyle(color: Colors.white54, fontSize: 16)),
+                  _buildTab('Dành cho bạn'),
+                  const Text(' | ', style: TextStyle(color: Colors.white54, fontSize: 16)),
+                  _buildTab('Món hot'),
+                ],
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.refresh, color: Colors.white70),
+              tooltip: 'Tải lại',
+              onPressed: _fetchFeed,
+            ),
           ],
         ),
       ),
@@ -184,7 +209,11 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
   Widget _buildFeedItem(dynamic item) {
-    return FeedItemWidget(item: item);
+    final idKey = item['id']?.toString() ?? UniqueKey().toString();
+    return FeedItemWidget(
+      key: ValueKey(idKey),
+      item: item,
+    );
   }
 
 }

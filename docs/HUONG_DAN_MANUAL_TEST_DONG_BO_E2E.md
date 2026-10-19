@@ -51,8 +51,8 @@ Tài liệu này được thiết kế để phục vụ việc kiểm thử th�
 Bạn có 2 lựa chọn cực kỳ đơn giản:
 * **Cách 1 (Khuyên dùng - Không cần gõ SQL)**:
   * Nhấp đúp chuột vào file: 👉 **`KIEM_TRA_NHANH_DATABASE.bat`**
-  * Script hiện menu từ `[1]` đến `[6]`.
-  * Bạn vừa test Kịch bản nào trên điện thoại thì bấm số tương ứng (ví dụ: vừa đăng ký xong thì bấm phím `1` rồi `Enter`), bảng dữ liệu từ PostgreSQL sẽ in ra màn hình ngay lập tức!
+  * Script hiện menu trực quan từ `[1]` đến `[8]`.
+  * Bạn vừa test Kịch bản nào trên điện thoại thì bấm số tương ứng (ví dụ: vừa like/lưu/bình luận ở Tab 1 thì bấm phím `4` rồi `Enter`), bảng dữ liệu từ PostgreSQL sẽ in ra màn hình ngay lập tức!
 * **Cách 2 (Dành cho ai thích tự gõ lệnh SQL tuỳ ý)**:
   * Nhấp đúp chuột vào file: 👉 **`MO_POSTGRES_SQL.bat`**
   * Bạn sẽ vào giao diện dòng lệnh `foodrecommend=#`.
@@ -161,7 +161,57 @@ ORDER BY s.created_at DESC;
 
 ---
 
-## 📌 KỊCH BẢN 4: ĐĂNG BÀI REVIEW VÀ TỰ ĐỘNG TẠO NHÀ HÀNG (TAB 1 SOCIAL)
+## 📌 KỊCH BẢN 4: TƯƠNG TÁC BẢNG TIN - LIKE, LƯU, BÌNH LUẬN (TAB 1 SOCIAL)
+
+### 4.1 Thao tác trên Frontend (FE)
+1. Mở **Tab 1 (Bảng tin)**:
+   * **Thích bài viết**: Bấm vào biểu tượng **Trái tim** bên phải video → Trái tim chuyển sang màu đỏ, số like tăng lên 1. Bấm lần nữa để bỏ thích.
+   * **Lưu bài viết**: Bấm vào biểu tượng **Lưu (Bookmark)** → Biểu tượng chuyển sang màu vàng. Bấm lần nữa để bỏ lưu.
+   * **Bình luận**: Bấm vào biểu tượng **Bình luận (Comment)** → Mở modal bình luận, nhập *"Món này ngon tuyệt vời!"* và bấm nút gửi → Bình luận xuất hiện ngay trên danh sách.
+2. **Kiểm tra giữ trạng thái khi lướt (Keep-Alive)**:
+   * Lướt dọc xuống xem video 2, video 3.
+   * Lướt ngược trở lại video 1: Trái tim vẫn giữ nguyên màu đỏ, số like/bình luận/lưu vẫn được bảo toàn nguyên vẹn.
+3. **Kiểm tra Tải lại (Pull-to-refresh & Nút reload)**:
+   * Vuốt kéo nhẹ từ trên xuống (hoặc bấm biểu tượng **Làm mới 🔄** ở góc trên bên phải) để cập nhật bảng tin mới nhất từ máy chủ.
+
+### 4.2 Kiểm tra Backend (BE)
+* **API Thích / Bỏ thích**:
+  * `POST /api/social/posts/<id>/like` → Status `200 OK`
+  * `DELETE /api/social/posts/<id>/like` → Status `200 OK`
+* **API Lưu / Bỏ lưu**:
+  * `POST /api/social/posts/<id>/save` → Status `200 OK`
+  * `DELETE /api/social/posts/<id>/save` → Status `200 OK`
+* **API Bình luận**:
+  * `POST /api/social/posts/<id>/comments` (Body: `{ "commentText": "..." }`) → Status `200 OK`
+  * `GET /api/social/posts/<id>/comments?page=1&limit=10` → Status `200 OK`
+
+### 4.3 Kiểm tra Database (DB)
+Bấm phím **`[4]`** trong file `KIEM_TRA_NHANH_DATABASE.bat` hoặc chạy SQL:
+```sql
+-- 1. Xem 5 bài viết gần nhất kèm số like, comment, lưu:
+SELECT id, LEFT(content, 35) as noi_dung, likes_count, comments_count, saves_count 
+FROM posts ORDER BY created_at DESC LIMIT 5;
+
+-- 2. Xem chi tiết các lượt Like của bạn:
+SELECT l.post_id, u.email, l.created_at 
+FROM post_likes l JOIN users u ON l.user_id = u.id 
+ORDER BY l.created_at DESC LIMIT 5;
+
+-- 3. Xem chi tiết các bài bạn đã Lưu:
+SELECT s.post_id, u.email, s.created_at 
+FROM saved_posts s JOIN users u ON s.user_id = u.id 
+ORDER BY s.created_at DESC LIMIT 5;
+
+-- 4. Xem chi tiết các Bình luận của bạn:
+SELECT c.post_id, u.email, c.content, c.created_at 
+FROM post_comments c JOIN users u ON c.user_id = u.id 
+ORDER BY c.created_at DESC LIMIT 5;
+```
+👉 **Kỳ vọng DB**: Các bảng `post_likes`, `saved_posts`, `post_comments` và tổng số đếm trong bảng `posts` đều được cập nhật ngay lập tức.
+
+---
+
+## 📌 KỊCH BẢN 5: ĐĂNG BÀI REVIEW VÀ TỰ ĐỘNG TẠO NHÀ HÀNG (TAB 1 SOCIAL)
 
 ### 4.1 Thao tác trên Frontend (FE)
 1. Tại Tab 1 (Feed), nhấn nút **(+) "Đăng bài"**:
@@ -193,9 +243,9 @@ WHERE p.content LIKE '%Phở Bò Tái Nạm%';
 
 ---
 
-## 📌 KỊCH BẢN 5: CHỦ QUÁN CLAIM QUÁN & THÊM MÓN VÀO MENU (TAB 5 BUSINESS)
+## 📌 KỊCH BẢN 6: CHỦ QUÁN CLAIM QUÁN & THÊM MÓN VÀO MENU (TAB 5 BUSINESS)
 
-### 5.1 Thao tác trên Frontend (FE)
+### 6.1 Thao tác trên Frontend (FE)
 1. Vào Tab 5 (Profile) → Chọn **"Quản lý quán ăn"**.
 2. Chọn **"Nhận quyền sở hữu (Claim)"** → Gõ tìm quán *"Phở Bò Cầu Giấy 123"* → Bấm **"Yêu cầu quyền sở hữu"**.
 3. Quay lại màn hình Quản lý Menu → Nhấn **"Thêm món mới"**:
@@ -204,12 +254,13 @@ WHERE p.content LIKE '%Phở Bò Tái Nạm%';
    * Danh mục: `Phở / Món nước`.
    * Bấm **"Lưu món ăn"**.
 
-### 5.2 Kiểm tra Backend (BE)
+### 6.2 Kiểm tra Backend (BE)
 * **API Gọi**:
   * `POST /api/restaurants/<id>/claim` → Đăng ký user làm chủ quán (`claimed_by = user_id`).
   * `POST /api/restaurants/<id>/dishes` (body: `{ "name": "Phở Đặc Biệt Thập Cẩm", "price": 75000, "category": "noodles" }`) → Trả về `201 Created`.
 
-### 5.3 Kiểm tra Database (DB)
+### 6.3 Kiểm tra Database (DB)
+Bấm phím **`[6]`** trong file `KIEM_TRA_NHANH_DATABASE.bat` hoặc chạy SQL:
 ```sql
 -- 1. Kiểm tra trạng thái Claim của nhà hàng:
 SELECT id, name, claimed_by, is_verified 
@@ -225,9 +276,9 @@ WHERE restaurant_id = (SELECT id FROM restaurants WHERE name = 'Phở Bò Cầu 
 
 ---
 
-## 📌 KỊCH BẢN 6: TẠO NHÓM, CHAT & CHIA TIỀN ĐƠN HÀNG (TAB 2 GROUPS & SPLIT BILL)
+## 📌 KỊCH BẢN 7: TẠO NHÓM, CHAT & CHIA TIỀN ĐƠN HÀNG (TAB 2 GROUPS & SPLIT BILL)
 
-### 6.1 Thao tác trên Frontend (FE)
+### 7.1 Thao tác trên Frontend (FE)
 1. Vào Tab 2 ("Cộng đồng") → Bấm **(+) Tạo nhóm mới**:
    * Đặt tên: *"Hội Ăn Trưa Cầu Giấy"*.
 2. Vào phòng Chat nhóm, gửi tin nhắn: *"Hôm nay ăn phở nhé cả nhà!"* → Tin nhắn hiện ngay trong khung chat.
@@ -237,7 +288,7 @@ WHERE restaurant_id = (SELECT id FROM restaurants WHERE name = 'Phở Bò Cầu 
 4. Chọn **"Chia tiền đều (Split Equally)"** cho 2 thành viên → Mỗi người: **55,000 VND**.
 5. Bấm **"Xác nhận thanh toán"** → App thông báo thành công.
 
-### 6.2 Kiểm tra Backend (BE)
+### 7.2 Kiểm tra Backend (BE)
 * **API Gọi**:
   * `POST /api/group` → Trả về `201 Created` tạo nhóm.
   * `POST /api/group/<id>/messages` → Gửi tin nhắn chat.
@@ -245,7 +296,8 @@ WHERE restaurant_id = (SELECT id FROM restaurants WHERE name = 'Phở Bò Cầu 
   * `POST /api/group/<id>/split-equally` → Tính toán chia bill.
   * `PUT /api/group/<id>/orders/<order_id>/status` (body: `{ "status": "PAID" }`) → Hệ thống tự động kích hoạt `notificationService.sendPushNotification` tới thành viên.
 
-### 6.3 Kiểm tra Database (DB)
+### 7.3 Kiểm tra Database (DB)
+Bấm phím **`[7]`** trong file `KIEM_TRA_NHANH_DATABASE.bat` hoặc chạy SQL:
 ```sql
 -- 1. Kiểm tra nhóm và đơn hàng nhóm
 SELECT g.name as group_name, o.id as order_id, o.status, o.total_amount, o.created_at
@@ -269,7 +321,7 @@ WHERE i.order_id = (
 
 ---
 
-## 📌 KỊCH BẢN 7: LẬP KẾ HOẠCH LỊCH TRÌNH BẰNG AI (TRIP PLANNER)
+## 📌 KỊCH BẢN 8: LẬP KẾ HOẠCH LỊCH TRÌNH BẰNG AI (TRIP PLANNER)
 
 ### 7.1 Thao tác trên Frontend (FE)
 1. Tại Tab 2, chọn mục **"AI Trip Planner"**.

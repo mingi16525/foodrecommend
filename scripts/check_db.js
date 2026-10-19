@@ -23,13 +23,14 @@ function showMenu() {
   console.log(' \x1b[32m[1]\x1b[0m Kịch bản 1: 5 User mới & Trạng thái OTP (is_verified)');
   console.log(' \x1b[32m[2]\x1b[0m Kịch bản 2: Sở thích ăn uống & Dị ứng (user_preferences)');
   console.log(' \x1b[32m[3]\x1b[0m Kịch bản 3: 10 Lượt quẹt món gần nhất (user_swipes)');
-  console.log(' \x1b[32m[4]\x1b[0m Kịch bản 4: 5 Bài review & Quán ăn liên kết (posts, restaurants)');
-  console.log(' \x1b[32m[5]\x1b[0m Kịch bản 5: Quán đã claim & 5 Món ăn trong thực đơn (dishes)');
-  console.log(' \x1b[32m[6]\x1b[0m Kịch bản 6: Nhóm ăn & Đơn hàng nhóm (groups, group_orders)');
-  console.log(' \x1b[32m[7]\x1b[0m Tự gõ lệnh SQL (Mở psql terminal trực tiếp)');
+  console.log(' \x1b[32m[4]\x1b[0m Kịch bản 4 (Tab 1): Tương tác Bảng tin (Like, Lưu, Bình luận - post_likes, saved_posts, post_comments)');
+  console.log(' \x1b[32m[5]\x1b[0m Kịch bản 5: Đăng bài review & Quán ăn liên kết (posts, restaurants)');
+  console.log(' \x1b[32m[6]\x1b[0m Kịch bản 6: Quán đã claim & 5 Món ăn trong thực đơn (dishes)');
+  console.log(' \x1b[32m[7]\x1b[0m Kịch bản 7: Nhóm ăn & Đơn hàng nhóm chia tiền (groups, group_orders)');
+  console.log(' \x1b[32m[8]\x1b[0m Tự gõ lệnh SQL (Mở psql terminal trực tiếp)');
   console.log(' \x1b[31m[0]\x1b[0m Thoát');
   console.log('\x1b[36m======================================================\x1b[0m');
-  rl.question('Nhập lựa chọn của bạn [0-7]: ', handleInput);
+  rl.question('Nhập lựa chọn của bạn [0-8]: ', handleInput);
 }
 
 function handleInput(choice) {
@@ -53,23 +54,35 @@ function handleInput(choice) {
       break;
 
     case '4':
-      console.log('\x1b[33m=== [KỊCH BẢN 4] 5 BÀI REVIEW VÀ QUÁN ĂN LIÊN KẾT ===\x1b[0m');
-      runQuery("SELECT p.id, u.email, r.name AS quan_an, r.is_verified, p.content, p.created_at FROM posts p JOIN users u ON p.user_id = u.id LEFT JOIN restaurants r ON p.restaurant_id = r.id ORDER BY p.created_at DESC LIMIT 5;");
+      console.log('\x1b[33m=== [KỊCH BẢN 4 - TAB 1] BẢNG TIN: BÀI VIẾT, LƯỢT LIKE, LƯU VÀ BÌNH LUẬN ===\x1b[0m');
+      console.log('\x1b[36m--- [1. Tổng số Like / Bình luận / Lưu trên các bài viết gần nhất] ---\x1b[0m');
+      runQuery("SELECT p.id, LEFT(p.content, 35) as noi_dung, p.likes_count as likes, p.comments_count as cmt, p.saves_count as saves FROM posts p ORDER BY p.created_at DESC LIMIT 5;");
+      console.log('\x1b[36m--- [2. Chi tiết 5 lượt Like gần nhất (post_likes)] ---\x1b[0m');
+      runQuery("SELECT l.post_id, u.email as user_like, l.created_at FROM post_likes l JOIN users u ON l.user_id = u.id ORDER BY l.created_at DESC LIMIT 5;");
+      console.log('\x1b[36m--- [3. Chi tiết 5 lượt Lưu video gần nhất (saved_posts)] ---\x1b[0m');
+      runQuery("SELECT s.post_id, u.email as user_luu, s.created_at FROM saved_posts s JOIN users u ON s.user_id = u.id ORDER BY s.created_at DESC LIMIT 5;");
+      console.log('\x1b[36m--- [4. Chi tiết các Bình luận gần nhất (post_comments)] ---\x1b[0m');
+      runQuery("SELECT c.post_id, u.email, c.content as binh_luan, c.created_at FROM post_comments c JOIN users u ON c.user_id = u.id ORDER BY c.created_at DESC LIMIT 5;");
       break;
 
     case '5':
-      console.log('\x1b[33m=== [KỊCH BẢN 5] QUÁN ĂN ĐÃ CLAIM & 5 MÓN ĂN TRONG THỰC ĐƠN ===\x1b[0m');
+      console.log('\x1b[33m=== [KỊCH BẢN 5] 5 BÀI REVIEW VÀ QUÁN ĂN LIÊN KẾT ===\x1b[0m');
+      runQuery("SELECT p.id, u.email, r.name AS quan_an, r.is_verified, p.content, p.created_at FROM posts p JOIN users u ON p.user_id = u.id LEFT JOIN restaurants r ON p.restaurant_id = r.id ORDER BY p.created_at DESC LIMIT 5;");
+      break;
+
+    case '6':
+      console.log('\x1b[33m=== [KỊCH BẢN 6] QUÁN ĂN ĐÃ CLAIM & 5 MÓN ĂN TRONG THỰC ĐƠN ===\x1b[0m');
       runQuery("SELECT id, name, claimed_by, is_verified FROM restaurants WHERE claimed_by IS NOT NULL LIMIT 5;");
       runQuery("SELECT id, name, price, restaurant_id FROM dishes ORDER BY name ASC LIMIT 5;");
       break;
 
-    case '6':
-      console.log('\x1b[33m=== [KỊCH BẢN 6] DANH SÁCH NHÓM & ĐƠN HÀNG CHIA TIỀN ===\x1b[0m');
+    case '7':
+      console.log('\x1b[33m=== [KỊCH BẢN 7] DANH SÁCH NHÓM & ĐƠN HÀNG CHIA TIỀN ===\x1b[0m');
       runQuery("SELECT id, name, creator_id, created_at FROM groups ORDER BY created_at DESC LIMIT 5;");
       runQuery("SELECT id, group_id, status, total_amount, created_at FROM group_orders ORDER BY created_at DESC LIMIT 5;");
       break;
 
-    case '7':
+    case '8':
       try {
         execSync('docker exec -it foodrecommend-postgres-1 psql -U fooduser -d foodrecommend', { stdio: 'inherit' });
       } catch (_) {}
@@ -81,7 +94,7 @@ function handleInput(choice) {
       process.exit(0);
 
     default:
-      console.log('\x1b[31mLựa chọn không hợp lệ. Vui lòng nhập số từ 0 đến 7.\x1b[0m');
+      console.log('\x1b[31mLựa chọn không hợp lệ. Vui lòng nhập số từ 0 đến 8.\x1b[0m');
       break;
   }
 

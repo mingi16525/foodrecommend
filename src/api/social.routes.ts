@@ -114,7 +114,7 @@ router.post('/posts/:id/save', authenticateToken, async (req: AuthRequest, res: 
   res.json({ success: true });
 });
 
-router.delete('/posts/:id/save', async (req: AuthRequest, res: Response): Promise<void> => {
+router.delete('/posts/:id/save', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
   const postId = req.params.id as string;
   const userId = req.user?.userId;
   if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }

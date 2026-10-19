@@ -137,15 +137,15 @@ recommendationRouter.post('/swipe', validate(swipeSchema), async (req, res) => {
       } else {
         console.warn(`[Swipe] Dish ${dishId} not in dishes table, skipped DB insert.`);
       }
-    } catch (dbErr: any) {
-      console.error('[Swipe] Error inserting user_swipes:', dbErr.message);
+    } catch (dbErr: unknown) {
+      console.error('[Swipe] Error inserting user_swipes:', (dbErr as Error).message);
     }
 
     // 2. Gọi EventCollector (Kafka & Redis FeatureStore)
     await eventCollector.trackSwipe(userId, dishId, action);
     res.json({ success: true, message: 'Event accepted' });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message || 'Internal server error' });
+  } catch (error: unknown) {
+    res.status(500).json({ error: (error as Error).message || 'Internal server error' });
   }
 });
 

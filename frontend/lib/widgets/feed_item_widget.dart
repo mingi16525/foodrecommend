@@ -15,7 +15,7 @@ class FeedItemWidget extends StatefulWidget {
   State<FeedItemWidget> createState() => _FeedItemWidgetState();
 }
 
-class _FeedItemWidgetState extends State<FeedItemWidget> {
+class _FeedItemWidgetState extends State<FeedItemWidget> with AutomaticKeepAliveClientMixin {
   late bool isLiked;
   late bool isSaved;
   late int likesCount;
@@ -23,13 +23,28 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
   late int savesCount;
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   void initState() {
     super.initState();
-    isLiked = widget.item['is_liked'] ?? false;
-    isSaved = widget.item['is_saved'] ?? false;
-    likesCount = widget.item['likes'] ?? 0;
-    commentsCount = widget.item['comments'] ?? 0;
-    savesCount = widget.item['saves'] ?? 0;
+    _syncFromItem();
+  }
+
+  @override
+  void didUpdateWidget(FeedItemWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.item['id'] != widget.item['id']) {
+      _syncFromItem();
+    }
+  }
+
+  void _syncFromItem() {
+    isLiked = widget.item['is_liked'] == true || widget.item['is_liked'] == 1 || widget.item['is_liked'] == 't';
+    isSaved = widget.item['is_saved'] == true || widget.item['is_saved'] == 1 || widget.item['is_saved'] == 't';
+    likesCount = widget.item['likes'] is int ? widget.item['likes'] : int.tryParse('${widget.item['likes']}') ?? 0;
+    commentsCount = widget.item['comments'] is int ? widget.item['comments'] : int.tryParse('${widget.item['comments']}') ?? 0;
+    savesCount = widget.item['saves'] is int ? widget.item['saves'] : int.tryParse('${widget.item['saves']}') ?? 0;
   }
 
   Future<void> _toggleLike() async {
@@ -42,13 +57,17 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
     final String postId = widget.item['id']?.toString() ?? '';
     if (postId.isEmpty) return;
 
+    final willLike = !isLiked;
     setState(() {
-      isLiked = !isLiked;
-      likesCount += isLiked ? 1 : -1;
+      isLiked = willLike;
+      likesCount += willLike ? 1 : -1;
+      if (likesCount < 0) likesCount = 0;
+      widget.item['is_liked'] = isLiked;
+      widget.item['likes'] = likesCount;
     });
 
     try {
-      final response = await (isLiked ? http.post : http.delete)(
+      final response = await (willLike ? http.post : http.delete)(
         Uri.parse('${ApiConfig.baseUrl}/api/social/posts/$postId/like'),
         headers: {'Authorization': 'Bearer ${ApiConfig.token}'},
       );
@@ -57,10 +76,15 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
       }
     } catch (e) {
       // Revert on failure
-      setState(() {
-        isLiked = !isLiked;
-        likesCount += isLiked ? 1 : -1;
-      });
+      if (mounted) {
+        setState(() {
+          isLiked = !willLike;
+          likesCount += !willLike ? 1 : -1;
+          if (likesCount < 0) likesCount = 0;
+          widget.item['is_liked'] = isLiked;
+          widget.item['likes'] = likesCount;
+        });
+      }
     }
   }
 
@@ -74,13 +98,17 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
     final String postId = widget.item['id']?.toString() ?? '';
     if (postId.isEmpty) return;
 
+    final willSave = !isSaved;
     setState(() {
-      isSaved = !isSaved;
-      savesCount += isSaved ? 1 : -1;
+      isSaved = willSave;
+      savesCount += willSave ? 1 : -1;
+      if (savesCount < 0) savesCount = 0;
+      widget.item['is_saved'] = isSaved;
+      widget.item['saves'] = savesCount;
     });
 
     try {
-      final response = await (isSaved ? http.post : http.delete)(
+      final response = await (willSave ? http.post : http.delete)(
         Uri.parse('${ApiConfig.baseUrl}/api/social/posts/$postId/save'),
         headers: {'Authorization': 'Bearer ${ApiConfig.token}'},
       );
@@ -89,10 +117,15 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
       }
     } catch (e) {
       // Revert on failure
-      setState(() {
-        isSaved = !isSaved;
-        savesCount += isSaved ? 1 : -1;
-      });
+      if (mounted) {
+        setState(() {
+          isSaved = !willSave;
+          savesCount += !willSave ? 1 : -1;
+          if (savesCount < 0) savesCount = 0;
+          widget.item['is_saved'] = isSaved;
+          widget.item['saves'] = savesCount;
+        });
+      }
     }
   }
 
@@ -104,9 +137,12 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
       builder: (context) => _CommentsBottomSheet(
         postId: widget.item['id']?.toString() ?? '',
         onCommentAdded: () {
-          setState(() {
-            commentsCount++;
-          });
+          if (mounted) {
+            setState(() {
+              commentsCount++;
+              widget.item['comments'] = commentsCount;
+            });
+          }
         },
       ),
     );
@@ -114,6 +150,7 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -386,7 +423,7 @@ class _CommentsBottomSheetState extends State<_CommentsBottomSheet> {
                       return ListTile(
                         leading: CircleAvatar(backgroundImage: NetworkImage(comment['author_avatar'] ?? 'https://i.pravatar.cc/150')),
                         title: Text(comment['author_name'] ?? 'User', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                        subtitle: Text(comment['comment_text'] ?? '', style: const TextStyle(fontSize: 14)),
+                        subtitle: Text(comment['comment_text'] ?? comment['content'] ?? '', style: const TextStyle(fontSize: 14)),
                       );
                     },
                   ),

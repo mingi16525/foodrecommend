@@ -77,9 +77,9 @@ export class SocialService {
           d.price, 
           r.name as restaurant_name,
           ${selectDistance},
-          p.likes_count as likes,
-          p.comments_count as comments,
-          p.saves_count as saves,
+          (SELECT COUNT(*)::int FROM post_likes pl WHERE pl.post_id = p.id) as likes,
+          (SELECT COUNT(*)::int FROM post_comments pc WHERE pc.post_id = p.id) as comments,
+          (SELECT COUNT(*)::int FROM saved_posts sp WHERE sp.post_id = p.id) as saves,
           ${userId ? `EXISTS(SELECT 1 FROM post_likes pl WHERE pl.post_id = p.id AND pl.user_id = '${userId}')` : 'false'} as is_liked,
           ${userId ? `EXISTS(SELECT 1 FROM saved_posts sp WHERE sp.post_id = p.id AND sp.user_id = '${userId}')` : 'false'} as is_saved
         FROM posts p 
@@ -98,43 +98,47 @@ export class SocialService {
   }
 
   async likePost(postId: string, userId: string) {
-    const res = await this.db.query(
-      'INSERT INTO post_likes (post_id, user_id) VALUES ($1, $2) ON CONFLICT DO NOTHING RETURNING 1',
+    await this.db.query(
+      'INSERT INTO post_likes (post_id, user_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',
       [postId, userId]
     );
-    if (res.rowCount && res.rowCount > 0) {
-      await this.db.query('UPDATE posts SET likes_count = likes_count + 1 WHERE id = $1', [postId]);
-    }
+    await this.db.query(
+      'UPDATE posts SET likes_count = (SELECT COUNT(*) FROM post_likes WHERE post_id = $1) WHERE id = $1',
+      [postId]
+    );
   }
 
   async unlikePost(postId: string, userId: string) {
-    const res = await this.db.query(
-      'DELETE FROM post_likes WHERE post_id = $1 AND user_id = $2 RETURNING 1',
+    await this.db.query(
+      'DELETE FROM post_likes WHERE post_id = $1 AND user_id = $2',
       [postId, userId]
     );
-    if (res.rowCount && res.rowCount > 0) {
-      await this.db.query('UPDATE posts SET likes_count = GREATEST(likes_count - 1, 0) WHERE id = $1', [postId]);
-    }
+    await this.db.query(
+      'UPDATE posts SET likes_count = (SELECT COUNT(*) FROM post_likes WHERE post_id = $1) WHERE id = $1',
+      [postId]
+    );
   }
 
   async savePost(postId: string, userId: string) {
-    const res = await this.db.query(
-      'INSERT INTO saved_posts (post_id, user_id) VALUES ($1, $2) ON CONFLICT DO NOTHING RETURNING 1',
+    await this.db.query(
+      'INSERT INTO saved_posts (post_id, user_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',
       [postId, userId]
     );
-    if (res.rowCount && res.rowCount > 0) {
-      await this.db.query('UPDATE posts SET saves_count = saves_count + 1 WHERE id = $1', [postId]);
-    }
+    await this.db.query(
+      'UPDATE posts SET saves_count = (SELECT COUNT(*) FROM saved_posts WHERE post_id = $1) WHERE id = $1',
+      [postId]
+    );
   }
 
   async unsavePost(postId: string, userId: string) {
-    const res = await this.db.query(
-      'DELETE FROM saved_posts WHERE post_id = $1 AND user_id = $2 RETURNING 1',
+    await this.db.query(
+      'DELETE FROM saved_posts WHERE post_id = $1 AND user_id = $2',
       [postId, userId]
     );
-    if (res.rowCount && res.rowCount > 0) {
-      await this.db.query('UPDATE posts SET saves_count = GREATEST(saves_count - 1, 0) WHERE id = $1', [postId]);
-    }
+    await this.db.query(
+      'UPDATE posts SET saves_count = (SELECT COUNT(*) FROM saved_posts WHERE post_id = $1) WHERE id = $1',
+      [postId]
+    );
   }
 
   async commentPost(postId: string, userId: string, commentText: string) {
@@ -142,7 +146,10 @@ export class SocialService {
       'INSERT INTO post_comments (post_id, user_id, content) VALUES ($1, $2, $3) RETURNING *',
       [postId, userId, commentText]
     );
-    await this.db.query('UPDATE posts SET comments_count = comments_count + 1 WHERE id = $1', [postId]);
+    await this.db.query(
+      'UPDATE posts SET comments_count = (SELECT COUNT(*) FROM post_comments WHERE post_id = $1) WHERE id = $1',
+      [postId]
+    );
     
     // Also fetch author info to return immediately for UI
     const enriched = await this.db.query(`
