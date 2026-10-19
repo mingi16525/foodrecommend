@@ -46,6 +46,11 @@
    - Sửa lỗi tương thích đa nền tảng trong `frontend/android/build.gradle.kts`: Tự động nhận diện Windows cho máy phát triển local và dùng đường dẫn chuẩn Linux cho runner GitHub Actions.
    - Push thành công lên GitHub repository `main`.
    - Workflow `CI / Beta Build` đã chạy và vượt qua 100% tất cả các khâu, tự động build và upload file `food-recommend-beta-apk` (25.4 MB).
+7. **Chuẩn Bị Manual Testing & Rebuild Toàn Diện**:
+   - Kích hoạt Cloudflare Tunnel công khai (`https://doctor-screenshot-apparently-editing.trycloudflare.com`) trỏ thẳng vào Backend local port 3000.
+   - Cập nhật `ApiConfig.baseUrl` trong `frontend/lib/config/api_config.dart` đồng bộ sang Public Tunnel.
+   - Biên dịch thành công file cài đặt Android Release mới nhất: `app-release-test.apk` (52.7 MB) đặt tại thư mục gốc của dự án.
+   - Soạn thảo tài liệu kiểm thử chi tiết 3 lớp: `docs/HUONG_DAN_MANUAL_TEST_DONG_BO_E2E.md` bao gồm 7 kịch bản đồng bộ Frontend ↔ Backend ↔ PostgreSQL Database.
 
 ## Verification
 
@@ -55,17 +60,17 @@
 - `node scripts/run-flutter-tests.js`: **PASS** (8/8 tests passed)
 - `flutter analyze`: **PASS** (0 issues)
 - **GitHub Actions CI (Run #39193305897)**: **PASS 100% (SUCCESS)**
-  - Job `Backend Test (Node.js)`: **SUCCESS** (npm ci, lint, tsc, npm test)
-  - Job `Frontend Build (Android APK)`: **SUCCESS** (pub get, analyze, flutter test, flutter build apk release)
-  - Artifact `food-recommend-beta-apk` (25.4 MB): **Uploaded thành công**
+- **Cloudflare Public Tunnel**: **ACTIVE & HEALTHY** (`/api/health` trả về `status: ok`)
+- **Android Release APK**: **Sẵn sàng tại `d:\FoodRecommend\app-release-test.apk`**
 
 ## Remaining Work
 
 ### Observations
 - Toàn bộ các tính năng từ Backend đến Frontend (Tab 1, Tab 2, Tab 3, Tab 4, Tab 5) đã hoàn thiện 100% khớp với tài liệu và danh mục kịch bản test manual.
 - Dữ liệu demo đã chuyển đổi thành dữ liệu thực tế với toạ độ địa lý và liên kết đặt món trực tiếp sang các ứng dụng gọi đồ ăn hàng đầu Việt Nam.
+- Đã có đường hầm Internet hoạt động ổn định và file APK mới nhất để tiến hành cài đặt test ngay.
 
 ## Next Action
 
-1. Tiến hành chạy thử nghiệm trực tiếp trên máy thật/máy ảo Android & iOS với GPS thật.
-2. Chuẩn bị cho giai đoạn phát hành Beta / Go-Live theo `docs/PRE_LAUNCH_CHECKLIST.md`.
+1. Cài đặt file `app-release-test.apk` lên thiết bị di động thật (hoặc kéo thả vào Android Emulator).
+2. Thực hiện kiểm thử theo 7 kịch bản đồng bộ trong `docs/HUONG_DAN_MANUAL_TEST_DONG_BO_E2E.md`.

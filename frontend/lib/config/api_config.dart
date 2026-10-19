@@ -1,7 +1,7 @@
 class ApiConfig {
   /// Base URL cho toàn bộ các API endpoint trong ứng dụng.
-  /// Thay đổi URL này khi switch giữa localhost, devtunnels, hoặc production.
-  static const String baseUrl = 'https://xcvm1t13-3000.asse.devtunnels.ms';
+  /// URL Cloudflare Tunnel công khai kết nối trực tiếp tới Backend local port 3000.
+  static const String baseUrl = 'https://doctor-screenshot-apparently-editing.trycloudflare.com';
   
   /// Global auth token
   static String? token;
