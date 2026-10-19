@@ -54,6 +54,15 @@ if (tunnelUrl) {
     console.log(` -> Đã đồng bộ vào: ${apiConfigFile}`);
   }
 
+  // Tự động đẩy URL mới lên GitHub để Mobile App tự lấy mà không cần rebuild APK
+  try {
+    execSync('git add ACTIVE_TUNNEL_URL.txt && git commit -m "chore: auto sync active tunnel url" && git push origin main', {
+      stdio: 'ignore',
+      cwd: path.join(__dirname, '..')
+    });
+    console.log(' -> Đã tự động cập nhật URL lên GitHub (App sẽ tự nhận khi mở)');
+  } catch (_) {}
+
   console.log('\n\x1b[36m======================================================\x1b[0m');
   console.log('\x1b[32m ✅ TẤT CẢ DỊCH VỤ ĐÃ SẴN SÀNG HOẠT ĐỘNG!\x1b[0m');
   console.log('\x1b[33m 🌐 PUBLIC CLOUDFLARE URL:\x1b[0m');

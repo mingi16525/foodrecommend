@@ -128,6 +128,14 @@ class LoginScreenState extends State<LoginScreen> {
                       runSpacing: 4,
                       children: [
                         ActionChip(
+                          avatar: const Icon(Icons.sync, size: 16, color: Colors.blue),
+                          label: const Text('Tự động tải từ GitHub', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                          onPressed: () async {
+                            await ApiConfig.resetToAutoSync();
+                            urlController.text = ApiConfig.baseUrl;
+                          },
+                        ),
+                        ActionChip(
                           avatar: const Icon(Icons.cloud_outlined, size: 16),
                           label: const Text('Cloudflare Tunnel', style: TextStyle(fontSize: 11)),
                           onPressed: () {
