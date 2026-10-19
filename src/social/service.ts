@@ -139,24 +139,29 @@ export class SocialService {
 
   async commentPost(postId: string, userId: string, commentText: string) {
     const result = await this.db.query(
-      'INSERT INTO post_comments (post_id, user_id, comment_text) VALUES ($1, $2, $3) RETURNING *',
+      'INSERT INTO post_comments (post_id, user_id, content) VALUES ($1, $2, $3) RETURNING *',
       [postId, userId, commentText]
     );
     await this.db.query('UPDATE posts SET comments_count = comments_count + 1 WHERE id = $1', [postId]);
     
     // Also fetch author info to return immediately for UI
-    const enriched = await this.db.query(
-      'SELECT c.*, u.full_name as author_name, u.is_reviewer as is_verified FROM post_comments c JOIN users u ON c.user_id = u.id WHERE c.id = $1',
-      [result.rows[0].id]
-    );
+    const enriched = await this.db.query(`
+      SELECT c.id, c.post_id, c.user_id, c.content, c.content as comment_text, c.created_at,
+             u.full_name as author_name, u.is_reviewer as is_verified,
+             'https://i.pravatar.cc/150?u=' || u.id as author_avatar
+      FROM post_comments c
+      JOIN users u ON c.user_id = u.id
+      WHERE c.id = $1
+    `, [result.rows[0].id]);
     return enriched.rows[0];
   }
 
   async getComments(postId: string, page: number = 1, limit: number = 10) {
     const offset = (page - 1) * limit;
     const result = await this.db.query(`
-      SELECT c.*, u.full_name as author_name, u.is_reviewer as is_verified,
-      'https://i.pravatar.cc/150?u=' || u.id as author_avatar
+      SELECT c.id, c.post_id, c.user_id, c.content, c.content as comment_text, c.created_at,
+             u.full_name as author_name, u.is_reviewer as is_verified,
+             'https://i.pravatar.cc/150?u=' || u.id as author_avatar
       FROM post_comments c
       JOIN users u ON c.user_id = u.id
       WHERE c.post_id = $1
