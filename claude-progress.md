@@ -42,6 +42,10 @@
    - Cập nhật `check_tinh_nang_be.txt` với kết quả đối chiếu toàn bộ các API Backend.
    - Cập nhật `check_tinh_nang_fe.txt` với danh sách màn hình UI và hướng dẫn kiểm thử thực tế trên thiết bị.
    - Đồng bộ trạng thái `DONE` cho toàn bộ tasks trong `features.json`.
+6. **Đẩy mã nguồn và Xác thực CI/CD (GitHub Actions)**:
+   - Sửa lỗi tương thích đa nền tảng trong `frontend/android/build.gradle.kts`: Tự động nhận diện Windows cho máy phát triển local và dùng đường dẫn chuẩn Linux cho runner GitHub Actions.
+   - Push thành công lên GitHub repository `main`.
+   - Workflow `CI / Beta Build` đã chạy và vượt qua 100% tất cả các khâu, tự động build và upload file `food-recommend-beta-apk` (25.4 MB).
 
 ## Verification
 
@@ -50,6 +54,10 @@
 - `npm run lint`: **PASS** (0 errors)
 - `node scripts/run-flutter-tests.js`: **PASS** (8/8 tests passed)
 - `flutter analyze`: **PASS** (0 issues)
+- **GitHub Actions CI (Run #39193305897)**: **PASS 100% (SUCCESS)**
+  - Job `Backend Test (Node.js)`: **SUCCESS** (npm ci, lint, tsc, npm test)
+  - Job `Frontend Build (Android APK)`: **SUCCESS** (pub get, analyze, flutter test, flutter build apk release)
+  - Artifact `food-recommend-beta-apk` (25.4 MB): **Uploaded thành công**
 
 ## Remaining Work
 
