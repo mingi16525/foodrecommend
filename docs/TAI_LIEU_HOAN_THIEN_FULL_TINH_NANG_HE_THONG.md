@@ -3,7 +3,7 @@
 **Phiên bản:** Release 1.0.0 (Beta)  
 **Ngày cập nhật:** 20/10/2026  
 **File cài đặt Android:** `d:\FoodRecommend\app-release-test.apk` (52.7 MB)  
-**Báo cáo kiểm thử tự động:** `test_appium/view_report.bat` (41/41 Kịch bản PASSED)
+**Báo cáo kiểm thử tự động:** `test_appium/view_report.bat` (46/46 Kịch bản PASSED)
 
 ---
 
@@ -228,13 +228,13 @@ d:\FoodRecommend\test_appium\view_report.bat
 ```
 *Cơ chế tự động:* Script tự động sử dụng `npx allure-commandline serve` có sẵn trong Node.js để mở trình duyệt hiển thị Dashboard báo cáo, đính kèm đầy đủ Request/Response payload, bảng kết quả truy vấn SQL và ảnh chụp màn hình.
 
-### Phân Bổ 41 Kịch Bản Kiểm Thử Đã Đạt 100% PASS:
-- `test_auth_e2e.py` (7 tests): Đăng ký OTP, Đăng nhập, Sai mật khẩu (401), Chế độ Khách, Trùng email (409), Sai OTP, Token giả mạo.
-- `test_feed_e2e.py` (7 tests): Like/Unlike, Save/Unsave, Bình luận, Tự sinh quán, Bình luận bài không tồn tại, Feed chuyên biệt, Đăng bài tag quán đã tồn tại.
-- `test_group_bill_e2e.py` (6 tests): Tạo nhóm, Chia đều, Chia theo món, Đơn nhóm & gợi ý Medium Tier, Chặn truy cập trái phép (403), Bầu chọn quán ăn & Chat nhóm.
-- `test_recommend_e2e.py` (5 tests): Quẹt phải (Like), Quẹt trái (Skip), Fast Tier & lọc dị ứng, Chặn thao tác vuốt lỗi (400), Tìm kiếm quán & xem thực đơn.
-- `test_profile_preferences_e2e.py` (6 tests): Cập nhật khẩu vị/dị ứng, Xem hồ sơ, Xem bài đã lưu, Nâng cấp MoMo Premium, Đăng ký Device Token, Thông tin điểm thưởng Loyalty.
-- `test_business_owner_e2e.py` (5 tests): Nhận quyền sở hữu & duyệt Admin, Thêm món vào menu, Đăng bài kèm món ăn (`post_dishes`), Chặn nhận quán không tồn tại, Xem chi tiết quán ăn.
+### Phân Bổ 46 Kịch Bản Kiểm Thử Đã Đạt 100% PASS:
+- `test_auth_e2e.py` (7 tests): Đăng ký OTP, Đăng nhập (UI LoginPage), Sai mật khẩu (401), Chế độ Khách (UI Guest Mode), Trùng email (409), Sai OTP, Token giả mạo.
+- `test_feed_e2e.py` (8 tests): Like/Unlike (UI FeedPage), Save/Unsave (UI FeedPage), Bình luận (UI FeedPage), Tự sinh quán, Bình luận bài không tồn tại, Feed chuyên biệt, Đăng bài tag quán đã tồn tại, Đặc quyền bài viết VIP ưu tiên đầu Feed & Huy hiệu VIP.
+- `test_group_bill_e2e.py` (8 tests): Tạo nhóm (UI GroupPage), Chia đều, Chia theo món, Đơn nhóm & gợi ý Medium Tier, Chặn truy cập trái phép (403), Bầu chọn quán ăn & Chat nhóm (UI GroupPage), Chặn tài khoản Free tạo nhóm (403 Paywall), AI Deep Tier Lập lịch trình đa ngày & VIP Paywall (UI TripPlannerPage).
+- `test_recommend_e2e.py` (6 tests): Quẹt phải Like (UI RecommendPage), Quẹt trái Skip (UI RecommendPage), Fast Tier & lọc dị ứng, Chặn thao tác vuốt lỗi (400), Tìm kiếm quán & xem thực đơn, Định vị GPS Haversine & Liên kết đặt món đa nền tảng ShopeeFood/Be/GrabFood/Maps.
+- `test_profile_preferences_e2e.py` (7 tests): Cập nhật khẩu vị & dị ứng (UI OnboardingPage), Xem hồ sơ (UI ProfilePage), Xem bài đã lưu (UI ProfilePage), Nâng cấp MoMo Premium (UI ProfilePage), Đăng ký Device Token FCM, Thông tin điểm thưởng Loyalty, Đếm số lượng thống kê & Chạm mở chi tiết từ lưới ảnh 9:16 (UI ProfilePage).
+- `test_business_owner_e2e.py` (5 tests): Nhận quyền sở hữu & duyệt Admin (UI BusinessPage), Thêm món vào menu (UI BusinessPage), Đăng bài kèm món ăn (`post_dishes`), Chặn nhận quán không tồn tại, Xem chi tiết quán ăn.
 - `test_system_integrity.py` (5 tests): Healthcheck DB/Redis, Kiểm tra Seed dữ liệu, Bảo mật Helmet & Payload Limiter, Toàn vẹn khóa ngoại Foreign Key, Endpoint tài liệu Swagger API.
 
 ---

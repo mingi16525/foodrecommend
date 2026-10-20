@@ -35,6 +35,5 @@ allure-report/
 **/allure-results/
 **/allure-report/
 .pytest_cache/
+**/.pytest_cache/
 **/__pycache__/
-
-test_appium

@@ -80,9 +80,19 @@
    - Khởi tạo tài liệu đặc tả và nghiệm thu toàn diện tại [docs/TAI_LIEU_HOAN_THIEN_FULL_TINH_NANG_HE_THONG.md](file:///d:/FoodRecommend/docs/TAI_LIEU_HOAN_THIEN_FULL_TINH_NANG_HE_THONG.md).
    - Bao gồm đầy đủ 8 chương: Kiến trúc hệ thống, Ma trận phân quyền 4 cấp bậc (Guest, Free, Premium, Owner), Chi tiết luồng 5 Tab End-User, Tính năng Chủ nhà hàng, Tích hợp Google Maps 4 tầng fallback & Deeplink 3 app đặt món, Hạ tầng & bảo mật Backend/DB, Hướng dẫn kiểm thử 1-click & Báo cáo Allure, và Bảng Checklist nghiệm thu 14 tiêu chí.
 
+15. **Hoàn thiện test_appium Toàn Diện (UI + Backend + DB theo Tài liệu hệ thống)**:
+   - Triển khai trọn bộ Page Object Models (POM) cho toàn bộ 5 tab và Doanh nghiệp: `group_page.py`, `trip_planner_page.py`, `onboarding_page.py`, `profile_page.py`, `business_page.py` kết nối đầy đủ các thao tác UI.
+   - Mở rộng thêm 5 kịch bản kiểm thử then chốt:
+     - Tab 1: Bài viết VIP có huy hiệu `👑 VIP` và ưu tiên đầu Feed (`test_premium_post_vip_badge_and_feed_priority`).
+     - Tab 2: Chặn tài khoản Free tự tạo nhóm với HTTP 403 Paywall (`test_free_user_group_creation_blocked_by_premium`).
+     - Tab 2: AI Deep Tier Lập lịch trình ăn uống đa ngày & VIP Paywall (`test_ai_trip_planner_deep_tier_flow`).
+     - Tab 3: Định vị GPS Haversine & Liên kết đặt món ShopeeFood/Be/GrabFood/Maps (`test_recommendation_gps_distance_and_delivery_links`).
+     - Tab 5: Đối chiếu thống kê hồ sơ và chạm mở chi tiết từ lưới ảnh 9:16 (`test_profile_stats_counter_and_grid_post_detail_flow`).
+   - Toàn bộ **46/46 kịch bản PASSED (100%)** và sẵn sàng xem báo cáo qua Allure Report.
+
 ## Verification
 
-- `pytest test_appium/tests -v`: **PASS (41/41 tests passed in 30.24s)**
+- `pytest test_appium/tests -v`: **PASS (46/46 tests passed in 58.30s)**
 - `npm test`: **PASS** (1 skipped, 62 passed, 23 test suites)
 - `npx tsc --noEmit`: **PASS** (0 errors)
 - `npm run lint`: **PASS** (0 errors)
