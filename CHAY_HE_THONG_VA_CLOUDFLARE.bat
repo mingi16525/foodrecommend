@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 > nul
-title FoodRecommend - Khởi Động Toàn Bộ Hệ Thống & Cloudflare Tunnel
+title FoodRecommend - Khởi Động Toàn Bộ Hệ Thống ^& Cloudflare Tunnel
 
 echo ======================================================
 echo    KHỞI CHẠY HỆ THỐNG BACKEND, DB VÀ CLOUDFLARE TUNNEL

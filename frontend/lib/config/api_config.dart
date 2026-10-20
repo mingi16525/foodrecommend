@@ -8,7 +8,7 @@ class ApiConfig {
   static const String remoteConfigUrl = 'https://raw.githubusercontent.com/mingi16525/foodrecommend/main/ACTIVE_TUNNEL_URL.txt';
 
   /// Base URL mặc định dự phòng
-  static const String defaultTunnelUrl = 'https://marie-fool-bedroom-headline.trycloudflare.com';
+  static const String defaultTunnelUrl = 'https://suggesting-fruit-pets-exhibits.trycloudflare.com';
   static const String defaultEmulatorUrl = 'http://10.0.2.2:3000';
   static const String defaultLanUrl = 'http://192.168.1.89:3000';
 

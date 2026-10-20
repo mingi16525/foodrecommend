@@ -45,7 +45,7 @@ class _GroupOrderScreenState extends State<GroupOrderScreen> {
       );
       if (res.statusCode == 200) {
         final data = json.decode(res.body);
-        if (mounted) setState(() => _myUserId = data['user']['id'] ?? '');
+        if (mounted) setState(() => _myUserId = data['id'] ?? (data['user'] != null ? data['user']['id'] : ''));
       }
     } catch (_) {}
   }

@@ -16,6 +16,8 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> with SingleTicker
   List<Map<String, dynamic>> _itinerary = [];
   bool _isLoading = false;
   bool _hasError = false;
+  bool _isPremiumRequired = false;
+  String _errorMessage = 'Không thể tải lịch trình.';
   late AnimationController _animationController;
   final TextEditingController _prefController = TextEditingController();
 
@@ -37,6 +39,7 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> with SingleTicker
     setState(() {
       _isLoading = true;
       _hasError = false;
+      _isPremiumRequired = false;
     });
     try {
       final response = await http.post(
@@ -60,10 +63,53 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> with SingleTicker
           _animationController.forward(from: 0.0);
         }
       } else {
-        if (mounted) setState(() { _isLoading = false; _hasError = true; });
+        String msg = 'Không thể tải lịch trình.';
+        bool reqPrem = response.statusCode == 403;
+        try {
+          final errBody = json.decode(response.body);
+          final rawMsg = errBody['error'] ?? errBody['message'] ?? '';
+          if (rawMsg.isNotEmpty) msg = rawMsg;
+          if (rawMsg.toString().toLowerCase().contains('premium')) reqPrem = true;
+        } catch (_) {}
+
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            _hasError = true;
+            _isPremiumRequired = reqPrem;
+            _errorMessage = msg;
+          });
+        }
       }
     } catch (_) {
       if (mounted) setState(() { _isLoading = false; _hasError = true; });
+    }
+  }
+
+  Future<void> _upgradeToPremium() async {
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final res = await http.post(
+        Uri.parse('${ApiConfig.baseUrl}/api/subscriptions/upgrade'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${ApiConfig.token}',
+        },
+        body: json.encode({'paymentMethod': 'momo'}),
+      );
+      if (res.statusCode == 200) {
+        messenger.showSnackBar(
+          const SnackBar(content: Text('Yêu cầu thanh toán MoMo thành công! Vui lòng hoàn tất để kích hoạt Premium.')),
+        );
+      } else {
+        messenger.showSnackBar(
+          SnackBar(content: Text('Không thể tạo đơn thanh toán: ${res.body}')),
+        );
+      }
+    } catch (e) {
+      messenger.showSnackBar(
+        SnackBar(content: Text('Lỗi kết nối: $e')),
+      );
     }
   }
 
@@ -110,14 +156,48 @@ class _TripPlannerScreenState extends State<TripPlannerScreen> with SingleTicker
           else if (_hasError)
             SliverFillRemaining(
               child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.error_outline, size: 48, color: Colors.redAccent),
-                    const SizedBox(height: 16),
-                    const Text('Không thể tải lịch trình.', style: TextStyle(fontSize: 16)),
-                    TextButton(onPressed: _fetchItinerary, child: const Text('Thử lại'))
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: _isPremiumRequired
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.workspace_premium, size: 64, color: Colors.amber),
+                            const SizedBox(height: 16),
+                            const Text(
+                              'Đặc Quyền Dành Cho Gói PREMIUM',
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 12),
+                            const Text(
+                              'Tính năng gợi ý lịch trình ẩm thực đa ngày tự động bằng AI Deep Tier chỉ dành riêng cho thành viên PREMIUM.\n\nNâng cấp ngay với giá chỉ 50.000đ/tháng để trải nghiệm không giới hạn!',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 14, color: Colors.black87, height: 1.4),
+                            ),
+                            const SizedBox(height: 24),
+                            ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orange,
+                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                              ),
+                              icon: const Icon(Icons.upgrade, color: Colors.white),
+                              label: const Text('Nâng cấp qua MoMo (50.000đ)', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                              onPressed: _upgradeToPremium,
+                            ),
+                          ],
+                        )
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.error_outline, size: 48, color: Colors.redAccent),
+                            const SizedBox(height: 16),
+                            Text(_errorMessage, style: const TextStyle(fontSize: 16), textAlign: TextAlign.center),
+                            const SizedBox(height: 12),
+                            TextButton(onPressed: _fetchItinerary, child: const Text('Thử lại')),
+                          ],
+                        ),
                 ),
               ),
             )

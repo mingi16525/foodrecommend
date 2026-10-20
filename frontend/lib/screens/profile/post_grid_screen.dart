@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../config/api_config.dart';
+import '../../widgets/feed_item_widget.dart';
 
 class PostGridScreen extends StatefulWidget {
   final String endpoint;
@@ -78,28 +79,43 @@ class _PostGridScreenState extends State<PostGridScreen> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 final item = _items[index];
-                return Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.network(
-                      item['placeholder_url'] ?? 'https://images.unsplash.com/photo-1547496502-affa22d38842',
-                      fit: BoxFit.cover,
-                    ),
-                    Positioned(
-                      bottom: 5,
-                      left: 5,
-                      child: Row(
-                        children: [
-                          const Icon(Icons.play_arrow_outlined, color: Colors.white, size: 16),
-                          const SizedBox(width: 2),
-                          Text(
-                            (item['likes'] ?? 0).toString(),
-                            style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
-                          )
-                        ],
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => Scaffold(
+                          appBar: AppBar(
+                            title: Text(item['restaurant_name'] ?? item['content'] ?? 'Chi tiết bài viết'),
+                          ),
+                          body: FeedItemWidget(item: item),
+                        ),
                       ),
-                    )
-                  ],
+                    );
+                  },
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.network(
+                        item['placeholder_url'] ?? 'https://images.unsplash.com/photo-1547496502-affa22d38842',
+                        fit: BoxFit.cover,
+                      ),
+                      Positioned(
+                        bottom: 5,
+                        left: 5,
+                        child: Row(
+                          children: [
+                            const Icon(Icons.play_arrow_outlined, color: Colors.white, size: 16),
+                            const SizedBox(width: 2),
+                            Text(
+                              (item['likes'] ?? 0).toString(),
+                              style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 );
               },
             ),

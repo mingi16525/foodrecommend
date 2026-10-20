@@ -28,5 +28,13 @@ DerivedData/
 .idea/
 .vscode/
 
-# Logs
+# Logs & Test reports
 *.log
+allure-results/
+allure-report/
+**/allure-results/
+**/allure-report/
+.pytest_cache/
+**/__pycache__/
+
+test_appium

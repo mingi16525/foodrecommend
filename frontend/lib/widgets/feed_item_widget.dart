@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../providers/app_state.dart';
 import '../config/api_config.dart';
 import '../widgets/video_player.dart';
+import '../services/delivery_link_service.dart';
 
 class FeedItemWidget extends StatefulWidget {
   final dynamic item;
@@ -202,9 +203,32 @@ class _FeedItemWidgetState extends State<FeedItemWidget> with AutomaticKeepAlive
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                '@${widget.item['author_name'] ?? 'Unknown'}',
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '@${widget.item['author_name'] ?? 'Unknown'}',
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  if (widget.item['is_premium'] == true || widget.item['author_tier'] == 'PREMIUM') ...[
+                    const SizedBox(width: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(colors: [Colors.amber, Colors.deepOrange]),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.workspace_premium, color: Colors.white, size: 12),
+                          SizedBox(width: 2),
+                          Text('VIP', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
               ),
               const SizedBox(height: 8),
               Text(
@@ -234,7 +258,15 @@ class _FeedItemWidgetState extends State<FeedItemWidget> with AutomaticKeepAlive
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        final restName = widget.item['restaurant_name'] ?? widget.item['dish_name'] ?? 'Món ngon';
+                        final deliveryLinks = widget.item['delivery_links'] as Map<String, dynamic>?;
+                        DeliveryLinkService.showDeliveryOptions(
+                          context,
+                          restName,
+                          deliveryLinks,
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
                         minimumSize: const Size(60, 30),

@@ -23,6 +23,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _savedCount = 0;
   int _postsCount = 0;
   bool _isVerified = false;
+  String _subscriptionTier = 'FREE';
+  int _points = 0;
   String? _errorMessage;
 
   @override
@@ -41,6 +43,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _savedCount = 0;
         _postsCount = 0;
         _isVerified = false;
+        _subscriptionTier = 'FREE';
+        _points = 0;
         _isLoading = false;
       });
       return;
@@ -63,6 +67,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _savedCount = _intValue(data['saved_count']);
           _postsCount = _intValue(data['posts_count']);
           _isVerified = data['is_reviewer'] == true || data['role'] == 'verified_reviewer';
+          _subscriptionTier = (data['subscription_tier'] ?? 'FREE').toString().toUpperCase();
+          _points = _intValue(data['points']);
           _isLoading = false;
           _errorMessage = null;
         });
@@ -134,6 +140,61 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  void _showUpgradeDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.workspace_premium, color: Colors.amber),
+            SizedBox(width: 8),
+            Text('Nâng cấp Premium VIP', style: TextStyle(fontSize: 18)),
+          ],
+        ),
+        content: const Text(
+          'Đặc quyền gói PREMIUM:\n'
+          '• Mở khóa tạo nhóm ăn uống & chia bill thông minh\n'
+          '• Thuật toán AI gợi ý lịch trình tự động\n'
+          '• Đánh giá ưu tiên từ các reviewer chuyên nghiệp\n\n'
+          'Giá ưu đãi: 50.000đ / tháng qua cổng MoMo / ZaloPay.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Hủy'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+            onPressed: () async {
+              final messenger = ScaffoldMessenger.of(context);
+              Navigator.pop(context);
+              try {
+                final res = await http.post(
+                  Uri.parse('${ApiConfig.baseUrl}/api/subscriptions/upgrade'),
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ${ApiConfig.token}',
+                  },
+                  body: json.encode({'paymentMethod': 'momo'}),
+                );
+                if (res.statusCode == 200) {
+                  messenger.showSnackBar(
+                    const SnackBar(content: Text('Yêu cầu thanh toán MoMo thành công! Vui lòng hoàn tất thanh toán.')),
+                  );
+                }
+              } catch (e) {
+                messenger.showSnackBar(
+                  SnackBar(content: Text('Lỗi kết nối cổng thanh toán: $e')),
+                );
+              }
+            },
+            child: const Text('Thanh toán MoMo'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -185,6 +246,75 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Text('Verified Reviewer', style: TextStyle(color: Colors.grey)),
                       ],
                     ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: _subscriptionTier == 'PREMIUM' ? Colors.amber.shade100 : Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: _subscriptionTier == 'PREMIUM' ? Colors.amber : Colors.grey.shade400,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              _subscriptionTier == 'PREMIUM' ? Icons.workspace_premium : Icons.person_outline,
+                              size: 16,
+                              color: _subscriptionTier == 'PREMIUM' ? Colors.amber.shade800 : Colors.grey.shade700,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              _subscriptionTier == 'PREMIUM' ? 'PREMIUM VIP' : 'Gói Cơ Bản',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: _subscriptionTier == 'PREMIUM' ? Colors.amber.shade900 : Colors.grey.shade800,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.shade50,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.orange.shade300),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.stars, size: 16, color: Colors.orange),
+                            const SizedBox(width: 4),
+                            Text(
+                              '$_points Điểm',
+                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.deepOrange),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (_subscriptionTier != 'PREMIUM' && !Provider.of<AppState>(context).isGuest) ...[
+                    const SizedBox(height: 12),
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.amber.shade700,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      ),
+                      icon: const Icon(Icons.upgrade, size: 18),
+                      label: const Text('Nâng cấp PREMIUM (50k/tháng)', style: TextStyle(fontWeight: FontWeight.bold)),
+                      onPressed: _showUpgradeDialog,
+                    ),
+                  ],
                   const SizedBox(height: 24),
                   
                   _buildStatRow(),

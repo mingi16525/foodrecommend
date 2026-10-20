@@ -59,17 +59,80 @@ class _GroupListScreenState extends State<GroupListScreen> {
         body: json.encode({'name': name}),
       );
       
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         _fetchGroups(); // reload
       } else {
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Tạo nhóm thất bại! Vui lòng thử lại.')));
+        String errMsg = 'Tạo nhóm thất bại!';
+        try {
+          final resBody = json.decode(response.body);
+          errMsg = resBody['error'] ?? resBody['message'] ?? errMsg;
+        } catch (_) {}
+
+        if (response.statusCode == 403 || errMsg.toLowerCase().contains('premium')) {
+          _showPremiumUpgradeDialog();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Lỗi: $errMsg')));
+        }
       }
     } catch (e) {
       debugPrint('Error creating group: $e');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Lỗi: $e')));
     }
+  }
+
+  void _showPremiumUpgradeDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Row(
+            children: [
+              Icon(Icons.workspace_premium, color: Colors.amber),
+              SizedBox(width: 8),
+              Text('Yêu cầu gói Premium', style: TextStyle(fontSize: 18)),
+            ],
+          ),
+          content: const Text(
+            'Tính năng Tạo nhóm cộng đồng và Chia bill nâng cao chỉ dành cho thành viên PREMIUM (50.000đ/tháng).\n\nBạn có muốn nâng cấp tài khoản ngay không?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Để sau'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+              onPressed: () async {
+                final messenger = ScaffoldMessenger.of(context);
+                Navigator.pop(context);
+                try {
+                  final upRes = await http.post(
+                    Uri.parse('${ApiConfig.baseUrl}/api/subscriptions/upgrade'),
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': 'Bearer ${ApiConfig.token}',
+                    },
+                    body: json.encode({'paymentMethod': 'momo'}),
+                  );
+                  if (upRes.statusCode == 200) {
+                    messenger.showSnackBar(
+                      const SnackBar(content: Text('Yêu cầu thanh toán MoMo đã được tạo! Vui lòng hoàn tất.')),
+                    );
+                  }
+                } catch (e) {
+                  messenger.showSnackBar(
+                    SnackBar(content: Text('Lỗi kết nối cổng thanh toán: $e')),
+                  );
+                }
+              },
+              child: const Text('Nâng cấp ngay'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _showCreateGroupDialog() {

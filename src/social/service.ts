@@ -19,8 +19,16 @@ export class SocialService {
     try {
       let finalRestaurantId = restaurantId;
       if (!finalRestaurantId && restaurantName) {
-        const newRest = await restaurantService.createRestaurant(userId, restaurantName, restaurantAddress || '');
-        finalRestaurantId = newRest.id;
+        const existing = await this.db.query(
+          'SELECT id FROM restaurants WHERE name ILIKE $1 LIMIT 1',
+          [restaurantName.trim()]
+        );
+        if (existing.rows.length > 0) {
+          finalRestaurantId = existing.rows[0].id;
+        } else {
+          const newRest = await restaurantService.createRestaurant(userId, restaurantName, restaurantAddress || '');
+          finalRestaurantId = newRest.id;
+        }
       }
 
       const result = await this.db.query(
@@ -73,6 +81,8 @@ export class SocialService {
           u.full_name as author_name, 
           'https://i.pravatar.cc/150?u=' || u.id as author_avatar,
           u.is_reviewer as is_verified,
+          u.subscription_tier as author_tier,
+          (u.subscription_tier = 'PREMIUM') as is_premium,
           d.name as dish_name, 
           d.price, 
           r.name as restaurant_name,
@@ -85,8 +95,8 @@ export class SocialService {
         FROM posts p 
         JOIN users u ON p.user_id = u.id 
         LEFT JOIN dishes d ON p.dish_id = d.id
-        LEFT JOIN restaurants r ON d.restaurant_id = r.id
-        ORDER BY p.created_at DESC 
+        LEFT JOIN restaurants r ON r.id = COALESCE(p.restaurant_id, d.restaurant_id)
+        ORDER BY (u.subscription_tier = 'PREMIUM') DESC, p.created_at DESC 
         LIMIT $1 OFFSET $2
       `;
       const result = await this.db.query(query, [limit, offset]);

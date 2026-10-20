@@ -10,6 +10,9 @@ CREATE TABLE users (
     is_verified BOOLEAN DEFAULT FALSE,
     subscription_tier VARCHAR(20) DEFAULT 'free',
     subscription_expires_at TIMESTAMP,
+    device_token TEXT,
+    points INT DEFAULT 0,
+    referral_code VARCHAR(255) UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
